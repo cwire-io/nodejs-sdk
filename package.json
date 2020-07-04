@@ -1,0 +1,36 @@
+{
+  "name": "@cwire/nodejs-sdk",
+  "version": "0.0.1",
+  "files": ["lib/**/*"],
+  "main": "lib/index.js",
+  "description": "CWire helps your to build awsome frontend for administration tasks",
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "watch": "webpack --watch --config webpack.dev.js",
+    "tslint": "tslint -p tsconfig.json",
+    "tslint-fix": "prettier --write \"src/**/*.ts\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cwire-io/nodejs-sdk.git"
+  },
+  "author": "Christoph-Thomas Abs & Leon L.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cwire-io/nodejs-sdk/issues"
+  },
+  "homepage": "https://github.com/cwire-io/nodejs-sdk#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "ts-loader": "^7.0.5",
+    "typescript": "^3.9.6",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
+  },
+  "devDependencies": {
+    "prettier": "^2.0.5",
+    "tslint": "^6.1.2",
+    "tslint-config-prettier": "^1.18.0"
+  }
+}

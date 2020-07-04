@@ -1,5 +1,6 @@
 import { DataModelField, DataModelFieldOptions } from "./DataModelField";
 import { DataModelAction, DataModelActionOptions } from "./DataModelAction";
+import {CWireDataModelClassInterface} from "./CWireDataModelClassInterface";
 
 export interface DataModelOptions {
   fields?: DataModelField[] | { [name: string]: DataModelFieldOptions };
@@ -8,10 +9,11 @@ export interface DataModelOptions {
 
 export class DataModel {
   private name: string;
+  private id: string | null = null;
   private fields: { [key: string]: DataModelField } = {};
   private actions: { [key: string]: DataModelAction } = {};
 
-  constructor(name: string, options: DataModelOptions) {
+  constructor(name: string, options: DataModelOptions = {}) {
     this.name = name;
 
     if (options.fields) {
@@ -38,7 +40,22 @@ export class DataModel {
     }
   }
 
+  public changeByObject(obj: any) {}
+  public static parse(data: any | any[]): DataModel | DataModel[] {
+    if (Array.isArray(data)) {
+      const models: DataModel[] = [];
+      for (const model of data) {
+        const dataModel = new DataModel(model.name);
+        models.push(dataModel);
+      }
+
+      return models;
+    }
+    return new DataModel(data.name);
+  }
+
   getName(): string {
     return name;
   }
+
 }

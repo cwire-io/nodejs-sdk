@@ -1,13 +1,16 @@
+import axios from 'axios';
 import {
   Request as ExpressRequest,
   Response as ExpressResponse,
-} from "express";
+} from 'express';
 
+import { CWireAPI } from './CWireAPI';
 import { DataModel } from "./DataModel";
 import { DataModelFieldType } from "./DataModelField";
 import { DataModelActionType } from "./DataModelAction";
 
 interface CWireOptions {
+  url?: string;
   models?: DataModel[];
 }
 
@@ -28,16 +31,36 @@ export class CWire {
     BUTTON: "button",
   };
 
+  private api: CWireAPI;
   private apiKey: string;
-  private cwireAPI: string = "https://api.cwire.io/";
+  private cwireAPIURL: string = "https://api.cwire.io";
 
   constructor(apiKey: string, options: CWireOptions = {}) {
     this.apiKey = apiKey;
+
+    if (options.url) {
+      this.cwireAPIURL = options.url;
+    }
+
+    this.api = new CWireAPI(axios.create({
+      timeout: 10000,
+      baseURL: this.cwireAPIURL,
+      headers: { 'X-API-KEY': this.apiKey }
+    }));
   }
 
   public static init(apiKey: string, options: CWireOptions = {}): CWire {
     this.instance = new CWire(apiKey, options);
     return this.instance;
+  }
+
+
+  public getAPI(): CWireAPI {
+    return this.api;
+  }
+
+  public getAxios() {
+    return this.api.getAxios();
   }
 
   public static getExpressMiddleware(): (

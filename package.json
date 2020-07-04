@@ -1,7 +1,9 @@
 {
   "name": "@cwire/nodejs-sdk",
   "version": "0.0.1",
-  "files": ["lib/**/*"],
+  "files": [
+    "lib/**/*"
+  ],
   "main": "lib/index.js",
   "description": "CWire helps your to build awsome frontend for administration tasks",
   "scripts": {
@@ -22,6 +24,8 @@
   },
   "homepage": "https://github.com/cwire-io/nodejs-sdk#readme",
   "dependencies": {
+    "@types/axios": "^0.14.0",
+    "axios": "^0.19.2",
     "express": "^4.17.1",
     "ts-loader": "^7.0.5",
     "typescript": "^3.9.6",

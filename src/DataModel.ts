@@ -1,13 +1,14 @@
+import { APIInterface, StaticAPIInterface } from "./api/APIInterface";
 import { DataModelField, DataModelFieldOptions } from "./DataModelField";
 import { DataModelAction, DataModelActionOptions } from "./DataModelAction";
-import {CWireDataModelClassInterface} from "./CWireDataModelClassInterface";
 
 export interface DataModelOptions {
   fields?: DataModelField[] | { [name: string]: DataModelFieldOptions };
   actions?: DataModelAction[] | { [name: string]: DataModelActionOptions };
 }
 
-export class DataModel {
+export type DataModelAPIParameter = {};
+class BaseDataModel implements APIInterface<DataModelAPIParameter> {
   private name: string;
   private id: string | null = null;
   private fields: { [key: string]: DataModelField } = {};
@@ -40,22 +41,27 @@ export class DataModel {
     }
   }
 
-  public changeByObject(obj: any) {}
-  public static parse(data: any | any[]): DataModel | DataModel[] {
+  public getName(): string {
+    return name;
+  }
+
+  public changeByObject(obj: DataModelAPIParameter) {}
+  public static parse(data: any | any[]): BaseDataModel | BaseDataModel[] {
     if (Array.isArray(data)) {
-      const models: DataModel[] = [];
+      const models: BaseDataModel[] = [];
       for (const model of data) {
-        const dataModel = new DataModel(model.name);
+        const dataModel = new BaseDataModel(model.name);
+        dataModel.changeByObject(data);
         models.push(dataModel);
       }
 
       return models;
     }
-    return new DataModel(data.name);
-  }
 
-  getName(): string {
-    return name;
+    const model = new BaseDataModel(data.name);
+    model.changeByObject(data);
+    return model;
   }
-
 }
+export type DataModel = StaticAPIInterface<BaseDataModel>;
+export const DataModel: StaticAPIInterface<BaseDataModel> = BaseDataModel;

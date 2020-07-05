@@ -1,4 +1,4 @@
-import { AxiosInstance } from 'axios';
+import { AxiosInstance } from "axios";
 import { DataModelAPI } from "./api/DataModelAPI";
 
 export class CWireAPI {

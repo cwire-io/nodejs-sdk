@@ -1,21 +1,40 @@
-import { APIInterface, StaticAPIInterface } from "./api/APIInterface";
-import { DataModelField, DataModelFieldOptions } from "./DataModelField";
-import { DataModelAction, DataModelActionOptions } from "./DataModelAction";
+import {
+  DataModelActionNotFoundError,
+  DataModelFieldNotFoundError,
+  MissingRequiredPropertyError,
+} from "./errors";
+import { DataModelField } from "./DataModelField";
+import { DataModelAction } from "./DataModelAction";
+
+import { DataModelFieldOptionsType } from "./types/DataModelFields";
+import { DataModelActionOptionsType } from "./types/DataModelActions";
 
 export interface DataModelOptions {
-  fields?: DataModelField[] | { [name: string]: DataModelFieldOptions };
-  actions?: DataModelAction[] | { [name: string]: DataModelActionOptions };
+  get: () => any[];
+  isEditable?: boolean;
+  isCreatable?: boolean;
+  isDeletable?: boolean;
+  onDelete?: (entity: unknown) => void;
+  onChange?: (fields: unknown) => boolean;
+  onCreate?: (fields: unknown) => boolean;
+  fields?: DataModelField[] | { [name: string]: DataModelFieldOptionsType };
+  actions?: DataModelAction[] | { [name: string]: DataModelActionOptionsType };
 }
 
 export type DataModelAPIParameter = {};
-class BaseDataModel implements APIInterface<DataModelAPIParameter> {
+export class DataModel {
   private name: string;
   private id: string | null = null;
+  private options: DataModelOptions;
   private fields: { [key: string]: DataModelField } = {};
   private actions: { [key: string]: DataModelAction } = {};
 
-  constructor(name: string, options: DataModelOptions = {}) {
+  constructor(name: string, options: DataModelOptions) {
+    if (!name) {
+      throw new MissingRequiredPropertyError();
+    }
     this.name = name;
+    this.options = options;
 
     if (options.fields) {
       if (Array.isArray(options.fields)) {
@@ -24,7 +43,10 @@ class BaseDataModel implements APIInterface<DataModelAPIParameter> {
         }
       } else {
         for (const fieldName of Object.keys(options.fields)) {
-          this.fields[fieldName] = new DataModelField(fieldName);
+          this.fields[fieldName] = new DataModelField(
+            fieldName,
+            options.fields[fieldName]
+          );
         }
       }
     }
@@ -35,33 +57,79 @@ class BaseDataModel implements APIInterface<DataModelAPIParameter> {
         }
       } else {
         for (const actionName of Object.keys(options.actions)) {
-          this.actions[actionName] = new DataModelAction(actionName);
+          this.actions[actionName] = new DataModelAction(
+            actionName,
+            options.actions[actionName]
+          );
         }
       }
     }
   }
 
+  public changeByObject(obj: DataModelAPIParameter) {}
+
   public getName(): string {
-    return name;
+    return this.name;
   }
 
-  public changeByObject(obj: DataModelAPIParameter) {}
-  public static parse(data: any | any[]): BaseDataModel | BaseDataModel[] {
-    if (Array.isArray(data)) {
-      const models: BaseDataModel[] = [];
-      for (const model of data) {
-        const dataModel = new BaseDataModel(model.name);
-        dataModel.changeByObject(data);
-        models.push(dataModel);
-      }
+  public getId(): string | null {
+    return this.id;
+  }
 
-      return models;
+  public setId(newId: string): void {
+    this.id = newId;
+  }
+
+  public getOptions(): DataModelOptions {
+    return this.options;
+  }
+
+  public toJSON() {
+    return {
+      id: this.getId(),
+      name: this.getName(),
+      fields: this.getFieldsList().map(field => field.toJSON()),
+      actions: this.getActionsList().map(action => action.toJSON()),
+    }
+  }
+
+  public getActionsMap(): { [name: string]: DataModelAction } {
+    return this.actions;
+  }
+
+  public getActionsList(): DataModelAction[] {
+    return Object.values(this.actions);
+  }
+
+  public isActionExist(name: string): boolean {
+    return !!this.actions[name];
+  }
+
+  public getActionByName(name: string): DataModelAction {
+    if (!this.isActionExist(name)) {
+      throw new DataModelActionNotFoundError();
     }
 
-    const model = new BaseDataModel(data.name);
-    model.changeByObject(data);
-    return model;
+    return this.actions[name];
+  }
+
+  public getFieldsMap(): { [name: string]: DataModelField } {
+    return this.fields;
+  }
+
+  public getFieldsList(): DataModelField[] {
+    return Object.values(this.fields);
+  }
+
+  public isFieldExist(name: string): boolean {
+    return !!this.fields[name];
+  }
+
+  public getFieldByName(name: string): DataModelField {
+    if (!this.isFieldExist(name)) {
+      throw new DataModelFieldNotFoundError();
+    }
+
+    return this.fields[name];
   }
 }
-export type DataModel = StaticAPIInterface<BaseDataModel>;
-export const DataModel: StaticAPIInterface<BaseDataModel> = BaseDataModel;

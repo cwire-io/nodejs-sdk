@@ -1,22 +1,43 @@
 import axios from "axios";
-import {
-  Request as ExpressRequest,
-  Response as ExpressResponse,
-} from "express";
 
 import { CWireAPI } from "./CWireAPI";
 import { DataModel } from "./DataModel";
-import { DataModelFieldType } from "./DataModelField";
-import { DataModelActionType } from "./DataModelAction";
+
+import {
+  AlertActionType,
+  ButtonActionType,
+  ToggleActionType,
+} from "./types/DataModelActions";
+import {
+  BooleanFieldType,
+  CustomFieldType,
+  DescriptionFieldType,
+  EmailFieldType,
+  NumberFieldType,
+  PasswordFieldType,
+  TextFieldType,
+} from "./types/DataModelFields";
+import { DataModelNotFoundError } from "./errors";
+import {CWireWebSocket} from "./CWireWebSocket";
+import {WorkerFunctions} from "./worker/functions";
 
 interface CWireOptions {
-  url?: string;
+  route?: string;
+  apiURL?: string;
   models?: DataModel[];
 }
 
 export class CWire {
-  private static instance: CWire;
-  public static FIELDS: { [key: string]: DataModelFieldType } = {
+  private static instance: CWire | null = null;
+  public static FIELD_TYPES: {
+    TEXT: TextFieldType;
+    EMAIL: EmailFieldType;
+    NUMBER: NumberFieldType;
+    CUSTOM: CustomFieldType;
+    BOOLEAN: BooleanFieldType;
+    PASSWORD: PasswordFieldType;
+    DESCRIPTION: DescriptionFieldType;
+  } = {
     TEXT: "text",
     EMAIL: "email",
     NUMBER: "number",
@@ -25,7 +46,11 @@ export class CWire {
     PASSWORD: "password",
     DESCRIPTION: "description",
   };
-  public static ACTIONS: { [key: string]: DataModelActionType } = {
+  public static ACTIONS: {
+    ALERT: AlertActionType;
+    TOGGLE: ToggleActionType;
+    BUTTON: ButtonActionType;
+  } = {
     ALERT: "alert",
     TOGGLE: "toggle",
     BUTTON: "button",
@@ -33,16 +58,33 @@ export class CWire {
 
   private api: CWireAPI;
   private apiKey: string;
+  private worker: WorkerFunctions;
+  private websocket: CWireWebSocket;
+  private models: { [name: string]: DataModel } = {};
+  private cwireRoute: string = "/cwire";
   private cwireAPIURL: string = "https://api.cwire.io";
 
   constructor(apiKey: string, options: CWireOptions = {}) {
     this.apiKey = apiKey;
 
-    if (options.url) {
-      this.cwireAPIURL = options.url;
+    if (options.apiURL) {
+      this.cwireAPIURL = options.apiURL;
     }
 
+    if (options.route) {
+      this.cwireRoute = options.route;
+    }
+
+    if (options.models) {
+      for (const model of options.models) {
+        this.models[model.getName()] = model;
+      }
+    }
+
+    this.worker = WorkerFunctions.init(this);
+    this.websocket = new CWireWebSocket(this);
     this.api = new CWireAPI(
+      this,
       axios.create({
         timeout: 10000,
         baseURL: this.cwireAPIURL,
@@ -51,19 +93,65 @@ export class CWire {
     );
   }
 
-  public static init(apiKey: string, options: CWireOptions = {}): CWire {
-    this.instance = new CWire(apiKey, options);
+  public static async init(
+    apiKey: string,
+    options: CWireOptions = {}
+  ): Promise<CWire> {
+    if (!this.instance) {
+      try {
+
+        this.instance = new CWire(apiKey, options);
+        await this.instance.api.init();
+        await this.instance.websocket.connect();
+        // this.instance && this.instance.tunnel.init();
+      } catch (err) {
+        // this.instance && this.instance.socket.disconnect();
+        delete this.instance;
+        this.instance = null;
+        throw err;
+      }
+    }
+
     return this.instance;
+  }
+
+  public getAPIURL(): string {
+    return this.cwireAPIURL;
+  }
+
+  public getAPIKey(): string {
+    return this.apiKey;
   }
 
   public getAPI(): CWireAPI {
     return this.api;
   }
 
+  public getWorker(): WorkerFunctions {
+    return this.worker;
+  }
+
   public getAxios() {
     return this.api.getAxios();
   }
 
-  public static getExpressRouter() {
+  public getDataModelsMap() {
+    return this.models;
+  }
+
+  public getDataModelsList() {
+    return Object.values(this.models);
+  }
+
+  public isDataModelExists(name: string): boolean {
+    return !!this.models[name];
+  }
+
+  public getDataModelByName(name: string) {
+    if (!this.isDataModelExists(name)) {
+      throw new DataModelNotFoundError();
+    }
+
+    return this.models[name];
   }
 }

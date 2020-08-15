@@ -1,15 +1,15 @@
 import { CWire } from "./CWire";
 import { DataModel } from "./DataModel";
+import { DataModelField } from "./DataModelField";
+import { DataModelAction } from "./DataModelAction";
 import {
-  DataModelField,
   DataModelFieldType,
-  DataModelFieldOptions,
-} from "./DataModelField";
+  DataModelFieldOptionsType,
+} from "./types/DataModelFields";
 import {
-  DataModelAction,
-  DataModelActionOptions,
   DataModelActionType,
-} from "./DataModelAction";
+  DataModelActionOptionsType,
+} from "./types/DataModelActions";
 
 export {
   CWire,
@@ -17,10 +17,10 @@ export {
   // Data Model Fields
   DataModelField,
   DataModelFieldType,
-  DataModelFieldOptions,
+  DataModelFieldOptionsType,
   // Data Model Actions
   DataModelAction,
   DataModelActionType,
-  DataModelActionOptions,
+  DataModelActionOptionsType,
 };
 export default CWire;

@@ -5,10 +5,12 @@
     "lib/**/*"
   ],
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "description": "CWire helps your to build awsome frontend for administration tasks",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "watch": "webpack --watch --config webpack.dev.js",
+    "build": "tsc",
+    "watch": "tsc-watch",
+    "typescript-dev": "tsc --watch",
     "tslint": "tslint -p tsconfig.json",
     "tslint-fix": "prettier --write \"src/**/*.ts\"",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -24,17 +26,18 @@
   },
   "homepage": "https://github.com/cwire-io/nodejs-sdk#readme",
   "dependencies": {
-    "@types/axios": "^0.14.0",
     "axios": "^0.19.2",
-    "express": "^4.17.1",
-    "ts-loader": "^7.0.5",
-    "typescript": "^3.9.6",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.12"
+    "socket.io-client": "^2.3.0",
+    "typescript": "^3.9.6"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/express": "^4.17.6",
+    "@types/socket.io-client": "^1.4.33",
+    "express": "^4.17.1",
     "prettier": "^2.0.5",
+    "ts-loader": "^7.0.5",
+    "tsc-watch": "^4.2.9",
     "tslint": "^6.1.2",
     "tslint-config-prettier": "^1.18.0"
   }

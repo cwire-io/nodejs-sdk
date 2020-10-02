@@ -103,9 +103,8 @@ export class CWire {
         this.instance = new CWire(apiKey, options);
         await this.instance.api.init();
         await this.instance.websocket.connect();
-        // this.instance && this.instance.tunnel.init();
       } catch (err) {
-        // this.instance && this.instance.socket.disconnect();
+        this.instance && this.instance.websocket.disconnect();
         delete this.instance;
         this.instance = null;
         throw err;

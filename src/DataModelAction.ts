@@ -1,4 +1,7 @@
-import {DataModelActionOptionsType, DataModelActionType} from "./types/DataModelActions";
+import {
+  DataModelActionOptionsType,
+  DataModelActionType,
+} from "./types/DataModelActions";
 import { CWire } from "./CWire";
 import { WrongActionTypeError } from "./errors";
 
@@ -20,14 +23,14 @@ export class DataModelAction {
   }
 
   public getType(): string {
-    return this.type
+    return this.type;
   }
 
   public toJSON() {
     return {
       name: this.name,
-      type: this.type
-    }
+      type: this.type,
+    };
   }
 
   public static isValidActionType(type: any): boolean {

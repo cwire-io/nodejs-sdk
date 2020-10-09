@@ -31,8 +31,8 @@ export class DataModelField {
   public toJSON() {
     return {
       name: this.name,
-      type: this.type
-    }
+      type: this.type,
+    };
   }
 
   public static isValidFieldType(type: any): boolean {

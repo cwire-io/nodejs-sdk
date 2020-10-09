@@ -27,12 +27,12 @@ export type DataModelFieldOptions$BooleanFieldType = {
 
 export type PasswordFieldType = "password";
 export type DataModelFieldOptions$PasswordFieldType = {
-  type: BooleanFieldType;
+  type: PasswordFieldType;
 } & BaseDataModelFieldOptions;
 
 export type DescriptionFieldType = "description";
 export type DataModelFieldOptions$DescriptionFieldType = {
-  type: BooleanFieldType;
+  type: DescriptionFieldType;
 };
 export type DataModelFieldType =
   | TextFieldType

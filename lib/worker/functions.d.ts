@@ -3,7 +3,7 @@ import { IWorkerFunction } from "./WorkerFunction";
 export declare class WorkerFunctions {
     cwire: CWire;
     static instance: WorkerFunctions;
-    functions: Map<string, IWorkerFunction<[]>>;
+    functions: Map<string, IWorkerFunction<[], any>>;
     constructor(cwire: CWire);
     addFunction(FnClass: any): void;
     removeFunction(fnName: string): void;

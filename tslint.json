@@ -1,0 +1,8 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+    "no-console": false,
+    "max-classes-per-file": false,
+    "no-unused-expression": false
+  }
+}

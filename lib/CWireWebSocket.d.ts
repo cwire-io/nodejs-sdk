@@ -4,8 +4,12 @@ export declare class CWireWebSocket {
     private socket;
     disconnect(): void;
     connect(): void;
-    onWorkerFunctionCalled: (functionName: string, params: [], resolve: (result: any) => void) => void;
+    onWorkerFunctionCalled: (functionName: string, params: [], resolve: (result: {
+        error?: Error;
+        data?: any;
+        success: boolean;
+    }) => void) => Promise<void>;
     getWorkerFunctions: (resolve: (result: any) => void) => void;
     initListeners(): void;
-    constructor(CWire: CWire);
+    constructor(cwire: CWire);
 }

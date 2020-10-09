@@ -18,8 +18,9 @@ import {
   TextFieldType,
 } from "./types/DataModelFields";
 import { DataModelNotFoundError } from "./errors";
-import {CWireWebSocket} from "./CWireWebSocket";
-import {WorkerFunctions} from "./worker/functions";
+import { CWireWebSocket } from "./CWireWebSocket";
+import { WorkerFunctions } from "./worker/functions";
+import { APIWorkerInfoType } from "./types/Worker";
 
 interface CWireOptions {
   route?: string;
@@ -58,8 +59,9 @@ export class CWire {
 
   private api: CWireAPI;
   private apiKey: string;
-  private worker: WorkerFunctions;
   private websocket: CWireWebSocket;
+  private worker?: APIWorkerInfoType;
+  private workerFunctions: WorkerFunctions;
   private models: { [name: string]: DataModel } = {};
   private cwireRoute: string = "/cwire";
   private cwireAPIURL: string = "https://api.cwire.io";
@@ -81,7 +83,7 @@ export class CWire {
       }
     }
 
-    this.worker = WorkerFunctions.init(this);
+    this.workerFunctions = WorkerFunctions.init(this);
     this.websocket = new CWireWebSocket(this);
     this.api = new CWireAPI(
       this,
@@ -99,7 +101,6 @@ export class CWire {
   ): Promise<CWire> {
     if (!this.instance) {
       try {
-
         this.instance = new CWire(apiKey, options);
         await this.instance.api.init();
         await this.instance.websocket.connect();
@@ -126,8 +127,16 @@ export class CWire {
     return this.api;
   }
 
-  public getWorker(): WorkerFunctions {
+  public getWorker(): APIWorkerInfoType | undefined {
     return this.worker;
+  }
+
+  public setWorker(worker: APIWorkerInfoType) {
+    this.worker = worker;
+  }
+
+  public getWorkerFunctions(): WorkerFunctions {
+    return this.workerFunctions;
   }
 
   public getAxios() {

@@ -1,4 +1,4 @@
-import {CWire} from "./CWire";
+import { CWire } from "./CWire";
 import io, { Socket } from "socket.io-client";
 
 export class CWireWebSocket {
@@ -13,63 +13,67 @@ export class CWireWebSocket {
   }
 
   public connect() {
-    this.socket = io(this.cwire.getAPIURL(),
-      {
-        path: '/workers/sync',
-        transportOptions: {
-          polling: {
-            extraHeaders: {
-              'x-access-token': this.cwire.getAPIKey()
-            }
-          }
-        }
-      }
-    );
+    this.socket = io(this.cwire.getAPIURL(), {
+      path: "/workers/sync",
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            "x-access-token": this.cwire.getAPIKey(),
+          },
+        },
+      },
+    });
     this.initListeners();
   }
 
-  onWorkerFunctionCalled = (functionName: string, params: [], resolve: (result: any) => void) => {
+  onWorkerFunctionCalled = async (
+    functionName: string,
+    params: [],
+    resolve: (result: { error?: Error; data?: any; success: boolean }) => void
+  ) => {
     try {
-      const fn = this.cwire.getWorker().getFunction(functionName);
-      console.log('Function', functionName, fn);
+      const fn = this.cwire.getWorkerFunctions().getFunction(functionName);
       if (fn) {
-        resolve(fn.controller(...params));
+        resolve(await fn.controller(...params));
       }
     } catch (err) {
-
+      resolve({ error: err, success: false });
     }
   };
 
   getWorkerFunctions = (resolve: (result: any) => void) => {
     try {
-      resolve(this.cwire.getWorker().getFunctionList().map(fn => [fn.getName(), fn.getParameters()]));
-    } catch (err) {
-
-    }
+      resolve(
+        this.cwire
+          .getWorkerFunctions()
+          .getFunctionList()
+          .map((fn) => [fn.getName(), fn.getParameters()])
+      );
+    } catch (err) {}
   };
 
   initListeners() {
     if (!this.socket) return;
 
-    this.socket.on('connect', function(){
-      console.log('Connected');
+    this.socket.on("connect", () => {
+      console.log("Connected");
     });
-    this.socket.on('disconnect', function () {
-      console.log('Disconnected');
+    this.socket.on("disconnect", () => {
+      console.log("Disconnected");
     });
-    this.socket.on('error', (error: Error) => {
-      console.log('error', error)
+    this.socket.on("error", (error: Error) => {
+      console.log("error", error);
     });
 
     // @ts-ignore
-    this.socket.on('message', (...data) => {
+    this.socket.on("message", (...data) => {
       console.log(...data);
     });
 
-    this.socket.on('CALL_WORKER_FUNCTION_ACTION', this.onWorkerFunctionCalled);
-    this.socket.on('GET_WORKER_FUNCTIONS_ACTION', this.getWorkerFunctions);
+    this.socket.on("CALL_WORKER_FUNCTION_ACTION", this.onWorkerFunctionCalled);
+    this.socket.on("GET_WORKER_FUNCTIONS_ACTION", this.getWorkerFunctions);
   }
-  constructor(CWire: CWire) {
-    this.cwire = CWire;
+  constructor(cwire: CWire) {
+    this.cwire = cwire;
   }
 }

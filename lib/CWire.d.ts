@@ -3,6 +3,7 @@ import { DataModel } from "./DataModel";
 import { AlertActionType, ButtonActionType, ToggleActionType } from "./types/DataModelActions";
 import { BooleanFieldType, CustomFieldType, DescriptionFieldType, EmailFieldType, NumberFieldType, PasswordFieldType, TextFieldType } from "./types/DataModelFields";
 import { WorkerFunctions } from "./worker/functions";
+import { APIWorkerInfoType } from "./types/Worker";
 interface CWireOptions {
     route?: string;
     apiURL?: string;
@@ -26,8 +27,9 @@ export declare class CWire {
     };
     private api;
     private apiKey;
-    private worker;
     private websocket;
+    private worker?;
+    private workerFunctions;
     private models;
     private cwireRoute;
     private cwireAPIURL;
@@ -36,7 +38,9 @@ export declare class CWire {
     getAPIURL(): string;
     getAPIKey(): string;
     getAPI(): CWireAPI;
-    getWorker(): WorkerFunctions;
+    getWorker(): APIWorkerInfoType | undefined;
+    setWorker(worker: APIWorkerInfoType): void;
+    getWorkerFunctions(): WorkerFunctions;
     getAxios(): import("axios").AxiosInstance;
     getDataModelsMap(): {
         [name: string]: DataModel;

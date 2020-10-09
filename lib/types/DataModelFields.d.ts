@@ -21,11 +21,11 @@ export declare type DataModelFieldOptions$BooleanFieldType = {
 } & BaseDataModelFieldOptions;
 export declare type PasswordFieldType = "password";
 export declare type DataModelFieldOptions$PasswordFieldType = {
-    type: BooleanFieldType;
+    type: PasswordFieldType;
 } & BaseDataModelFieldOptions;
 export declare type DescriptionFieldType = "description";
 export declare type DataModelFieldOptions$DescriptionFieldType = {
-    type: BooleanFieldType;
+    type: DescriptionFieldType;
 };
 export declare type DataModelFieldType = TextFieldType | EmailFieldType | NumberFieldType | CustomFieldType | BooleanFieldType | PasswordFieldType | DescriptionFieldType;
 export declare type DataModelFieldOptionsType = DataModelFieldOptions$TextFieldType | DataModelFieldOptions$EmailFieldType | DataModelFieldOptions$NumberFieldType | DataModelFieldOptions$CustomFieldType | DataModelFieldOptions$BooleanFieldType | DataModelFieldOptions$PasswordFieldType | DataModelFieldOptions$DescriptionFieldType;

@@ -1,23 +1,24 @@
 import { CWire } from "./CWire";
 import { AxiosInstance } from "axios";
 
-import { TunnelAPI } from "./api/TunnelAPI";
+import { WorkerAPI } from "./api/WorkerAPI";
 import { DataModelAPI } from "./api/DataModelAPI";
 
 export class CWireAPI {
   private cwire: CWire;
-  private readonly tunnelAPI: TunnelAPI;
-  private readonly dataModelAPI: DataModelAPI;
   private readonly api: AxiosInstance;
+  private readonly workerAPI: WorkerAPI;
+  private readonly dataModelAPI: DataModelAPI;
 
   constructor(cwire: CWire, axios: AxiosInstance) {
     this.api = axios;
     this.cwire = cwire;
-    this.tunnelAPI = new TunnelAPI(cwire, axios);
+    this.workerAPI = new WorkerAPI(cwire, axios);
     this.dataModelAPI = new DataModelAPI(cwire, axios);
   }
 
   public async init() {
+    await this.workerAPI.init();
     await this.dataModelAPI.init();
   }
 
@@ -28,9 +29,4 @@ export class CWireAPI {
   public getDataModelAPI() {
     this.getDataModelAPI();
   }
-
-  public getTunnelAPI() {
-    return this.tunnelAPI;
-  }
-
 }

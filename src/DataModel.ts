@@ -1,25 +1,63 @@
+import { Model as MongooseModel, Document as MongooseDocument } from "mongoose";
+import {
+  Model as SequelizeModel,
+  ModelCtor as SequelizeModelCtor,
+} from "sequelize";
+
 import {
   DataModelActionNotFoundError,
   DataModelFieldNotFoundError,
+  FeatureIsNotImplementedNow,
   MissingRequiredPropertyError,
+  WrongModelDetectedError,
 } from "./errors";
 import { DataModelField } from "./DataModelField";
 import { DataModelAction } from "./DataModelAction";
 
 import { DataModelFieldOptionsType } from "./types/DataModelFields";
 import { DataModelActionOptionsType } from "./types/DataModelActions";
+import { parseSequelizeDataTypeToCWireDataType } from "./helper/sequelize";
 
-export interface DataModelOptions {
-  get: () => any[];
+export type SequelizeModelType = SequelizeModelCtor<SequelizeModel>;
+
+export type CustomDataModelType = "Custom";
+export type MongooseDataModelType = "Mongoose";
+export type SequelizeDataModelType = "Sequelize";
+export type DataModelType =
+  | CustomDataModelType
+  | MongooseDataModelType
+  | SequelizeDataModelType;
+
+export type BaseDataModelOptions = {
   isEditable?: boolean;
   isCreatable?: boolean;
   isDeletable?: boolean;
+  type: CustomDataModelType | SequelizeDataModelType | MongooseDataModelType;
+};
+export type DataModelOptions$Custom = BaseDataModelOptions & {
+  get: () => any[];
+  type: CustomDataModelType;
   onDelete?: (entity: unknown) => void;
   onChange?: (fields: unknown) => boolean;
   onCreate?: (fields: unknown) => boolean;
   fields?: DataModelField[] | { [name: string]: DataModelFieldOptionsType };
   actions?: DataModelAction[] | { [name: string]: DataModelActionOptionsType };
-}
+};
+
+export type DataModelOptions$Sequelize = BaseDataModelOptions & {
+  model: SequelizeModelType;
+  type: SequelizeDataModelType;
+};
+
+export type DataModelOptions$Mongoose = BaseDataModelOptions & {
+  type: MongooseDataModelType;
+  model: MongooseModel<MongooseDocument>;
+};
+
+export type DataModelOptions =
+  | DataModelOptions$Custom
+  | DataModelOptions$Mongoose
+  | DataModelOptions$Sequelize;
 
 export type DataModelAPIParameter = {};
 export class DataModel {
@@ -28,14 +66,56 @@ export class DataModel {
   private options: DataModelOptions;
   private fields: { [key: string]: DataModelField } = {};
   private actions: { [key: string]: DataModelAction } = {};
+  private model:
+    | SequelizeModelType
+    | MongooseModel<MongooseDocument>
+    | null = null;
+  private type:
+    | MongooseDataModelType
+    | SequelizeDataModelType
+    | CustomDataModelType = "Custom";
 
   constructor(name: string, options: DataModelOptions) {
-    if (!name) {
+    if (!name || !options.type) {
       throw new MissingRequiredPropertyError();
     }
+
     this.name = name;
     this.options = options;
+    this.type = options.type;
 
+    switch (options.type) {
+      case "Custom":
+        this.initCustomDataModel(options);
+        break;
+      case "Mongoose":
+        this.initMongooseModel(options);
+        break;
+      case "Sequelize":
+        this.initSequelizeModel(options);
+    }
+  }
+
+  private initSequelizeModel(options: DataModelOptions$Sequelize) {
+    this.model = options.model;
+
+    for (const sequelizeField of Object.values(this.model.rawAttributes)) {
+      if (sequelizeField.field) {
+        this.fields[sequelizeField.field] = new DataModelField(
+          sequelizeField.field,
+          {
+            type: parseSequelizeDataTypeToCWireDataType(sequelizeField.type),
+          }
+        );
+      }
+    }
+  }
+
+  private initMongooseModel(options: DataModelOptions$Mongoose) {
+    throw new FeatureIsNotImplementedNow();
+  }
+
+  private initCustomDataModel(options: DataModelOptions$Custom) {
     if (options.fields) {
       if (Array.isArray(options.fields)) {
         for (const field of options.fields) {
@@ -80,6 +160,28 @@ export class DataModel {
     this.id = newId;
   }
 
+  public getType(): DataModelType {
+    return this.type;
+  }
+
+  public getSequelizeModel(): SequelizeModelType {
+    if (this.model === null || !this.model || this.type !== "Sequelize") {
+      throw new WrongModelDetectedError();
+    }
+
+    // @ts-ignore
+    return this.model;
+  }
+
+  public getMongooseModel(): MongooseModel<MongooseDocument> {
+    if (this.model === null || !this.model || this.type !== "Mongoose") {
+      throw new WrongModelDetectedError();
+    }
+
+    // @ts-ignore
+    return this.model;
+  }
+
   public getOptions(): DataModelOptions {
     return this.options;
   }
@@ -88,9 +190,9 @@ export class DataModel {
     return {
       id: this.getId(),
       name: this.getName(),
-      fields: this.getFieldsList().map(field => field.toJSON()),
-      actions: this.getActionsList().map(action => action.toJSON()),
-    }
+      fields: this.getFieldsList().map((field) => field.toJSON()),
+      actions: this.getActionsList().map((action) => action.toJSON()),
+    };
   }
 
   public getActionsMap(): { [name: string]: DataModelAction } {

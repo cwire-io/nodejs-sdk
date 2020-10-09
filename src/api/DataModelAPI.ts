@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { BaseAPI } from "./BaseAPI";
 import { DataModel } from "../DataModel";
 
@@ -8,11 +9,24 @@ export class DataModelAPI extends BaseAPI {
   }
 
   async syncModels(models: DataModel[]) {
+    const worker = this.cwire.getWorker();
+    if (!worker) {
+      return;
+    }
     const responses = [];
     for (const model of models) {
-      responses.push(this.api.post('/models', model.toJSON()));
+      responses.push(
+        this.api.post("/models", { ...model.toJSON(), worker: worker.name })
+      );
     }
-    return Promise.all(responses);
+    try {
+      return await Promise.all(responses);
+    } catch (err) {
+      if (err.response) {
+        console.log(err.response.data);
+      }
+      return;
+    }
   }
 
   async clearAllDataModels() {

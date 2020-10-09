@@ -1,6 +1,7 @@
-import {CWire} from "../CWire";
-import { GetEntities } from "./functions/getEntities";
-import {IWorkerFunction} from "./WorkerFunction";
+import { CWire } from "../CWire";
+import { FindAll } from "./functions/findAll";
+import { IWorkerFunction } from "./WorkerFunction";
+import { FindOne } from "./functions/findOne";
 
 export class WorkerFunctions {
   cwire: CWire;
@@ -36,7 +37,9 @@ export class WorkerFunctions {
       this.instance = new WorkerFunctions(cwire);
     }
 
-    this.instance.addFunction(GetEntities);
+    // Init worker Functions
+    this.instance.addFunction(FindAll);
+    this.instance.addFunction(FindOne);
     return this.instance;
   }
 

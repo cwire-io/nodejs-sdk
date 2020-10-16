@@ -1,10 +1,10 @@
 import { CWire } from "../CWire";
 
 export type WorkerAPIFunctionParameters = {
-  type: "string" | "option";
+  type: "string" | "option" | "identifier" | "values";
   options?: string[];
   name: string;
-  isRequired: boolean;
+  isRequired?: boolean;
 }[];
 export abstract class IWorkerFunction<
   TParameters extends any[] = [],

@@ -3,30 +3,30 @@ import {
   WorkerFunction,
   IWorkerFunction,
 } from "../WorkerFunction";
-import { buildEntitiesResponse } from "../../helper/sequelize";
 
-export class FindAll extends WorkerFunction
-  implements IWorkerFunction<[string], any[]> {
-  async controller(modelName: string) {
+export class Remove extends WorkerFunction
+  implements IWorkerFunction<[string, string], any[]> {
+  async controller(modelName: string, id: string) {
     const dataModel = this.cwire.getDataModelByName(modelName);
+    const primaryKey = dataModel.getPrimaryKey();
 
     switch (dataModel.getType()) {
-      case "Sequelize":
-        const entities = await dataModel.getSequelizeModel().findAll({});
-        return {
-          success: true,
-          data: buildEntitiesResponse(dataModel.getFieldsList(), entities),
-        };
+      case "Sequelize": {
+        await dataModel
+          .getSequelizeModel()
+          .destroy({ where: { [primaryKey]: id } });
+        return { success: true };
+      }
       case "Mongoose":
       case "Custom":
-        return { success: true, data: [] };
+        return { success: true };
     }
 
     return { success: true, data: [] };
   }
 
   getName(): string {
-    return "DATA_MODEL::FIND_ALL";
+    return "DATA_MODEL::REMOVE";
   }
 
   getParameters(): WorkerAPIFunctionParameters {
@@ -36,6 +36,11 @@ export class FindAll extends WorkerFunction
         options: this.cwire.getDataModelsList().map((model) => model.getName()),
         name: "modelName",
         isRequired: true,
+      },
+      {
+        name: "id",
+        isRequired: true,
+        type: "identifier",
       },
     ];
   }

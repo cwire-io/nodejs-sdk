@@ -3,30 +3,25 @@ import {
   WorkerFunction,
   IWorkerFunction,
 } from "../WorkerFunction";
-import { buildEntitiesResponse } from "../../helper/sequelize";
 
-export class FindAll extends WorkerFunction
+export class Dispatch extends WorkerFunction
   implements IWorkerFunction<[string], any[]> {
   async controller(modelName: string) {
     const dataModel = this.cwire.getDataModelByName(modelName);
 
     switch (dataModel.getType()) {
       case "Sequelize":
-        const entities = await dataModel.getSequelizeModel().findAll({});
-        return {
-          success: true,
-          data: buildEntitiesResponse(dataModel.getFieldsList(), entities),
-        };
+        return { success: true };
       case "Mongoose":
       case "Custom":
-        return { success: true, data: [] };
+        return { success: true };
     }
 
     return { success: true, data: [] };
   }
 
   getName(): string {
-    return "DATA_MODEL::FIND_ALL";
+    return "DATA_MODEL::DISPATCH";
   }
 
   getParameters(): WorkerAPIFunctionParameters {

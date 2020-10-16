@@ -12,7 +12,13 @@ export declare class DataModelFieldNotFoundError extends Error {
 }
 export declare class DataModelActionNotFoundError extends Error {
 }
-export declare class FeatureIsNotImplementedNow extends Error {
+export declare class FeatureIsNotImplementedNowError extends Error {
 }
 export declare class WrongModelDetectedError extends Error {
+}
+export declare class MultiplePrimaryFieldsAreNotAllowedError extends Error {
+}
+export declare class MissingPrimaryFieldError extends Error {
+}
+export declare class UnknownDataModelTypeError extends Error {
 }

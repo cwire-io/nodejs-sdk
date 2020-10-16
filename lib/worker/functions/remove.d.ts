@@ -1,11 +1,11 @@
 import { WorkerAPIFunctionParameters, WorkerFunction, IWorkerFunction } from "../WorkerFunction";
-export declare class FindOne extends WorkerFunction implements IWorkerFunction<[string, string]> {
+export declare class Remove extends WorkerFunction implements IWorkerFunction<[string, string], any[]> {
     controller(modelName: string, id: string): Promise<{
         success: boolean;
         data?: undefined;
     } | {
         success: boolean;
-        data: any;
+        data: never[];
     }>;
     getName(): string;
     getParameters(): WorkerAPIFunctionParameters;

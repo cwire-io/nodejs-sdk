@@ -2,6 +2,10 @@ import { CWire } from "../CWire";
 import { FindAll } from "./functions/findAll";
 import { IWorkerFunction } from "./WorkerFunction";
 import { FindOne } from "./functions/findOne";
+import { Create } from "./functions/create";
+import { Remove } from "./functions/remove";
+import { Update } from "./functions/update";
+import { Dispatch } from "./functions/dispatch";
 
 export class WorkerFunctions {
   cwire: CWire;
@@ -38,8 +42,12 @@ export class WorkerFunctions {
     }
 
     // Init worker Functions
+    this.instance.addFunction(Create);
+    this.instance.addFunction(Remove);
+    this.instance.addFunction(Update);
     this.instance.addFunction(FindAll);
     this.instance.addFunction(FindOne);
+    this.instance.addFunction(Dispatch);
     return this.instance;
   }
 

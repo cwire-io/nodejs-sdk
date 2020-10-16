@@ -1,4 +1,6 @@
-export declare type BaseDataModelFieldOptions = {};
+export declare type BaseDataModelFieldOptions = {
+    isPrimary?: boolean;
+};
 export declare type TextFieldType = "text";
 export declare type DataModelFieldOptions$TextFieldType = {
     type: TextFieldType;
@@ -26,6 +28,6 @@ export declare type DataModelFieldOptions$PasswordFieldType = {
 export declare type DescriptionFieldType = "description";
 export declare type DataModelFieldOptions$DescriptionFieldType = {
     type: DescriptionFieldType;
-};
+} & BaseDataModelFieldOptions;
 export declare type DataModelFieldType = TextFieldType | EmailFieldType | NumberFieldType | CustomFieldType | BooleanFieldType | PasswordFieldType | DescriptionFieldType;
 export declare type DataModelFieldOptionsType = DataModelFieldOptions$TextFieldType | DataModelFieldOptions$EmailFieldType | DataModelFieldOptions$NumberFieldType | DataModelFieldOptions$CustomFieldType | DataModelFieldOptions$BooleanFieldType | DataModelFieldOptions$PasswordFieldType | DataModelFieldOptions$DescriptionFieldType;

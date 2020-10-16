@@ -7,8 +7,11 @@ import {
 import {
   DataModelActionNotFoundError,
   DataModelFieldNotFoundError,
-  FeatureIsNotImplementedNow,
+  FeatureIsNotImplementedNowError,
+  MissingPrimaryFieldError,
   MissingRequiredPropertyError,
+  MultiplePrimaryFieldsAreNotAllowedError,
+  UnknownDataModelTypeError,
   WrongModelDetectedError,
 } from "./errors";
 import { DataModelField } from "./DataModelField";
@@ -62,6 +65,9 @@ export type DataModelOptions =
 export type DataModelAPIParameter = {};
 export class DataModel {
   private name: string;
+  // Typescript does not check that this variable is created by the init functions
+  // @ts-ignore
+  private primaryKey: string;
   private id: string | null = null;
   private options: DataModelOptions;
   private fields: { [key: string]: DataModelField } = {};
@@ -93,17 +99,25 @@ export class DataModel {
         break;
       case "Sequelize":
         this.initSequelizeModel(options);
+        break;
+      default: {
+        throw new UnknownDataModelTypeError();
+      }
     }
   }
 
   private initSequelizeModel(options: DataModelOptions$Sequelize) {
     this.model = options.model;
-
     for (const sequelizeField of Object.values(this.model.rawAttributes)) {
       if (sequelizeField.field) {
+        if (sequelizeField.primaryKey) {
+          this.primaryKey = sequelizeField.field;
+        }
+
         this.fields[sequelizeField.field] = new DataModelField(
           sequelizeField.field,
           {
+            isPrimary: sequelizeField.primaryKey,
             type: parseSequelizeDataTypeToCWireDataType(sequelizeField.type),
           }
         );
@@ -112,17 +126,36 @@ export class DataModel {
   }
 
   private initMongooseModel(options: DataModelOptions$Mongoose) {
-    throw new FeatureIsNotImplementedNow();
+    throw new FeatureIsNotImplementedNowError();
   }
 
   private initCustomDataModel(options: DataModelOptions$Custom) {
+    let havePrimaryKey: boolean = false;
     if (options.fields) {
       if (Array.isArray(options.fields)) {
         for (const field of options.fields) {
+          if (field.isPrimaryField()) {
+            if (havePrimaryKey) {
+              throw new MultiplePrimaryFieldsAreNotAllowedError();
+            }
+
+            this.primaryKey = field.getName();
+            havePrimaryKey = true;
+          }
+
           this.fields[field.getName()] = field;
         }
       } else {
         for (const fieldName of Object.keys(options.fields)) {
+          if (options.fields[fieldName].isPrimary) {
+            if (havePrimaryKey) {
+              throw new MultiplePrimaryFieldsAreNotAllowedError();
+            }
+
+            this.primaryKey = fieldName;
+            havePrimaryKey = true;
+          }
+
           this.fields[fieldName] = new DataModelField(
             fieldName,
             options.fields[fieldName]
@@ -130,6 +163,11 @@ export class DataModel {
         }
       }
     }
+
+    if (!havePrimaryKey) {
+      throw new MissingPrimaryFieldError();
+    }
+
     if (options.actions) {
       if (Array.isArray(options.actions)) {
         for (const action of options.actions) {
@@ -146,10 +184,12 @@ export class DataModel {
     }
   }
 
-  public changeByObject(obj: DataModelAPIParameter) {}
-
   public getName(): string {
     return this.name;
+  }
+
+  public getPrimaryKey(): string {
+    return this.primaryKey;
   }
 
   public getId(): string | null {

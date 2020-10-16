@@ -34,10 +34,11 @@ export class CWireWebSocket {
     try {
       const fn = this.cwire.getWorkerFunctions().getFunction(functionName);
       if (fn) {
+        console.log(params);
         resolve(await fn.controller(...params));
       }
     } catch (err) {
-      resolve({ error: err, success: false });
+      resolve({ error: err.stack, success: false });
     }
   };
 
@@ -49,7 +50,9 @@ export class CWireWebSocket {
           .getFunctionList()
           .map((fn) => [fn.getName(), fn.getParameters()])
       );
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   initListeners() {

@@ -2,7 +2,7 @@ import { WorkerAPIFunctionParameters, WorkerFunction, IWorkerFunction } from "..
 export declare class FindAll extends WorkerFunction implements IWorkerFunction<[string], any[]> {
     controller(modelName: string): Promise<{
         success: boolean;
-        data: import("sequelize/types").Model<any, any>[];
+        data: any;
     }>;
     getName(): string;
     getParameters(): WorkerAPIFunctionParameters;

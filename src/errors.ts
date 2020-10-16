@@ -5,5 +5,8 @@ export class WrongActionTypeError extends Error {}
 export class DataModelNotFoundError extends Error {}
 export class DataModelFieldNotFoundError extends Error {}
 export class DataModelActionNotFoundError extends Error {}
-export class FeatureIsNotImplementedNow extends Error {}
+export class FeatureIsNotImplementedNowError extends Error {}
 export class WrongModelDetectedError extends Error {}
+export class MultiplePrimaryFieldsAreNotAllowedError extends Error {}
+export class MissingPrimaryFieldError extends Error {}
+export class UnknownDataModelTypeError extends Error {}

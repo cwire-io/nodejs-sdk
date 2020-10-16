@@ -1,6 +1,6 @@
 import { WorkerAPIFunctionParameters, WorkerFunction, IWorkerFunction } from "../WorkerFunction";
-export declare class FindOne extends WorkerFunction implements IWorkerFunction<[string, string]> {
-    controller(modelName: string, id: string): Promise<{
+export declare class Update extends WorkerFunction implements IWorkerFunction<[string, string, any], any[]> {
+    controller(modelName: string, id: string, values: any): Promise<{
         success: boolean;
         data?: undefined;
     } | {

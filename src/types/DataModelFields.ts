@@ -1,4 +1,6 @@
-export type BaseDataModelFieldOptions = {};
+export type BaseDataModelFieldOptions = {
+  isPrimary?: boolean;
+};
 
 export type TextFieldType = "text";
 export type DataModelFieldOptions$TextFieldType = {
@@ -33,7 +35,7 @@ export type DataModelFieldOptions$PasswordFieldType = {
 export type DescriptionFieldType = "description";
 export type DataModelFieldOptions$DescriptionFieldType = {
   type: DescriptionFieldType;
-};
+} & BaseDataModelFieldOptions;
 export type DataModelFieldType =
   | TextFieldType
   | EmailFieldType

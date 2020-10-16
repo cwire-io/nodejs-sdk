@@ -40,6 +40,7 @@ export declare type DataModelOptions = DataModelOptions$Custom | DataModelOption
 export declare type DataModelAPIParameter = {};
 export declare class DataModel {
     private name;
+    private primaryKey;
     private id;
     private options;
     private fields;
@@ -50,8 +51,8 @@ export declare class DataModel {
     private initSequelizeModel;
     private initMongooseModel;
     private initCustomDataModel;
-    changeByObject(obj: DataModelAPIParameter): void;
     getName(): string;
+    getPrimaryKey(): string;
     getId(): string | null;
     setId(newId: string): void;
     getType(): DataModelType;

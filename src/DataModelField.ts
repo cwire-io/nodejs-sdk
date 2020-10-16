@@ -7,7 +7,8 @@ import {
 
 export class DataModelField {
   private readonly name: string;
-  private type: DataModelFieldType;
+  private readonly isPrimary: boolean;
+  private readonly type: DataModelFieldType;
 
   constructor(name: string, options: DataModelFieldOptionsType) {
     this.name = name;
@@ -16,6 +17,7 @@ export class DataModelField {
       throw new WrongFieldTypeError();
     }
 
+    this.isPrimary = !!options.isPrimary;
     // @ts-ignore
     this.type = options.type;
   }
@@ -33,6 +35,10 @@ export class DataModelField {
       name: this.name,
       type: this.type,
     };
+  }
+
+  public isPrimaryField() {
+    return this.isPrimary;
   }
 
   public static isValidFieldType(type: any): boolean {

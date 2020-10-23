@@ -34,7 +34,6 @@ export class CWireWebSocket {
     try {
       const fn = this.cwire.getWorkerFunctions().getFunction(functionName);
       if (fn) {
-        console.log(params);
         resolve(await fn.controller(...params));
       }
     } catch (err) {

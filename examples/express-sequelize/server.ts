@@ -20,7 +20,7 @@ User.init({
   email: {
     allowNull: false,
     type: DataTypes.STRING
-  }
+  },
 }, {
   sequelize,
   modelName: 'User'

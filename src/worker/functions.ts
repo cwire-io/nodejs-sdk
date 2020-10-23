@@ -6,6 +6,8 @@ import { Create } from "./functions/create";
 import { Remove } from "./functions/remove";
 import { Update } from "./functions/update";
 import { Dispatch } from "./functions/dispatch";
+import { FindOrCreate } from "./functions/findOrCreate";
+import { Count } from "./functions/count";
 
 export class WorkerFunctions {
   cwire: CWire;
@@ -42,12 +44,14 @@ export class WorkerFunctions {
     }
 
     // Init worker Functions
+    this.instance.addFunction(Count);
     this.instance.addFunction(Create);
     this.instance.addFunction(Remove);
     this.instance.addFunction(Update);
     this.instance.addFunction(FindAll);
     this.instance.addFunction(FindOne);
     this.instance.addFunction(Dispatch);
+    this.instance.addFunction(FindOrCreate);
     return this.instance;
   }
 

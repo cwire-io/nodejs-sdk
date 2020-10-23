@@ -3,16 +3,22 @@ import {
   WorkerFunction,
   IWorkerFunction,
 } from "../WorkerFunction";
-import { buildEntitiesResponse } from "../../helper/sequelize";
+import {
+  buildEntitiesResponse,
+  parseDataModelQueryToSequelizeQuery,
+} from "../../helper/sequelize";
+import { DataModelQuery } from "../../types/DataModelQuery";
 
 export class FindAll extends WorkerFunction
-  implements IWorkerFunction<[string], any[]> {
-  async controller(modelName: string) {
+  implements IWorkerFunction<[string, DataModelQuery], any[]> {
+  async controller(modelName: string, query: DataModelQuery) {
     const dataModel = this.cwire.getDataModelByName(modelName);
 
     switch (dataModel.getType()) {
       case "Sequelize":
-        const entities = await dataModel.getSequelizeModel().findAll({});
+        const entities = await dataModel
+          .getSequelizeModel()
+          .findAll(parseDataModelQueryToSequelizeQuery(query));
         return {
           success: true,
           data: buildEntitiesResponse(dataModel.getFieldsList(), entities),
@@ -36,6 +42,12 @@ export class FindAll extends WorkerFunction
         options: this.cwire.getDataModelsList().map((model) => model.getName()),
         name: "modelName",
         isRequired: true,
+      },
+      {
+        default: {},
+        type: "query",
+        name: "query",
+        isRequired: false,
       },
     ];
   }

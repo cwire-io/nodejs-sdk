@@ -3,10 +3,12 @@ import {
   WorkerFunction,
   IWorkerFunction,
 } from "../WorkerFunction";
+import { DataModelQuery } from "../../types/DataModelQuery";
+import { parseDataModelQueryToSequelizeQuery } from "../../helper/sequelize";
 
 export class Remove extends WorkerFunction
-  implements IWorkerFunction<[string, string], any[]> {
-  async controller(modelName: string, id: string) {
+  implements IWorkerFunction<[string, DataModelQuery], any[]> {
+  async controller(modelName: string, query: DataModelQuery) {
     const dataModel = this.cwire.getDataModelByName(modelName);
     const primaryKey = dataModel.getPrimaryKey();
 
@@ -14,7 +16,7 @@ export class Remove extends WorkerFunction
       case "Sequelize": {
         await dataModel
           .getSequelizeModel()
-          .destroy({ where: { [primaryKey]: id } });
+          .destroy(parseDataModelQueryToSequelizeQuery(query));
         return { success: true };
       }
       case "Mongoose":
@@ -38,9 +40,9 @@ export class Remove extends WorkerFunction
         isRequired: true,
       },
       {
-        name: "id",
+        type: "query",
+        name: "query",
         isRequired: true,
-        type: "identifier",
       },
     ];
   }

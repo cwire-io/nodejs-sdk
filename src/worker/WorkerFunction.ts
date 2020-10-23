@@ -1,9 +1,10 @@
 import { CWire } from "../CWire";
 
 export type WorkerAPIFunctionParameters = {
-  type: "string" | "option" | "identifier" | "values";
+  type: "string" | "option" | "identifier" | "values" | "query";
   options?: string[];
   name: string;
+  default?: any;
   isRequired?: boolean;
 }[];
 export abstract class IWorkerFunction<

@@ -1,34 +1,25 @@
 import {
-  WorkerAPIFunctionParameters,
   WorkerFunction,
   IWorkerFunction,
+  WorkerAPIFunctionParameters,
 } from "../WorkerFunction";
 import { DataModelQuery } from "../../types/DataModelQuery";
-import {
-  buildEntitiesResponse,
-  parseDataModelQueryToSequelizeQuery,
-} from "../../helper/sequelize";
+import { parseDataModelQueryToSequelizeQuery } from "../../helper/sequelize";
 
-export class FindOne extends WorkerFunction
+export class Count extends WorkerFunction
   implements IWorkerFunction<[string, DataModelQuery]> {
   async controller(modelName: string, query: DataModelQuery) {
     const dataModel = this.cwire.getDataModelByName(modelName);
-    const primaryKey = dataModel.getPrimaryKey();
 
     switch (dataModel.getType()) {
-      case "Sequelize": {
-        const entity = await dataModel
+      case "Sequelize":
+        const numberOfEntities = await dataModel
           .getSequelizeModel()
-          .findOne(parseDataModelQueryToSequelizeQuery(query));
-        if (!entity) {
-          return { success: true };
-        }
-
+          .count(parseDataModelQueryToSequelizeQuery(query));
         return {
           success: true,
-          data: buildEntitiesResponse(dataModel.getFieldsList(), [entity]),
+          data: numberOfEntities || 0,
         };
-      }
       case "Mongoose":
       case "Custom":
         return { success: true, data: null };
@@ -38,15 +29,15 @@ export class FindOne extends WorkerFunction
   }
 
   getName(): string {
-    return "DATA_MODEL::FIND_ONE";
+    return "DATA_MODEL::COUNT";
   }
 
   getParameters(): WorkerAPIFunctionParameters {
     return [
       {
         type: "option",
-        name: "modelName",
         isRequired: true,
+        name: "modelName",
         options: this.cwire.getDataModelsList().map((model) => model.getName()),
       },
       {

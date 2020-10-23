@@ -3,19 +3,21 @@ import {
   WorkerFunction,
   IWorkerFunction,
 } from "../WorkerFunction";
-import { buildEntitiesResponse } from "../../helper/sequelize";
+import {
+  buildEntitiesResponse,
+  parseDataModelQueryToSequelizeQuery,
+} from "../../helper/sequelize";
+import { DataModelQuery } from "../../types/DataModelQuery";
 
 export class Update extends WorkerFunction
-  implements IWorkerFunction<[string, string, any], any[]> {
-  async controller(modelName: string, id: string, values: any) {
+  implements IWorkerFunction<[string, DataModelQuery, any], any[]> {
+  async controller(modelName: string, query: DataModelQuery, values: any) {
     const dataModel = this.cwire.getDataModelByName(modelName);
-    const primaryKey = dataModel.getPrimaryKey();
-
     switch (dataModel.getType()) {
       case "Sequelize": {
         const entity = await dataModel
           .getSequelizeModel()
-          .findOne({ where: { [primaryKey]: id } });
+          .findOne(parseDataModelQueryToSequelizeQuery(query));
 
         if (!entity) {
           return { success: false };
@@ -48,9 +50,9 @@ export class Update extends WorkerFunction
         isRequired: true,
       },
       {
-        name: "id",
+        type: "query",
+        name: "query",
         isRequired: true,
-        type: "identifier",
       },
       {
         type: "values",

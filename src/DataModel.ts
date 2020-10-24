@@ -20,6 +20,7 @@ import { DataModelAction } from "./DataModelAction";
 import { DataModelFieldOptionsType } from "./types/DataModelFields";
 import { DataModelActionOptionsType } from "./types/DataModelActions";
 import { parseSequelizeDataTypeToCWireDataType } from "./helper/sequelize";
+import { parseMongooseSchemaToCWireDataType } from "./helper/mongoose";
 
 export type SequelizeModelType = SequelizeModelCtor<SequelizeModel>;
 
@@ -126,7 +127,18 @@ export class DataModel {
   }
 
   private initMongooseModel(options: DataModelOptions$Mongoose) {
-    throw new FeatureIsNotImplementedNowError();
+    // TODO: Fix hard set
+    this.primaryKey = "_id";
+    this.model = options.model;
+    for (const fieldName of Object.keys(this.model.schema.paths)) {
+      const field = this.model.schema.paths[fieldName];
+      const dataType = parseMongooseSchemaToCWireDataType(field);
+      if (dataType !== null) {
+        this.fields[fieldName] = new DataModelField(fieldName, {
+          type: dataType,
+        });
+      }
+    }
   }
 
   private initCustomDataModel(options: DataModelOptions$Custom) {

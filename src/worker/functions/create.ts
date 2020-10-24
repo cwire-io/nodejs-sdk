@@ -4,6 +4,7 @@ import {
   IWorkerFunction,
 } from "../WorkerFunction";
 import { buildEntitiesResponse } from "../../helper/sequelize";
+import { buildMongooseEntitiesResponse } from "../../helper/mongoose";
 
 export class Create extends WorkerFunction
   implements IWorkerFunction<[string, { [key: string]: any }]> {
@@ -11,7 +12,7 @@ export class Create extends WorkerFunction
     const dataModel = this.cwire.getDataModelByName(modelName);
 
     switch (dataModel.getType()) {
-      case "Sequelize":
+      case "Sequelize": {
         try {
           const entity = await dataModel.getSequelizeModel().create(values);
           return {
@@ -21,7 +22,20 @@ export class Create extends WorkerFunction
         } catch (err) {
           return { success: false, error: err };
         }
-      case "Mongoose":
+      }
+      case "Mongoose": {
+        try {
+          const entity = await dataModel.getMongooseModel().create(values);
+          return {
+            success: true,
+            data: buildMongooseEntitiesResponse(dataModel.getFieldsList(), [
+              entity,
+            ]),
+          };
+        } catch (err) {
+          return { success: false, error: err };
+        }
+      }
       case "Custom":
         return { success: true, data: null };
     }

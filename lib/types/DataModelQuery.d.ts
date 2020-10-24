@@ -2,10 +2,10 @@ export declare type DataModelQuery = {
     limit?: number;
     offset?: number;
     group?: string[];
-    order?: string[] | [string, 'DESC'][];
+    order?: string[] | [string, "DESC"][];
     attributes?: string[];
     where?: {
-        [fieldName: string]: string | number | {
+        [fieldName: string]: string | number | Partial<{
             $like: string;
             $iLike: string;
             $regex: string;
@@ -23,6 +23,6 @@ export declare type DataModelQuery = {
             $in: string | number;
             $notIn: (string | number)[];
             $is: string | null | number;
-        };
+        }>;
     };
 };

@@ -35,7 +35,11 @@ export function parseDataModelQueryToSequelizeQuery(
   if (query.order && Array.isArray(query.order)) {
     let isValid = true;
     for (const field of query.order) {
-      if (typeof field !== "string" && !Array.isArray(field) && field.length !== 2) {
+      if (
+        typeof field !== "string" &&
+        !Array.isArray(field) &&
+        field.length !== 2
+      ) {
         isValid = false;
       }
     }
@@ -136,7 +140,7 @@ export function parseDataModelQueryToSequelizeQuery(
             [Operators.or]: query.where[key].$or,
           };
         }
-        // Number[]
+        // Number[] Sequelize only
         if (
           query.where[key].$between &&
           Array.isArray(query.where[key].$between)
@@ -145,7 +149,7 @@ export function parseDataModelQueryToSequelizeQuery(
             [Operators.between]: query.where[key].$between,
           };
         }
-        // Number[]
+        // Number[] Sequelize only
         if (
           query.where[key].$notBetween &&
           Array.isArray(query.where[key].$notBetween)

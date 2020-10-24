@@ -8,6 +8,10 @@ import {
   parseDataModelQueryToSequelizeQuery,
 } from "../../helper/sequelize";
 import { DataModelQuery } from "../../types/DataModelQuery";
+import {
+  buildMongooseEntitiesResponse,
+  parseDataModelQueryToMongooseQuery,
+} from "../../helper/mongoose";
 
 export class Update extends WorkerFunction
   implements IWorkerFunction<[string, DataModelQuery, any], any[]> {
@@ -29,7 +33,19 @@ export class Update extends WorkerFunction
           data: buildEntitiesResponse(dataModel.getFieldsList(), [entity]),
         };
       }
-      case "Mongoose":
+      // Fix entity returning of updated entity
+      case "Mongoose": {
+        const entity = await dataModel
+          .getMongooseModel()
+          .update(parseDataModelQueryToMongooseQuery(query), values)
+          .exec();
+        return {
+          success: true,
+          data: buildMongooseEntitiesResponse(dataModel.getFieldsList(), [
+            entity,
+          ]),
+        };
+      }
       case "Custom":
         return { success: true };
     }

@@ -8,6 +8,10 @@ import {
   buildEntitiesResponse,
   parseDataModelQueryToSequelizeQuery,
 } from "../../helper/sequelize";
+import {
+  buildMongooseEntitiesResponse,
+  parseDataModelQueryToMongooseQuery,
+} from "../../helper/mongoose";
 
 export class FindOne extends WorkerFunction
   implements IWorkerFunction<[string, DataModelQuery]> {
@@ -29,7 +33,26 @@ export class FindOne extends WorkerFunction
           data: buildEntitiesResponse(dataModel.getFieldsList(), [entity]),
         };
       }
-      case "Mongoose":
+      case "Mongoose": {
+        let mongooseQuery = dataModel
+          .getMongooseModel()
+          .findOne(parseDataModelQueryToMongooseQuery(query));
+
+        if (query.limit && typeof query.limit === "number") {
+          mongooseQuery = mongooseQuery.limit(query.limit);
+        }
+
+        if (query.offset && typeof query.offset === "number") {
+          mongooseQuery = mongooseQuery.skip(query.offset);
+        }
+        const entity = await mongooseQuery.exec();
+        return {
+          success: true,
+          data: buildMongooseEntitiesResponse(dataModel.getFieldsList(), [
+            entity,
+          ]),
+        };
+      }
       case "Custom":
         return { success: true, data: null };
     }

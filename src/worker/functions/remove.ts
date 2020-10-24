@@ -5,6 +5,7 @@ import {
 } from "../WorkerFunction";
 import { DataModelQuery } from "../../types/DataModelQuery";
 import { parseDataModelQueryToSequelizeQuery } from "../../helper/sequelize";
+import { parseDataModelQueryToMongooseQuery } from "../../helper/mongoose";
 
 export class Remove extends WorkerFunction
   implements IWorkerFunction<[string, DataModelQuery], any[]> {
@@ -19,7 +20,13 @@ export class Remove extends WorkerFunction
           .destroy(parseDataModelQueryToSequelizeQuery(query));
         return { success: true };
       }
-      case "Mongoose":
+      case "Mongoose": {
+        await dataModel
+          .getMongooseModel()
+          .remove(parseDataModelQueryToMongooseQuery(query))
+          .exec();
+        return { success: true };
+      }
       case "Custom":
         return { success: true };
     }

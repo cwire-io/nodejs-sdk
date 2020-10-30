@@ -18,8 +18,13 @@ export class CWireAPI {
   }
 
   public async init() {
-    await this.workerAPI.init();
-    await this.dataModelAPI.init();
+    try {
+      await this.workerAPI.init();
+      await this.dataModelAPI.init();
+    } catch (err) {
+      console.log('API initialising failed', err);
+      throw err;
+    }
   }
 
   public getAxios(): AxiosInstance {

@@ -9,6 +9,7 @@ export declare class DataModelField {
     toJSON(): {
         name: string;
         type: DataModelFieldType;
+        isPrimary: boolean;
     };
     isPrimaryField(): boolean;
     static isValidFieldType(type: any): boolean;

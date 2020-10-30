@@ -65,6 +65,7 @@ export declare class DataModel {
         fields: {
             name: string;
             type: import("./types/DataModelFields").DataModelFieldType;
+            isPrimary: boolean;
         }[];
         actions: {
             name: string;

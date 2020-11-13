@@ -30,7 +30,7 @@ const mongod = new MongoMemoryServer();
 
   await CWire.init(
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI1ZjdkZjI5N2VkNjVjNzFiZWRmNzYzYTQiLCJpYXQiOjE2MDIwODk2MjN9.xBkcWpUECB1NQ1bCrjvYGJ1pqp7MILZdbG-m7eyKMbU",
-    { models, apiURL: 'http://localhost:5000' }
+    { models }
   );
 
   await User.create({ firstName: 'Chris', lastName: 'CWire', email: 'chris@example.com' });

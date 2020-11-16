@@ -127,7 +127,6 @@ export class DataModel {
   }
 
   private initMongooseModel(options: DataModelOptions$Mongoose) {
-    // TODO: Fix hard set
     this.primaryKey = "_id";
     this.model = options.model;
     for (const fieldName of Object.keys(this.model.schema.paths)) {
@@ -136,6 +135,7 @@ export class DataModel {
       if (dataType !== null) {
         this.fields[fieldName] = new DataModelField(fieldName, {
           type: dataType,
+          isPrimary: fieldName === '_id'
         });
       }
     }

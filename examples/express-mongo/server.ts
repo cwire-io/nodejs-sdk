@@ -9,7 +9,6 @@ const mongod = new MongoMemoryServer();
 
 (async () => {
   const uri = await mongod.getUri();
-  console.log(uri);
   const User = mongoose.model('User', new Schema({
     email: String,
     lastName: String,
@@ -29,7 +28,7 @@ const mongod = new MongoMemoryServer();
 
 
   await CWire.init(
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI1ZjdkZjI5N2VkNjVjNzFiZWRmNzYzYTQiLCJpYXQiOjE2MDIwODk2MjN9.xBkcWpUECB1NQ1bCrjvYGJ1pqp7MILZdbG-m7eyKMbU",
+    "<YOUR_API_KEY>",
     { models }
   );
 

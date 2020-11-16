@@ -172,12 +172,8 @@ export function buildMongooseEntitiesResponse(
 ) {
   const responseEntities: any[string] = [];
   for (const entity of entities) {
-    console.log("looop...", fields);
     const responseEntity: any = {};
     for (const field of fields) {
-      console.log("more loooops...");
-      console.log(entity, field.getName(), entity[field.getName()]);
-
       responseEntity[field.getName()] = entity[field.getName()];
     }
     responseEntities.push(responseEntity);

@@ -48,7 +48,7 @@ const models = [
 
 (async () => {
   await CWire.init(
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI1ZmFlYTkzZWMxZTcyZTI5YjcxMzU4OTQiLCJpYXQiOjE2MDUyODIxMTV9.J3d028r0v9av3_nbKT0pTBVmk_Bf9REYfMtWI7scctE",
+    "<YOUR_API_KEY>",
     { models }
   );
 

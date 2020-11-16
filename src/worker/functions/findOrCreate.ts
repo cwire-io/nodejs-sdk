@@ -19,8 +19,6 @@ export class FindOrCreate extends WorkerFunction
             data: buildEntitiesResponse(dataModel.getFieldsList(), [entity]),
           };
         } catch (err) {
-          console.log("welcome", err);
-
           return { success: false, error: err };
         }
       case "Mongoose":

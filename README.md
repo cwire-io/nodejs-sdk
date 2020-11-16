@@ -4,7 +4,7 @@
 [![npm (scoped)](https://img.shields.io/npm/v/@cwire/nodejs-sdk.svg)](https://www.npmjs.com/package/@cwire/nodejs-sdk)
 [![npm bundle size (minified)](https://img.shields.io/github/stars/cwire-io/nodejs-sdk)](https://www.npmjs.com/package/@cwire/nodejs-sdk)
 
-With @cwire/nodejs-sdk you can easy integrate your nodejs backend
+With the [@cwire/nodejs-sdk](https://github.com/cwire-io/nodejs-sdk) you can easy integrate your nodejs backend
 to [cwire.io](https://cwire.io).
  
 ## Install

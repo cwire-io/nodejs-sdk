@@ -6,7 +6,7 @@
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "description": "CWire helps your to build awsome frontend for administration tasks",
+  "description": "CWire helps your to build awesome frontend for administration tasks",
   "scripts": {
     "build": "tsc",
     "watch": "tsc-watch",

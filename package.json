@@ -6,7 +6,7 @@
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "description": "CWire helps your to build awsome frontend for administration tasks",
+  "description": "CWire helps your to build awesome frontend for administration tasks",
   "scripts": {
     "build": "tsc",
     "watch": "tsc-watch",
@@ -19,7 +19,7 @@
     "type": "git",
     "url": "git+https://github.com/cwire-io/nodejs-sdk.git"
   },
-  "author": "Christoph-Thomas Abs & Leon L.",
+  "author": "Christoph-Thomas Abs & Leon Lowitzki",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/cwire-io/nodejs-sdk/issues"

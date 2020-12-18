@@ -1,10 +1,9 @@
 import { Model as MongooseModel, Document as MongooseDocument } from "mongoose";
-import { Model as SequelizeModel, ModelCtor as SequelizeModelCtor } from "sequelize";
 import { DataModelField } from "./DataModelField";
 import { DataModelAction } from "./DataModelAction";
 import { DataModelFieldOptionsType } from "./types/DataModelFields";
 import { DataModelActionOptionsType } from "./types/DataModelActions";
-export declare type SequelizeModelType = SequelizeModelCtor<SequelizeModel>;
+export declare type SequelizeModelType = any;
 export declare type CustomDataModelType = "Custom";
 export declare type MongooseDataModelType = "Mongoose";
 export declare type SequelizeDataModelType = "Sequelize";

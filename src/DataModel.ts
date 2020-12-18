@@ -1,8 +1,4 @@
 import { Model as MongooseModel, Document as MongooseDocument } from "mongoose";
-import {
-  Model as SequelizeModel,
-  ModelCtor as SequelizeModelCtor,
-} from "sequelize";
 
 import {
   DataModelActionNotFoundError,
@@ -22,7 +18,7 @@ import { DataModelActionOptionsType } from "./types/DataModelActions";
 import { parseSequelizeDataTypeToCWireDataType } from "./helper/sequelize";
 import { parseMongooseSchemaToCWireDataType } from "./helper/mongoose";
 
-export type SequelizeModelType = SequelizeModelCtor<SequelizeModel>;
+export type SequelizeModelType = any;
 
 export type CustomDataModelType = "Custom";
 export type MongooseDataModelType = "Mongoose";
@@ -109,7 +105,7 @@ export class DataModel {
 
   private initSequelizeModel(options: DataModelOptions$Sequelize) {
     this.model = options.model;
-    for (const sequelizeField of Object.values(this.model.rawAttributes)) {
+    for (const sequelizeField of Object.values<any>(this.model.rawAttributes)) {
       if (sequelizeField.field) {
         if (sequelizeField.primaryKey) {
           this.primaryKey = sequelizeField.field;

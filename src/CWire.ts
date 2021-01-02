@@ -64,7 +64,7 @@ export class CWire {
   private workerFunctions: WorkerFunctions;
   private models: { [name: string]: DataModel } = {};
   private cwireRoute: string = "/cwire";
-  private cwireAPIURL: string = "http://api.cwire.io";
+  private cwireAPIURL: string = "https://api.cwire.io";
 
   constructor(apiKey: string, options: CWireOptions = {}) {
     this.apiKey = apiKey;

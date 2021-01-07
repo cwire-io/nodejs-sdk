@@ -25,6 +25,11 @@ export function parseDataModelQueryToSequelizeQuery(
   query: any | DataModelQuery
 ) {
   const sequelizeQuery: any = {};
+
+  if (!query) {
+    return sequelizeQuery
+  }
+
   if (query.limit && typeof query.limit === "number") {
     sequelizeQuery.limit = query.limit;
   }

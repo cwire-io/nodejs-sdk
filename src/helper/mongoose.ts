@@ -53,6 +53,11 @@ export function parseMongooseSchemaToCWireDataType(
 // Build Query
 export function parseDataModelQueryToMongooseQuery(query: DataModelQuery) {
   const mongooseQuery: any = {};
+
+  if (!query) {
+    return mongooseQuery
+  }
+
   if (query.where && typeof query.where === "object") {
     for (const key of Object.keys(query.where)) {
       if (

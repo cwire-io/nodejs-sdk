@@ -1,4 +1,4 @@
-import { WorkerAPIFunctionParameters, WorkerFunction, IWorkerFunction } from "../WorkerFunction";
+import { WorkerFunction, IWorkerFunction, WorkerAPIFunctionValueParameter } from "../WorkerFunction";
 export declare class Dispatch extends WorkerFunction implements IWorkerFunction<[string], any[]> {
     controller(modelName: string): Promise<{
         success: boolean;
@@ -8,5 +8,5 @@ export declare class Dispatch extends WorkerFunction implements IWorkerFunction<
         data: never[];
     }>;
     getName(): string;
-    getParameters(): WorkerAPIFunctionParameters;
+    getParameters(): WorkerAPIFunctionValueParameter[];
 }

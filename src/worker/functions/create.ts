@@ -1,12 +1,13 @@
 import {
-  WorkerAPIFunctionParameters,
   WorkerFunction,
   IWorkerFunction,
+  WorkerAPIFunctionValueParameter,
 } from "../WorkerFunction";
 import { buildEntitiesResponse } from "../../helper/sequelize";
 import { buildMongooseEntitiesResponse } from "../../helper/mongoose";
 
-export class Create extends WorkerFunction
+export class Create
+  extends WorkerFunction
   implements IWorkerFunction<[string, { [key: string]: any }]> {
   async controller(modelName: string, values: { [key: string]: any }) {
     const dataModel = this.cwire.getDataModelByName(modelName);
@@ -47,7 +48,7 @@ export class Create extends WorkerFunction
     return "DATA_MODEL::CREATE";
   }
 
-  getParameters(): WorkerAPIFunctionParameters {
+  getParameters(): WorkerAPIFunctionValueParameter[] {
     return [
       {
         type: "option",

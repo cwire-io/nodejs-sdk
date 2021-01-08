@@ -1,19 +1,22 @@
 import {
   WorkerFunction,
   IWorkerFunction,
-  WorkerAPIFunctionParameters,
-} from "../WorkerFunction";
-import { DataModelQuery } from "../../types/DataModelQuery";
-import { parseDataModelQueryToSequelizeQuery } from "../../helper/sequelize";
-import { parseDataModelQueryToMongooseQuery } from "../../helper/mongoose";
+  WorkerAPIFunctionValueParameter,
+} from '../WorkerFunction';
+import { DataModelQuery } from '../../types/DataModelQuery';
+import { parseDataModelQueryToSequelizeQuery } from '../../helper/sequelize';
+import { parseDataModelQueryToMongooseQuery } from '../../helper/mongoose';
 
-export class Count extends WorkerFunction
+export class Count
+  extends WorkerFunction
   implements IWorkerFunction<[string, DataModelQuery]> {
   async controller(modelName: string, query: DataModelQuery) {
     const dataModel = this.cwire.getDataModelByName(modelName);
 
     switch (dataModel.getType()) {
-      case "Sequelize": {
+      case 'Sequelize': {
+        console.log(parseDataModelQueryToSequelizeQuery(query));
+
         const numberOfEntities = await dataModel
           .getSequelizeModel()
           .count(parseDataModelQueryToSequelizeQuery(query));
@@ -23,7 +26,7 @@ export class Count extends WorkerFunction
         };
       }
       // TODO: Fix it
-      case "Mongoose": {
+      case 'Mongoose': {
         if (query.group) {
           const counts = await dataModel
             .getMongooseModel()
@@ -45,7 +48,7 @@ export class Count extends WorkerFunction
           };
         }
       }
-      case "Custom":
+      case 'Custom':
         return { success: true, data: null };
     }
 
@@ -53,21 +56,21 @@ export class Count extends WorkerFunction
   }
 
   getName(): string {
-    return "DATA_MODEL::COUNT";
+    return 'DATA_MODEL::COUNT';
   }
 
-  getParameters(): WorkerAPIFunctionParameters {
+  getParameters(): WorkerAPIFunctionValueParameter[] {
     return [
       {
-        type: "option",
+        type: 'option',
         isRequired: true,
-        name: "modelName",
+        name: 'modelName',
         options: this.cwire.getDataModelsList().map((model) => model.getName()),
       },
       {
         default: {},
-        type: "query",
-        name: "query",
+        type: 'query',
+        name: 'query',
         isRequired: false,
       },
     ];

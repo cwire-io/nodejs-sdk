@@ -1,4 +1,4 @@
-import { WorkerAPIFunctionParameters, WorkerFunction, IWorkerFunction } from "../WorkerFunction";
+import { WorkerFunction, IWorkerFunction, WorkerAPIFunctionValueParameter } from "../WorkerFunction";
 import { DataModelQuery } from "../../types/DataModelQuery";
 export declare class Update extends WorkerFunction implements IWorkerFunction<[string, DataModelQuery, any], any[]> {
     controller(modelName: string, query: DataModelQuery, values: any): Promise<{
@@ -9,5 +9,5 @@ export declare class Update extends WorkerFunction implements IWorkerFunction<[s
         data: any;
     }>;
     getName(): string;
-    getParameters(): WorkerAPIFunctionParameters;
+    getParameters(): WorkerAPIFunctionValueParameter[];
 }

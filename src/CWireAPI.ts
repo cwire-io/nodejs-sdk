@@ -22,7 +22,7 @@ export class CWireAPI {
       await this.workerAPI.init();
       await this.dataModelAPI.init();
     } catch (err) {
-      console.log('API initialising failed', err);
+      console.log("API initialising failed", err);
       throw err;
     }
   }

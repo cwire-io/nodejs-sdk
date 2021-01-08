@@ -8,6 +8,7 @@ import { Update } from "./functions/update";
 import { Dispatch } from "./functions/dispatch";
 import { FindOrCreate } from "./functions/findOrCreate";
 import { Count } from "./functions/count";
+import { Bulk } from "./functions/bulk";
 
 export class WorkerFunctions {
   cwire: CWire;
@@ -18,8 +19,7 @@ export class WorkerFunctions {
     this.cwire = cwire;
   }
 
-  addFunction(FnClass: any): void {
-    const fnInstance = new FnClass(this.cwire);
+  addFunction(fnInstance: any): void {
     this.functions.set(fnInstance.getName(), fnInstance);
   }
   removeFunction(fnName: string): void {
@@ -30,7 +30,7 @@ export class WorkerFunctions {
     return this.functions.has(fnName);
   }
 
-  getFunction(fnName: string): IWorkerFunction | undefined {
+  getFunction(fnName: string): IWorkerFunction<any[]> | undefined {
     return this.functions.get(fnName);
   }
 
@@ -44,14 +44,15 @@ export class WorkerFunctions {
     }
 
     // Init worker Functions
-    this.instance.addFunction(Count);
-    this.instance.addFunction(Create);
-    this.instance.addFunction(Remove);
-    this.instance.addFunction(Update);
-    this.instance.addFunction(FindAll);
-    this.instance.addFunction(FindOne);
-    this.instance.addFunction(Dispatch);
-    this.instance.addFunction(FindOrCreate);
+    this.instance.addFunction(new Count(cwire));
+    this.instance.addFunction(new Create(cwire));
+    this.instance.addFunction(new Remove(cwire));
+    this.instance.addFunction(new Update(cwire));
+    this.instance.addFunction(new FindAll(cwire));
+    this.instance.addFunction(new FindOne(cwire));
+    this.instance.addFunction(new Dispatch(cwire));
+    this.instance.addFunction(new FindOrCreate(cwire));
+    this.instance.addFunction(new Bulk(cwire, this.instance));
     return this.instance;
   }
 

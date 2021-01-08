@@ -34,7 +34,7 @@ export class DataModelField {
     return {
       name: this.name,
       type: this.type,
-      isPrimary: this.isPrimary
+      isPrimary: this.isPrimary,
     };
   }
 

@@ -55,7 +55,7 @@ export function parseDataModelQueryToMongooseQuery(query: DataModelQuery) {
   const mongooseQuery: any = {};
 
   if (!query) {
-    return mongooseQuery
+    return mongooseQuery;
   }
 
   if (query.where && typeof query.where === "object") {

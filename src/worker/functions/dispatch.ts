@@ -1,10 +1,11 @@
 import {
-  WorkerAPIFunctionParameters,
   WorkerFunction,
   IWorkerFunction,
+  WorkerAPIFunctionValueParameter,
 } from "../WorkerFunction";
 
-export class Dispatch extends WorkerFunction
+export class Dispatch
+  extends WorkerFunction
   implements IWorkerFunction<[string], any[]> {
   async controller(modelName: string) {
     const dataModel = this.cwire.getDataModelByName(modelName);
@@ -24,7 +25,7 @@ export class Dispatch extends WorkerFunction
     return "DATA_MODEL::DISPATCH";
   }
 
-  getParameters(): WorkerAPIFunctionParameters {
+  getParameters(): WorkerAPIFunctionValueParameter[] {
     return [
       {
         type: "option",

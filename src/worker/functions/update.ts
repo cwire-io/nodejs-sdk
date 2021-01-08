@@ -1,7 +1,7 @@
 import {
-  WorkerAPIFunctionParameters,
   WorkerFunction,
   IWorkerFunction,
+  WorkerAPIFunctionValueParameter,
 } from "../WorkerFunction";
 import {
   buildEntitiesResponse,
@@ -13,7 +13,8 @@ import {
   parseDataModelQueryToMongooseQuery,
 } from "../../helper/mongoose";
 
-export class Update extends WorkerFunction
+export class Update
+  extends WorkerFunction
   implements IWorkerFunction<[string, DataModelQuery, any], any[]> {
   async controller(modelName: string, query: DataModelQuery, values: any) {
     const dataModel = this.cwire.getDataModelByName(modelName);
@@ -57,7 +58,7 @@ export class Update extends WorkerFunction
     return "DATA_MODEL::UPDATE";
   }
 
-  getParameters(): WorkerAPIFunctionParameters {
+  getParameters(): WorkerAPIFunctionValueParameter[] {
     return [
       {
         type: "option",

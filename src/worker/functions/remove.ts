@@ -1,13 +1,14 @@
 import {
-  WorkerAPIFunctionParameters,
   WorkerFunction,
   IWorkerFunction,
+  WorkerAPIFunctionValueParameter,
 } from "../WorkerFunction";
 import { DataModelQuery } from "../../types/DataModelQuery";
 import { parseDataModelQueryToSequelizeQuery } from "../../helper/sequelize";
 import { parseDataModelQueryToMongooseQuery } from "../../helper/mongoose";
 
-export class Remove extends WorkerFunction
+export class Remove
+  extends WorkerFunction
   implements IWorkerFunction<[string, DataModelQuery], any[]> {
   async controller(modelName: string, query: DataModelQuery) {
     const dataModel = this.cwire.getDataModelByName(modelName);
@@ -38,7 +39,7 @@ export class Remove extends WorkerFunction
     return "DATA_MODEL::REMOVE";
   }
 
-  getParameters(): WorkerAPIFunctionParameters {
+  getParameters(): WorkerAPIFunctionValueParameter[] {
     return [
       {
         type: "option",

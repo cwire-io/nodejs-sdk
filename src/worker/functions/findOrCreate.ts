@@ -1,11 +1,12 @@
 import {
-  WorkerAPIFunctionParameters,
   WorkerFunction,
   IWorkerFunction,
+  WorkerAPIFunctionValueParameter,
 } from "../WorkerFunction";
 import { buildEntitiesResponse } from "../../helper/sequelize";
 
-export class FindOrCreate extends WorkerFunction
+export class FindOrCreate
+  extends WorkerFunction
   implements IWorkerFunction<[string, { [key: string]: any }]> {
   async controller(modelName: string, values: { [key: string]: any }) {
     const dataModel = this.cwire.getDataModelByName(modelName);
@@ -33,7 +34,7 @@ export class FindOrCreate extends WorkerFunction
     return "DATA_MODEL::FIND_OR_CREATE";
   }
 
-  getParameters(): WorkerAPIFunctionParameters {
+  getParameters(): WorkerAPIFunctionValueParameter[] {
     return [
       {
         type: "option",

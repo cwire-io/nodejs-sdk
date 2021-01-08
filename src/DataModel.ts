@@ -131,7 +131,7 @@ export class DataModel {
       if (dataType !== null) {
         this.fields[fieldName] = new DataModelField(fieldName, {
           type: dataType,
-          isPrimary: fieldName === '_id'
+          isPrimary: fieldName === "_id",
         });
       }
     }

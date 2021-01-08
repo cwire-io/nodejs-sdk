@@ -1,4 +1,4 @@
-import { WorkerAPIFunctionParameters, WorkerFunction, IWorkerFunction } from "../WorkerFunction";
+import { WorkerFunction, IWorkerFunction, WorkerAPIFunctionValueParameter } from "../WorkerFunction";
 export declare class Create extends WorkerFunction implements IWorkerFunction<[string, {
     [key: string]: any;
 }]> {
@@ -14,5 +14,5 @@ export declare class Create extends WorkerFunction implements IWorkerFunction<[s
         data?: undefined;
     }>;
     getName(): string;
-    getParameters(): WorkerAPIFunctionParameters;
+    getParameters(): WorkerAPIFunctionValueParameter[];
 }

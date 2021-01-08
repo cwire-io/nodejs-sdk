@@ -1,7 +1,7 @@
 import {
-  WorkerAPIFunctionParameters,
   WorkerFunction,
   IWorkerFunction,
+  WorkerAPIFunctionValueParameter,
 } from "../WorkerFunction";
 import {
   buildEntitiesResponse,
@@ -13,7 +13,8 @@ import {
   parseDataModelQueryToMongooseQuery,
 } from "../../helper/mongoose";
 
-export class FindAll extends WorkerFunction
+export class FindAll
+  extends WorkerFunction
   implements IWorkerFunction<[string, DataModelQuery], any[]> {
   async controller(modelName: string, query: DataModelQuery) {
     const dataModel = this.cwire.getDataModelByName(modelName);
@@ -60,7 +61,7 @@ export class FindAll extends WorkerFunction
     return "DATA_MODEL::FIND_ALL";
   }
 
-  getParameters(): WorkerAPIFunctionParameters {
+  getParameters(): WorkerAPIFunctionValueParameter[] {
     return [
       {
         type: "option",

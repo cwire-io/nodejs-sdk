@@ -15,8 +15,6 @@ export class Count
 
     switch (dataModel.getType()) {
       case 'Sequelize': {
-        console.log(parseDataModelQueryToSequelizeQuery(query));
-
         const numberOfEntities = await dataModel
           .getSequelizeModel()
           .count(parseDataModelQueryToSequelizeQuery(query));

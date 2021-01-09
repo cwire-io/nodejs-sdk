@@ -1,5 +1,5 @@
-import { CWire } from "./CWire";
-import io, { Socket } from "socket.io-client";
+import { CWire } from './CWire';
+import io, { Socket } from 'socket.io-client';
 
 export class CWireWebSocket {
   private cwire: CWire;
@@ -14,11 +14,11 @@ export class CWireWebSocket {
 
   public connect() {
     this.socket = io(this.cwire.getAPIURL(), {
-      path: "/workers/sync",
+      path: '/workers/sync',
       transportOptions: {
         polling: {
           extraHeaders: {
-            "x-access-token": this.cwire.getAPIKey(),
+            'x-access-token': this.cwire.getAPIKey(),
           },
         },
       },
@@ -29,7 +29,7 @@ export class CWireWebSocket {
   onWorkerFunctionCalled = async (
     functionName: string,
     params: [],
-    resolve: (result: { error?: Error; data?: any; success: boolean }) => void
+    resolve: (result: { error?: Error; data?: any; success: boolean }) => void,
   ) => {
     try {
       const fn = this.cwire.getWorkerFunctions().getFunction(functionName);
@@ -47,7 +47,7 @@ export class CWireWebSocket {
         this.cwire
           .getWorkerFunctions()
           .getFunctionList()
-          .map((fn) => [fn.getName(), fn.getParameters()])
+          .map((fn) => [fn.getName(), fn.getParameters()]),
       );
     } catch (err) {
       console.log(err);
@@ -57,23 +57,25 @@ export class CWireWebSocket {
   initListeners() {
     if (!this.socket) return;
 
-    this.socket.on("connect", () => {
-      console.log("Connected");
+    this.socket.on('connect', () => {
+      console.log('Connected');
     });
-    this.socket.on("disconnect", () => {
-      console.log("Disconnected");
+    // @ts-ignore
+    this.socket.on('disconnect', (...error) => {
+      console.log(error);
+      console.log('Disconnected');
     });
-    this.socket.on("error", (error: Error) => {
-      console.log("error", error);
+    this.socket.on('error', (error: Error) => {
+      console.log('error', error);
     });
 
     // @ts-ignore
-    this.socket.on("message", (...data) => {
+    this.socket.on('message', (...data) => {
       console.log(...data);
     });
 
-    this.socket.on("CALL_WORKER_FUNCTION_ACTION", this.onWorkerFunctionCalled);
-    this.socket.on("GET_WORKER_FUNCTIONS_ACTION", this.getWorkerFunctions);
+    this.socket.on('CALL_WORKER_FUNCTION_ACTION', this.onWorkerFunctionCalled);
+    this.socket.on('GET_WORKER_FUNCTIONS_ACTION', this.getWorkerFunctions);
   }
   constructor(cwire: CWire) {
     this.cwire = cwire;

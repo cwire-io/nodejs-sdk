@@ -1,4 +1,4 @@
-import { CWire } from "./CWire";
+import { CWire } from './CWire';
 export declare class CWireWebSocket {
     private cwire;
     private socket;

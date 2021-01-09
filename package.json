@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/cwire-io/nodejs-sdk#readme",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "socket.io-client": "^3.0.4"
   },
   "peerDependencies": {

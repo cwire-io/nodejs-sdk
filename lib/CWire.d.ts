@@ -1,9 +1,9 @@
-import { CWireAPI } from "./CWireAPI";
-import { DataModel } from "./DataModel";
-import { AlertActionType, ButtonActionType, ToggleActionType } from "./types/DataModelActions";
-import { BooleanFieldType, CustomFieldType, DescriptionFieldType, EmailFieldType, NumberFieldType, PasswordFieldType, TextFieldType } from "./types/DataModelFields";
-import { WorkerFunctions } from "./worker/functions";
-import { APIWorkerInfoType } from "./types/Worker";
+import { CWireAPI } from './CWireAPI';
+import { DataModel } from './DataModel';
+import { AlertActionType, ButtonActionType, ToggleActionType } from './types/DataModelActions';
+import { BooleanFieldType, CustomFieldType, DescriptionFieldType, EmailFieldType, NumberFieldType, PasswordFieldType, TextFieldType } from './types/DataModelFields';
+import { WorkerFunctions } from './worker/functions';
+import { APIWorkerInfoType } from './types/Worker';
 interface CWireOptions {
     route?: string;
     apiURL?: string;

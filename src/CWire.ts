@@ -1,13 +1,13 @@
-import axios from "axios";
+import axios from 'axios';
 
-import { CWireAPI } from "./CWireAPI";
-import { DataModel } from "./DataModel";
+import { CWireAPI } from './CWireAPI';
+import { DataModel } from './DataModel';
 
 import {
   AlertActionType,
   ButtonActionType,
   ToggleActionType,
-} from "./types/DataModelActions";
+} from './types/DataModelActions';
 import {
   BooleanFieldType,
   CustomFieldType,
@@ -16,11 +16,11 @@ import {
   NumberFieldType,
   PasswordFieldType,
   TextFieldType,
-} from "./types/DataModelFields";
-import { DataModelNotFoundError } from "./errors";
-import { CWireWebSocket } from "./CWireWebSocket";
-import { WorkerFunctions } from "./worker/functions";
-import { APIWorkerInfoType } from "./types/Worker";
+} from './types/DataModelFields';
+import { DataModelNotFoundError } from './errors';
+import { CWireWebSocket } from './CWireWebSocket';
+import { WorkerFunctions } from './worker/functions';
+import { APIWorkerInfoType } from './types/Worker';
 
 interface CWireOptions {
   route?: string;
@@ -39,22 +39,22 @@ export class CWire {
     PASSWORD: PasswordFieldType;
     DESCRIPTION: DescriptionFieldType;
   } = {
-    TEXT: "text",
-    EMAIL: "email",
-    NUMBER: "number",
-    CUSTOM: "custom",
-    BOOLEAN: "boolean",
-    PASSWORD: "password",
-    DESCRIPTION: "description",
+    TEXT: 'text',
+    EMAIL: 'email',
+    NUMBER: 'number',
+    CUSTOM: 'custom',
+    BOOLEAN: 'boolean',
+    PASSWORD: 'password',
+    DESCRIPTION: 'description',
   };
   public static ACTIONS: {
     ALERT: AlertActionType;
     TOGGLE: ToggleActionType;
     BUTTON: ButtonActionType;
   } = {
-    ALERT: "alert",
-    TOGGLE: "toggle",
-    BUTTON: "button",
+    ALERT: 'alert',
+    TOGGLE: 'toggle',
+    BUTTON: 'button',
   };
 
   private api: CWireAPI;
@@ -63,8 +63,8 @@ export class CWire {
   private worker?: APIWorkerInfoType;
   private workerFunctions: WorkerFunctions;
   private models: { [name: string]: DataModel } = {};
-  private cwireRoute: string = "/cwire";
-  private cwireAPIURL: string = "https://api.cwire.io";
+  private cwireRoute: string = '/cwire';
+  private cwireAPIURL: string = 'https://api.cwire.io';
 
   constructor(apiKey: string, options: CWireOptions = {}) {
     this.apiKey = apiKey;
@@ -90,14 +90,14 @@ export class CWire {
       axios.create({
         timeout: 10000,
         baseURL: this.cwireAPIURL,
-        headers: { "X-API-KEY": this.apiKey },
-      })
+        headers: { 'X-API-KEY': this.apiKey },
+      }),
     );
   }
 
   public static async init(
     apiKey: string,
-    options: CWireOptions = {}
+    options: CWireOptions = {},
   ): Promise<CWire> {
     if (!this.instance) {
       try {

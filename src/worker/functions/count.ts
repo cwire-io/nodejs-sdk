@@ -25,7 +25,7 @@ export class Count
       }
       // TODO: Fix it
       case 'Mongoose': {
-        if (query.group) {
+        if (query && query.group) {
           const counts = await dataModel
             .getMongooseModel()
             .aggregate()
@@ -39,7 +39,7 @@ export class Count
         } else {
           const numberOfEntities = await dataModel
             .getMongooseModel()
-            .count(parseDataModelQueryToSequelizeQuery(query));
+            .count(parseDataModelQueryToSequelizeQuery(query || {}));
           return {
             success: true,
             data: numberOfEntities || 0,

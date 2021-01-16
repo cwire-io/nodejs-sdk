@@ -15,7 +15,7 @@ $ npm install @cwire/nodejs-sdk
 ```
 Yarn
 ```
-$ yarn addd @cwire/nodejs-sdk
+$ yarn add @cwire/nodejs-sdk
 ```
 
 ## Small example

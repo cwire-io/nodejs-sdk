@@ -1,28 +1,27 @@
-import { Model as MongooseModel, Document as MongooseDocument } from "mongoose";
+import { Model as MongooseModel, Document as MongooseDocument } from 'mongoose';
 
 import {
   DataModelActionNotFoundError,
   DataModelFieldNotFoundError,
-  FeatureIsNotImplementedNowError,
   MissingPrimaryFieldError,
   MissingRequiredPropertyError,
   MultiplePrimaryFieldsAreNotAllowedError,
   UnknownDataModelTypeError,
   WrongModelDetectedError,
-} from "./errors";
-import { DataModelField } from "./DataModelField";
-import { DataModelAction } from "./DataModelAction";
+} from './errors';
+import { DataModelField } from './DataModelField';
+import { DataModelAction } from './DataModelAction';
 
-import { DataModelFieldOptionsType } from "./types/DataModelFields";
-import { DataModelActionOptionsType } from "./types/DataModelActions";
-import { parseSequelizeDataTypeToCWireDataType } from "./helper/sequelize";
-import { parseMongooseSchemaToCWireDataType } from "./helper/mongoose";
+import { DataModelFieldOptionsType } from './types/DataModelFields';
+import { DataModelActionOptionsType } from './types/DataModelActions';
+import { parseSequelizeDataTypeToCWireDataType } from './helper/sequelize';
+import { parseMongooseSchemaToCWireDataType } from './helper/mongoose';
 
 export type SequelizeModelType = any;
 
-export type CustomDataModelType = "Custom";
-export type MongooseDataModelType = "Mongoose";
-export type SequelizeDataModelType = "Sequelize";
+export type CustomDataModelType = 'Custom';
+export type MongooseDataModelType = 'Mongoose';
+export type SequelizeDataModelType = 'Sequelize';
 export type DataModelType =
   | CustomDataModelType
   | MongooseDataModelType
@@ -76,7 +75,7 @@ export class DataModel {
   private type:
     | MongooseDataModelType
     | SequelizeDataModelType
-    | CustomDataModelType = "Custom";
+    | CustomDataModelType = 'Custom';
 
   constructor(name: string, options: DataModelOptions) {
     if (!name || !options.type) {
@@ -88,13 +87,13 @@ export class DataModel {
     this.type = options.type;
 
     switch (options.type) {
-      case "Custom":
+      case 'Custom':
         this.initCustomDataModel(options);
         break;
-      case "Mongoose":
+      case 'Mongoose':
         this.initMongooseModel(options);
         break;
-      case "Sequelize":
+      case 'Sequelize':
         this.initSequelizeModel(options);
         break;
       default: {
@@ -105,7 +104,9 @@ export class DataModel {
 
   private initSequelizeModel(options: DataModelOptions$Sequelize) {
     this.model = options.model;
-    for (const sequelizeField of Object.values<any>(this.model.rawAttributes)) {
+    for (const sequelizeField of Object.values(
+      this.model.rawAttributes,
+    ) as any) {
       if (sequelizeField.field) {
         if (sequelizeField.primaryKey) {
           this.primaryKey = sequelizeField.field;
@@ -116,14 +117,14 @@ export class DataModel {
           {
             isPrimary: sequelizeField.primaryKey,
             type: parseSequelizeDataTypeToCWireDataType(sequelizeField.type),
-          }
+          },
         );
       }
     }
   }
 
   private initMongooseModel(options: DataModelOptions$Mongoose) {
-    this.primaryKey = "_id";
+    this.primaryKey = '_id';
     this.model = options.model;
     for (const fieldName of Object.keys(this.model.schema.paths)) {
       const field = this.model.schema.paths[fieldName];
@@ -131,7 +132,7 @@ export class DataModel {
       if (dataType !== null) {
         this.fields[fieldName] = new DataModelField(fieldName, {
           type: dataType,
-          isPrimary: fieldName === "_id",
+          isPrimary: fieldName === '_id',
         });
       }
     }
@@ -166,7 +167,7 @@ export class DataModel {
 
           this.fields[fieldName] = new DataModelField(
             fieldName,
-            options.fields[fieldName]
+            options.fields[fieldName],
           );
         }
       }
@@ -185,7 +186,7 @@ export class DataModel {
         for (const actionName of Object.keys(options.actions)) {
           this.actions[actionName] = new DataModelAction(
             actionName,
-            options.actions[actionName]
+            options.actions[actionName],
           );
         }
       }
@@ -213,7 +214,7 @@ export class DataModel {
   }
 
   public getSequelizeModel(): SequelizeModelType {
-    if (this.model === null || !this.model || this.type !== "Sequelize") {
+    if (this.model === null || !this.model || this.type !== 'Sequelize') {
       throw new WrongModelDetectedError();
     }
 
@@ -222,7 +223,7 @@ export class DataModel {
   }
 
   public getMongooseModel(): MongooseModel<MongooseDocument> {
-    if (this.model === null || !this.model || this.type !== "Mongoose") {
+    if (this.model === null || !this.model || this.type !== 'Mongoose') {
       throw new WrongModelDetectedError();
     }
 

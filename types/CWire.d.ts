@@ -2,14 +2,17 @@ import { CWireAPI } from './CWireAPI';
 import { DataModel } from './DataModel';
 import { AlertActionType, ButtonActionType, ToggleActionType } from './types/DataModelActions';
 import { BooleanFieldType, CustomFieldType, DescriptionFieldType, EmailFieldType, NumberFieldType, PasswordFieldType, TextFieldType } from './types/DataModelFields';
-import { WorkerFunctions } from './worker/functions';
 import { APIWorkerInfoType } from './types/Worker';
+import Logger, { LogLevel } from './helper/logger';
+import { WorkerFunctions } from './worker/functions';
 interface CWireOptions {
     route?: string;
     apiURL?: string;
+    logger?: LogLevel;
     models?: DataModel[];
 }
 export declare class CWire {
+    private logger;
     private static instance;
     static FIELD_TYPES: {
         TEXT: TextFieldType;
@@ -47,6 +50,7 @@ export declare class CWire {
     };
     getDataModelsList(): DataModel[];
     isDataModelExists(name: string): boolean;
+    getLogger(): Logger;
     getDataModelByName(name: string): DataModel;
 }
 export {};

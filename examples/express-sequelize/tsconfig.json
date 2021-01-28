@@ -28,10 +28,6 @@
     "node_modules/@microsoft/microsoft-graph-client",
     "node_modules/@microsoft/microsoft-graph-types"
   ],
-  "files": [
-    "./@types/index.d.ts",
-    "./@types/express.d.ts"
-  ],
   "exclude": [
     "node_modules",
      "**/*.spec.ts",

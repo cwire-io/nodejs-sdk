@@ -17,18 +17,23 @@ import {
   PasswordFieldType,
   TextFieldType,
 } from './types/DataModelFields';
-import { DataModelNotFoundError } from './errors';
-import { CWireWebSocket } from './CWireWebSocket';
-import { WorkerFunctions } from './worker/functions';
+
 import { APIWorkerInfoType } from './types/Worker';
+import Logger, { LogLevel } from './helper/logger';
+import { WorkerFunctions } from './worker/functions';
+
+import { CWireWebSocket } from './CWireWebSocket';
+import { DataModelNotFoundError } from './errors';
 
 interface CWireOptions {
   route?: string;
   apiURL?: string;
+  logger?: LogLevel;
   models?: DataModel[];
 }
 
 export class CWire {
+  private logger: Logger;
   private static instance: CWire | null = null;
   public static FIELD_TYPES: {
     TEXT: TextFieldType;
@@ -68,6 +73,12 @@ export class CWire {
 
   constructor(apiKey: string, options: CWireOptions = {}) {
     this.apiKey = apiKey;
+
+    if (options.logger) {
+      this.logger = new Logger(options.logger);
+    } else {
+      this.logger = new Logger('debug');
+    }
 
     if (options.apiURL) {
       this.cwireAPIURL = options.apiURL;
@@ -153,6 +164,10 @@ export class CWire {
 
   public isDataModelExists(name: string): boolean {
     return !!this.models[name];
+  }
+
+  public getLogger(): Logger {
+    return this.logger;
   }
 
   public getDataModelByName(name: string) {

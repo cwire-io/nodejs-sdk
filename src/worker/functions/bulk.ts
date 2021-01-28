@@ -11,6 +11,8 @@ export type BulkNodeType = {
   parameters: any[];
 };
 
+const BULK_LOGGER_PREFIX = 'BULK_ACTION';
+
 export class Bulk
   extends WorkerFunction
   implements IWorkerFunction<BulkNodeType[]> {
@@ -24,19 +26,33 @@ export class Bulk
   async controller(
     ...bulk: BulkNodeType[]
   ): Promise<{ data?: any; error?: Error; success: boolean }> {
-    const promises = [];
-    for (const task of bulk) {
-      const workerFn = this.workerFunctions.getFunction(task.fn);
-      if (workerFn) {
-        promises.push(
-          workerFn
-            .controller(...task.parameters)
-            .catch((error: Error) => ({ error: true, msg: error.stack })),
-        );
+    try {
+      const promises = [];
+      for (const task of bulk) {
+        const workerFn = this.workerFunctions.getFunction(task.fn);
+        if (workerFn) {
+          promises.push(
+            workerFn
+              .controller(...task.parameters)
+              .catch((error: Error) => ({ error: true, msg: error.stack })),
+          );
+        }
       }
-    }
 
-    return { success: true, data: await Promise.all(promises) };
+      this.cwire
+        .getLogger()
+        .system(BULK_LOGGER_PREFIX, `Run bulk actions ${JSON.stringify(bulk)}`);
+      return { success: true, data: await Promise.all(promises) };
+    } catch (error) {
+      this.cwire
+        .getLogger()
+        .error(
+          BULK_LOGGER_PREFIX,
+          `Error on entity creation: ${error.toString()}`,
+        );
+
+      return { success: false, data: null };
+    }
   }
 
   getName(): string {

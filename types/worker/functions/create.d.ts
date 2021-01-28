@@ -1,4 +1,4 @@
-import { WorkerFunction, IWorkerFunction, WorkerAPIFunctionValueParameter } from "../WorkerFunction";
+import { WorkerFunction, IWorkerFunction, WorkerAPIFunctionValueParameter } from '../WorkerFunction';
 export declare class Create extends WorkerFunction implements IWorkerFunction<[string, {
     [key: string]: any;
 }]> {

@@ -12,7 +12,10 @@ import {
 import { DataModelField } from './DataModelField';
 import { DataModelAction } from './DataModelAction';
 
-import { DataModelFieldOptionsType } from './types/DataModelFields';
+import {
+  BaseDataModelFieldOptions,
+  DataModelFieldOptionsType,
+} from './types/DataModelFields';
 import { DataModelActionOptionsType } from './types/DataModelActions';
 import { parseSequelizeDataTypeToCWireDataType } from './helper/sequelize';
 import { parseMongooseSchemaToCWireDataType } from './helper/mongoose';
@@ -77,6 +80,12 @@ export class DataModel {
     | SequelizeDataModelType
     | CustomDataModelType = 'Custom';
 
+  public static DATA_MODEL_TYPES = {
+    CUSTOM: 'Custom',
+    MONGOOSE: 'Mongoose',
+    SEQUELIZE: 'Sequelize',
+  };
+
   constructor(name: string, options: DataModelOptions) {
     if (!name || !options.type) {
       throw new MissingRequiredPropertyError();
@@ -112,12 +121,14 @@ export class DataModel {
           this.primaryKey = sequelizeField.field;
         }
 
+        const fieldOptions: BaseDataModelFieldOptions = {
+          isPrimary: sequelizeField.primaryKey,
+          type: parseSequelizeDataTypeToCWireDataType(sequelizeField.type),
+        };
+
         this.fields[sequelizeField.field] = new DataModelField(
           sequelizeField.field,
-          {
-            isPrimary: sequelizeField.primaryKey,
-            type: parseSequelizeDataTypeToCWireDataType(sequelizeField.type),
-          },
+          fieldOptions,
         );
       }
     }
@@ -264,6 +275,10 @@ export class DataModel {
     return this.actions[name];
   }
 
+  public addAction(action: DataModelAction) {
+    this.actions[action.getName()] = action;
+  }
+
   public getFieldsMap(): { [name: string]: DataModelField } {
     return this.fields;
   }
@@ -282,5 +297,9 @@ export class DataModel {
     }
 
     return this.fields[name];
+  }
+
+  public addField(field: DataModelField) {
+    this.fields[field.getName()] = field;
   }
 }

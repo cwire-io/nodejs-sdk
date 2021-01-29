@@ -1,5 +1,7 @@
-import { CWire } from "../CWire";
-import { AxiosInstance, AxiosResponse } from "axios";
+import { CWire } from '../CWire';
+import { AxiosInstance, AxiosResponse } from 'axios';
+
+export const API_LOGGER_PREFIX = 'API';
 
 export class BaseAPI {
   cwire: CWire;

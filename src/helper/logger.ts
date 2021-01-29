@@ -1,4 +1,4 @@
-export type LogLevel = 'debug' | 'production';
+export type LogLevel = 'debug' | 'production' | 'none';
 export type LogType = 'info' | 'system' | 'warning' | 'error';
 
 export default class Logger {
@@ -14,6 +14,9 @@ export default class Logger {
 
   private log(logType: LogType, event: string, message: string) {
     switch (this.logLevel) {
+      case 'none': {
+        break;
+      }
       case 'production': {
         if (logType === 'info') {
           console.log(this.getMessage(logType, event, message));

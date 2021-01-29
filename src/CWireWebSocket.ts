@@ -1,9 +1,9 @@
 import { CWire } from './CWire';
 import io, { Socket } from 'socket.io-client';
 
-const CONNECT_TO_CWIRE = 'CONNECT_TO_CWIRE';
-const CONNECTION_ERROR = 'CONNECTION_ERROR';
-const DISCONNECT_TO_CWIRE = 'DISCONNECT_TO_CWIRE';
+const CONNECT_TO_CWIRE_LOGGER_PREFIX = 'CONNECT_TO_CWIRE';
+const CONNECTION_ERROR_LOGGER_PREFIX = 'CONNECTION_ERROR';
+const DISCONNECT_TO_CWIRE_LOGGER_PREFIX = 'DISCONNECT_TO_CWIRE';
 
 export class CWireWebSocket {
   private cwire: CWire;
@@ -65,7 +65,7 @@ export class CWireWebSocket {
       this.cwire
         .getLogger()
         .info(
-          CONNECT_TO_CWIRE,
+          CONNECT_TO_CWIRE_LOGGER_PREFIX,
           `Connected to cwire api as ${
             this.cwire.getWorker()?.name || 'unknown'
           } successfully`,
@@ -76,14 +76,17 @@ export class CWireWebSocket {
       this.cwire
         .getLogger()
         .error(
-          DISCONNECT_TO_CWIRE,
+          DISCONNECT_TO_CWIRE_LOGGER_PREFIX,
           `Disconnected to cwire api with the error ${error}`,
         );
     });
     this.socket.on('error', (error: Error) => {
       this.cwire
         .getLogger()
-        .error(CONNECTION_ERROR, `Connection error ${error.toString()}`);
+        .error(
+          CONNECTION_ERROR_LOGGER_PREFIX,
+          `Connection error ${error.toString()}`,
+        );
     });
 
     this.socket.on('CALL_WORKER_FUNCTION_ACTION', this.onWorkerFunctionCalled);

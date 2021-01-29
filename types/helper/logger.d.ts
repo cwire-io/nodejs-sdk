@@ -1,4 +1,4 @@
-export declare type LogLevel = 'debug' | 'production';
+export declare type LogLevel = 'debug' | 'production' | 'none';
 export declare type LogType = 'info' | 'system' | 'warning' | 'error';
 export default class Logger {
     logLevel: LogLevel;

@@ -22,3 +22,5 @@ export declare class MissingPrimaryFieldError extends Error {
 }
 export declare class UnknownDataModelTypeError extends Error {
 }
+export declare class WrongFieldReferenceError extends Error {
+}

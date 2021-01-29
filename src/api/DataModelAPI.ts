@@ -1,11 +1,29 @@
-import { AxiosError } from "axios";
-import { BaseAPI } from "./BaseAPI";
-import { DataModel } from "../DataModel";
+import { DataModel } from '../DataModel';
+import { API_LOGGER_PREFIX, BaseAPI } from './BaseAPI';
 
 export class DataModelAPI extends BaseAPI {
   async init() {
-    await this.clearAllDataModels();
-    await this.syncModels(this.cwire.getDataModelsList());
+    try {
+      this.cwire
+        .getLogger()
+        .system(API_LOGGER_PREFIX, 'Initialising worker data models.');
+      await this.clearAllDataModels();
+      await this.syncModels(this.cwire.getDataModelsList());
+      this.cwire
+        .getLogger()
+        .system(
+          API_LOGGER_PREFIX,
+          'Successfully initialising worker data models.',
+        );
+    } catch (error) {
+      this.cwire
+        .getLogger()
+        .error(
+          API_LOGGER_PREFIX,
+          `Failed to initialise worker data models with the error: ${error.toString()}`,
+        );
+      return error;
+    }
   }
 
   async syncModels(models: DataModel[]) {
@@ -14,27 +32,83 @@ export class DataModelAPI extends BaseAPI {
       return;
     }
     const responses = [];
+
     for (const model of models) {
       responses.push(
-        this.api.post("/models", { ...model.toJSON(), worker: worker.name })
+        (async () => {
+          try {
+            this.cwire.getLogger().system(
+              API_LOGGER_PREFIX,
+              `Start syncing ${model.getName()} model: ${JSON.stringify({
+                ...model.toJSON(),
+                worker: worker.name,
+              })}`,
+            );
+            const response = this.api.post('/models', {
+              ...model.toJSON(),
+              worker: worker.name,
+            });
+
+            this.cwire
+              .getLogger()
+              .system(
+                API_LOGGER_PREFIX,
+                `Successfully sync ${model.getName()}.`,
+              );
+            return response;
+          } catch (error) {
+            this.cwire
+              .getLogger()
+              .error(
+                API_LOGGER_PREFIX,
+                `Failed to sync ${model.getName()} with the error ${error.toString()}`,
+              );
+            return error;
+          }
+        })(),
       );
     }
     try {
       return await Promise.all(responses);
-    } catch (err) {
-      if (err.response) {
-        console.log(err.response.data);
+    } catch (error) {
+      if (error.response) {
+        this.cwire
+          .getLogger()
+          .error(
+            API_LOGGER_PREFIX,
+            `Failed to sync data models ${JSON.stringify(error.response.data)}`,
+          );
       }
-      return;
+      return error;
     }
   }
 
   async clearAllDataModels() {
-    return this.api.post("/models/clear");
+    try {
+      this.cwire
+        .getLogger()
+        .system(API_LOGGER_PREFIX, `Start clean up worker data models`);
+      const response = this.api.post('/models/clear');
+      this.cwire
+        .getLogger()
+        .system(
+          API_LOGGER_PREFIX,
+          `Successfully clean up all worker data models.`,
+        );
+      return response;
+    } catch (error) {
+      this.cwire
+        .getLogger()
+        .error(
+          API_LOGGER_PREFIX,
+          `Failed to clean up worker data models with the error ${error.toString()}`,
+        );
+      return error;
+    }
   }
 
   async getAllDataModels() {
-    return this.api.get("/models");
+    return this.api.get('/models');
   }
 
   /*

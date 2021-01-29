@@ -10,3 +10,4 @@ export class WrongModelDetectedError extends Error {}
 export class MultiplePrimaryFieldsAreNotAllowedError extends Error {}
 export class MissingPrimaryFieldError extends Error {}
 export class UnknownDataModelTypeError extends Error {}
+export class WrongFieldReferenceError extends Error {}

@@ -38,6 +38,7 @@ export declare class CWire {
     private cwireAPIURL;
     constructor(apiKey: string, options?: CWireOptions);
     static init(apiKey: string, options?: CWireOptions): Promise<CWire>;
+    private constructReferences;
     getAPIURL(): string;
     getAPIKey(): string;
     getAPI(): CWireAPI;

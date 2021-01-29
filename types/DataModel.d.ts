@@ -46,6 +46,11 @@ export declare class DataModel {
     private actions;
     private model;
     private type;
+    static DATA_MODEL_TYPES: {
+        CUSTOM: string;
+        MONGOOSE: string;
+        SEQUELIZE: string;
+    };
     constructor(name: string, options: DataModelOptions);
     private initSequelizeModel;
     private initMongooseModel;
@@ -64,6 +69,10 @@ export declare class DataModel {
         fields: {
             name: string;
             type: import("./types/DataModelFields").DataModelFieldType;
+            reference: {
+                model: string;
+                field: string;
+            } | null;
             isPrimary: boolean;
         }[];
         actions: {
@@ -77,10 +86,12 @@ export declare class DataModel {
     getActionsList(): DataModelAction[];
     isActionExist(name: string): boolean;
     getActionByName(name: string): DataModelAction;
+    addAction(action: DataModelAction): void;
     getFieldsMap(): {
         [name: string]: DataModelField;
     };
     getFieldsList(): DataModelField[];
     isFieldExist(name: string): boolean;
     getFieldByName(name: string): DataModelField;
+    addField(field: DataModelField): void;
 }

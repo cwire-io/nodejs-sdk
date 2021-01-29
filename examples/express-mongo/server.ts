@@ -20,6 +20,16 @@ const mongod = new MongoMemoryServer();
       },
     }),
   );
+
+  const Settings = mongoose.model(
+    'settings',
+    new Schema({
+      isAllowed: Boolean,
+      // CWIRE detect references automatically
+      userId: { type: Schema.Types.ObjectId, ref: 'User' },
+    }),
+  );
+
   mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
   const models = [
@@ -27,12 +37,23 @@ const mongod = new MongoMemoryServer();
       model: User,
       type: 'Mongoose',
     }),
+    new DataModel('settings', {
+      model: Settings,
+      type: 'Mongoose',
+    }),
   ];
 
-  await CWire.init(
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MDEwNDdkYjA0NjE1OTFiNjMwYTQxYTciLCJpYXQiOjE2MTE2Nzk3MDd9.aj5JxzSY0h_mgrUMWJ91Zu2o4Lz8guXtzFkJbPoUroo',
-    { models, apiURL: 'http://localhost:5000' },
-  );
+  // CWire set references manually
+  models[1].getFieldByName('userId').setReference({
+    // CWire model name
+    model: 'users',
+    // CWire model field name
+    field: '_id',
+  });
+
+  await CWire.init('<YOUR_API_KEY>', {
+    models,
+  });
 
   await User.create({
     firstName: 'Chris',

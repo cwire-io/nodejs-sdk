@@ -23,10 +23,10 @@ For more please checkout our docs or [code examples](https://github.com/cwire-io
 ```js
 import express from 'express';
 import { DataTypes, Model, Sequelize } from 'sequelize';
+import { CWire, SequelizeDataModel } from '@cwire/nodejs-sdk';
 
 const sequelize = new Sequelize('sqlite::memory');
 class User extends Model {}
-class Setting extends Model {}
 User.init({
   field: {
     allowNull: false,
@@ -34,14 +34,10 @@ User.init({
   },
 }, {
   sequelize,
-  modelName: 'MyAwsomeTestModel'
+  modelName: 'T_USERS'
 });
+
 await CWire.init("<YOUR_API_KEY>", {
-  models: [
-    new DataModel('users', {
-      model: User,
-      type: "Sequelize"
-    })
-  ],
+  models: [new SequelizeDataModel(User)],
 });
 ```

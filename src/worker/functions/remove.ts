@@ -4,8 +4,6 @@ import {
   WorkerAPIFunctionValueParameter,
 } from '../WorkerFunction';
 import { DataModelQuery } from '../../types/DataModelQuery';
-import { parseDataModelQueryToSequelizeQuery } from '../../helper/sequelize';
-import { parseDataModelQueryToMongooseQuery } from '../../helper/mongoose';
 
 const REMOVE_ENTITIES_LOGGER_PREFIX = 'REMOVE_ENTITIES_ACTION';
 
@@ -14,38 +12,16 @@ export class Remove
   implements IWorkerFunction<[string, DataModelQuery], any[]> {
   async controller(modelName: string, query: DataModelQuery) {
     const dataModel = this.cwire.getDataModelByName(modelName);
-    const primaryKey = dataModel.getPrimaryKey();
 
     try {
-      switch (dataModel.getType()) {
-        case 'Sequelize': {
-          const result = await dataModel
-            .getSequelizeModel()
-            .destroy(parseDataModelQueryToSequelizeQuery(query));
-          this.cwire
-            .getLogger()
-            .system(
-              REMOVE_ENTITIES_LOGGER_PREFIX,
-              `Remove entities by sequelize ${JSON.stringify(result)}`,
-            );
-          return { success: true };
-        }
-        case 'Mongoose': {
-          const result = await dataModel
-            .getMongooseModel()
-            .remove(parseDataModelQueryToMongooseQuery(query))
-            .exec();
-          this.cwire
-            .getLogger()
-            .system(
-              REMOVE_ENTITIES_LOGGER_PREFIX,
-              `Remove entities by mongoose ${JSON.stringify(result)}`,
-            );
-          return { success: true };
-        }
-        case 'Custom':
-          return { success: true };
-      }
+      const result = await dataModel.getORM().remove(query);
+      this.cwire
+        .getLogger()
+        .system(
+          REMOVE_ENTITIES_LOGGER_PREFIX,
+          `Remove ${dataModel} entities ${JSON.stringify(result)}`,
+        );
+      return { success: true, data: result };
     } catch (error) {
       this.cwire
         .getLogger()

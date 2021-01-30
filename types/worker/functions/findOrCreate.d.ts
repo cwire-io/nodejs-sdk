@@ -1,4 +1,4 @@
-import { WorkerFunction, IWorkerFunction, WorkerAPIFunctionValueParameter } from "../WorkerFunction";
+import { WorkerFunction, IWorkerFunction, WorkerAPIFunctionValueParameter } from '../WorkerFunction';
 export declare class FindOrCreate extends WorkerFunction implements IWorkerFunction<[string, {
     [key: string]: any;
 }]> {
@@ -6,12 +6,7 @@ export declare class FindOrCreate extends WorkerFunction implements IWorkerFunct
         [key: string]: any;
     }): Promise<{
         success: boolean;
-        data: any;
-        error?: undefined;
-    } | {
-        success: boolean;
-        error: any;
-        data?: undefined;
+        data: never[];
     }>;
     getName(): string;
     getParameters(): WorkerAPIFunctionValueParameter[];

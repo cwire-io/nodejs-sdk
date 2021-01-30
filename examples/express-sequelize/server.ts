@@ -1,6 +1,6 @@
 import express from 'express';
+import { CWire, SequelizeDataModel } from '../../';
 import { DataTypes, Model, Sequelize } from 'sequelize';
-import { CWire, DataModel, DataModelField } from '../../';
 
 const app = express();
 
@@ -25,7 +25,7 @@ User.init(
   },
   {
     sequelize,
-    modelName: 'T_Users',
+    modelName: 'T_USERS',
   },
 );
 Setting.init(
@@ -44,21 +44,16 @@ Setting.init(
 Setting.belongsTo(User, { foreignKey: 'fkUserId', as: 'Users' });
 User.hasOne(Setting, { foreignKey: 'fkUserId', as: 'Settings' });
 
-const models = [
-  new DataModel('users', {
-    model: User,
-    type: 'Sequelize',
-  }),
-  new DataModel('settings', {
-    model: Setting,
-    type: 'Sequelize',
-  }),
-];
+const models = [new SequelizeDataModel(User), new SequelizeDataModel(Setting)];
 
 (async () => {
-  await CWire.init('<YOUR_API_KEY>', {
-    models,
-  });
+  await CWire.init(
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MDEwNDdkYjA0NjE1OTFiNjMwYTQxYTciLCJpYXQiOjE2MTE5MzY4NDF9.Rq_AV8soMmDLU_7gge48cCeJ9ZH2wqJ-XzqCwhmLGWY',
+    {
+      models,
+      apiURL: 'http://localhost:5000',
+    },
+  );
   await sequelize.sync();
 
   await User.create({

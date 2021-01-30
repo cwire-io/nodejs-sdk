@@ -1,5 +1,5 @@
-import { DataModelField, DataModelFieldType } from '..';
-import { DataModelQuery } from '../types/DataModelQuery';
+import { DataModelField, DataModelFieldType } from '../..';
+import { DataModelQuery } from '../../types/DataModelQuery';
 import { DataTypes, DataType, Model, Op as Operators } from 'sequelize';
 
 function parseSequelizeDataTypeStringToCWireDataType(

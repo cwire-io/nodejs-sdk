@@ -2,7 +2,7 @@ import express from 'express';
 import mongoose, { Schema } from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
-import { CWire, DataModel } from '../../';
+import { CWire, MongooseDataModel } from '../../';
 
 const app = express();
 const mongod = new MongoMemoryServer();
@@ -32,28 +32,24 @@ const mongod = new MongoMemoryServer();
 
   mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-  const models = [
-    new DataModel('users', {
-      model: User,
-      type: 'Mongoose',
-    }),
-    new DataModel('settings', {
-      model: Settings,
-      type: 'Mongoose',
-    }),
-  ];
+  const models = [new MongooseDataModel(User), new MongooseDataModel(Settings)];
 
-  // CWire set references manually
+  /* CWire set references manually
   models[1].getFieldByName('userId').setReference({
     // CWire model name
     model: 'users',
     // CWire model field name
     field: '_id',
   });
+   */
 
-  await CWire.init('<YOUR_API_KEY>', {
-    models,
-  });
+  await CWire.init(
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MDEwNDdkYjA0NjE1OTFiNjMwYTQxYTciLCJpYXQiOjE2MTE5MzY4NDF9.Rq_AV8soMmDLU_7gge48cCeJ9ZH2wqJ-XzqCwhmLGWY',
+    {
+      models,
+      apiURL: 'http://localhost:5000',
+    },
+  );
 
   await User.create({
     firstName: 'Chris',

@@ -3,15 +3,7 @@ import {
   IWorkerFunction,
   WorkerAPIFunctionValueParameter,
 } from '../WorkerFunction';
-import {
-  buildEntitiesResponse,
-  parseDataModelQueryToSequelizeQuery,
-} from '../../helper/sequelize';
 import { DataModelQuery } from '../../types/DataModelQuery';
-import {
-  buildMongooseEntitiesResponse,
-  parseDataModelQueryToMongooseQuery,
-} from '../../helper/mongoose';
 
 const UPDATE_ENTITIES_LOGGER_PREFIX = 'UPDATE_ENTITIES_ACTION';
 
@@ -21,51 +13,14 @@ export class Update
   async controller(modelName: string, query: DataModelQuery, values: any) {
     try {
       const dataModel = this.cwire.getDataModelByName(modelName);
-      switch (dataModel.getType()) {
-        case 'Sequelize': {
-          const entity = await dataModel
-            .getSequelizeModel()
-            .findOne(parseDataModelQueryToSequelizeQuery(query));
-
-          if (!entity) {
-            return { success: false };
-          }
-          this.cwire
-            .getLogger()
-            .system(
-              UPDATE_ENTITIES_LOGGER_PREFIX,
-              `Update entities by sequelize ${JSON.stringify(entity)}`,
-            );
-
-          await entity.update(values);
-          return {
-            success: true,
-            data: buildEntitiesResponse(dataModel.getFieldsList(), [entity]),
-          };
-        }
-        // Fix entity returning of updated entity
-        case 'Mongoose': {
-          const entity = await dataModel
-            .getMongooseModel()
-            .update(parseDataModelQueryToMongooseQuery(query), values)
-            .exec();
-          this.cwire
-            .getLogger()
-            .system(
-              UPDATE_ENTITIES_LOGGER_PREFIX,
-              `Update entities by mongoose ${JSON.stringify(entity)}`,
-            );
-
-          return {
-            success: true,
-            data: buildMongooseEntitiesResponse(dataModel.getFieldsList(), [
-              entity,
-            ]),
-          };
-        }
-        case 'Custom':
-          return { success: true };
-      }
+      const entities = await dataModel.getORM().update(query, values);
+      this.cwire
+        .getLogger()
+        .system(
+          UPDATE_ENTITIES_LOGGER_PREFIX,
+          `Update ${dataModel} entities ${JSON.stringify(entities)}`,
+        );
+      return { success: true, data: entities };
     } catch (error) {
       this.cwire
         .getLogger()

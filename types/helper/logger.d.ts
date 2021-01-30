@@ -1,5 +1,6 @@
 export declare type LogLevel = 'debug' | 'production' | 'none';
 export declare type LogType = 'info' | 'system' | 'warning' | 'error';
+export declare const CONSTRUCT_REFERENCES_LOGGER_PREFIX = "CONSTRUCT_REFERENCES";
 export default class Logger {
     logLevel: LogLevel;
     constructor(logLevel: LogLevel);

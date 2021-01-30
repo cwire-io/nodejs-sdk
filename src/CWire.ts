@@ -115,7 +115,7 @@ export class CWire {
     if (!this.instance) {
       try {
         this.instance = new CWire(apiKey, options);
-        this.instance.constructReferences();
+        await this.instance.constructReferences();
         await this.instance.api.init();
         await this.instance.websocket.connect();
       } catch (err) {
@@ -129,85 +129,18 @@ export class CWire {
     return this.instance;
   }
 
-  private constructReferences() {
+  private async constructReferences() {
     try {
       const nativeModels: { [key: string]: DataModel } = {};
 
       // MAP lib models to cwire data models
       for (const model of this.getDataModelsList()) {
-        switch (model.getType()) {
-          case DataModel.DATA_MODEL_TYPES.SEQUELIZE: {
-            nativeModels[model.getSequelizeModel().getTableName()] = model;
-            break;
-          }
-          case DataModel.DATA_MODEL_TYPES.MONGOOSE: {
-            nativeModels[model.getMongooseModel().modelName] = model;
-            break;
-          }
-        }
+        nativeModels[await model.getORM().getName()] = model;
       }
 
       // Map field references to models
       for (const model of this.getDataModelsList()) {
-        switch (model.getType()) {
-          case DataModel.DATA_MODEL_TYPES.MONGOOSE: {
-            const mongooseModel = model.getMongooseModel();
-            for (const fieldName of Object.keys(mongooseModel.schema.paths)) {
-              try {
-                // @ts-ignore
-                const ref = mongooseModel.schema.paths[fieldName].options.ref;
-                if (
-                  nativeModels[ref] &&
-                  nativeModels[ref].getFieldByName('_id')
-                ) {
-                  model.getFieldByName(fieldName).setReference({
-                    field: '_id',
-                    model: nativeModels[ref].getName(),
-                  });
-                }
-              } catch (error) {
-                this.getLogger().error(
-                  CONSTRUCT_REFERENCES_LOGGER_PREFIX,
-                  `Failed to construct reference for ${fieldName} in ${model.getName()} with error ${error.toString()}`,
-                );
-              }
-            }
-
-            break;
-          }
-          case DataModel.DATA_MODEL_TYPES.SEQUELIZE: {
-            for (const sequelizeField of Object.values(
-              model.getSequelizeModel().rawAttributes,
-            ) as any) {
-              try {
-                if (sequelizeField.references) {
-                  const {
-                    model: modelName,
-                    key: field,
-                  } = sequelizeField.references;
-                  if (
-                    nativeModels[modelName] &&
-                    model.getFieldByName(sequelizeField.field)
-                  ) {
-                    model.getFieldByName(sequelizeField.field).setReference({
-                      field,
-                      model: nativeModels[modelName].getName(),
-                    });
-                  }
-                }
-              } catch (error) {
-                this.getLogger().error(
-                  CONSTRUCT_REFERENCES_LOGGER_PREFIX,
-                  `Failed to construct reference for ${
-                    sequelizeField.field
-                  } in ${model.getName()} with error ${error.toString()}`,
-                );
-              }
-            }
-
-            break;
-          }
-        }
+        await model.getORM().constructReferences(this, nativeModels);
       }
     } catch (error) {
       this.getLogger().error(

@@ -52,6 +52,7 @@ export declare class CWire {
     getDataModelsList(): DataModel<any>[];
     isDataModelExists(name: string): boolean;
     getLogger(): Logger;
+    static getInstance(): CWire;
     getDataModelByName(name: string): DataModel<any>;
 }
 export {};

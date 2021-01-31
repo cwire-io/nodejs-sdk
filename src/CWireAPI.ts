@@ -1,8 +1,8 @@
-import { CWire } from "./CWire";
-import { AxiosInstance } from "axios";
+import { CWire } from './CWire';
+import { AxiosInstance } from 'axios';
 
-import { WorkerAPI } from "./api/WorkerAPI";
-import { DataModelAPI } from "./api/DataModelAPI";
+import { WorkerAPI } from './api/WorkerAPI';
+import { DataModelAPI } from './api/DataModelAPI';
 
 export class CWireAPI {
   private cwire: CWire;
@@ -22,7 +22,7 @@ export class CWireAPI {
       await this.workerAPI.init();
       await this.dataModelAPI.init();
     } catch (err) {
-      console.log("API initialising failed", err);
+      console.log('API initialising failed', err);
       throw err;
     }
   }
@@ -32,6 +32,6 @@ export class CWireAPI {
   }
 
   public getDataModelAPI() {
-    this.getDataModelAPI();
+    return this.dataModelAPI;
   }
 }

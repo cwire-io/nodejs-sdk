@@ -23,7 +23,8 @@ import Logger, { LogLevel } from './helper/logger';
 import { WorkerFunctions } from './worker/functions';
 
 import { CWireWebSocket } from './CWireWebSocket';
-import { DataModelNotFoundError } from './errors';
+import { CONSTRUCT_REFERENCES_LOGGER_PREFIX } from './constants/logger';
+import { CWireIsNotInitialised, DataModelNotFoundError } from './errors';
 
 interface CWireOptions {
   route?: string;
@@ -31,8 +32,6 @@ interface CWireOptions {
   logger?: LogLevel;
   models?: DataModel[];
 }
-
-const CONSTRUCT_REFERENCES_LOGGER_PREFIX = 'CONSTRUCT_REFERENCES';
 
 export class CWire {
   private logger: Logger;
@@ -192,6 +191,14 @@ export class CWire {
 
   public getLogger(): Logger {
     return this.logger;
+  }
+
+  public static getInstance(): CWire {
+    if (!this.instance) {
+      throw new CWireIsNotInitialised();
+    }
+
+    return this.instance;
   }
 
   public getDataModelByName(name: string) {

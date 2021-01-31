@@ -1,11 +1,11 @@
+import { DataModelQuery } from '../../types/DataModelQuery';
+import { FIND_ALL_ENTITY_LOGGER_PREFIX } from '../../constants/logger';
+
 import {
   WorkerFunction,
   IWorkerFunction,
   WorkerAPIFunctionValueParameter,
 } from '../WorkerFunction';
-import { DataModelQuery } from '../../types/DataModelQuery';
-
-const FIND_ALL_ENTITY_LOGGER_PREFIX = 'FIND_ALL_ENTITIES_ACTION';
 
 export class FindAll
   extends WorkerFunction

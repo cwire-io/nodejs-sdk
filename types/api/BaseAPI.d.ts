@@ -1,6 +1,5 @@
 import { CWire } from '../CWire';
 import { AxiosInstance, AxiosResponse } from 'axios';
-export declare const API_LOGGER_PREFIX = "API";
 export declare class BaseAPI {
     cwire: CWire;
     api: AxiosInstance;

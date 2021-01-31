@@ -1,7 +1,9 @@
-import { API_LOGGER_PREFIX, BaseAPI } from './BaseAPI';
 import { WorkerNotFound } from '../errors';
 import { parseResponse } from '../helper/api';
 import { APIWorkerInfoType } from '../types/Worker';
+import { API_LOGGER_PREFIX } from '../constants/logger';
+
+import { BaseAPI } from './BaseAPI';
 
 export class WorkerAPI extends BaseAPI {
   async init() {

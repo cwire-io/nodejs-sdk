@@ -1,10 +1,10 @@
+import { CREATE_ENTITY_LOGGER_PREFIX } from '../../constants/logger';
+
 import {
   WorkerFunction,
   IWorkerFunction,
   WorkerAPIFunctionValueParameter,
 } from '../WorkerFunction';
-
-const CREATE_ENTITY_LOGGER_PREFIX = 'CREATE_ENTITY_ACTION';
 
 export class Create
   extends WorkerFunction

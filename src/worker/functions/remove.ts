@@ -4,8 +4,7 @@ import {
   WorkerAPIFunctionValueParameter,
 } from '../WorkerFunction';
 import { DataModelQuery } from '../../types/DataModelQuery';
-
-const REMOVE_ENTITIES_LOGGER_PREFIX = 'REMOVE_ENTITIES_ACTION';
+import { REMOVE_ENTITIES_LOGGER_PREFIX } from '../../constants/logger';
 
 export class Remove
   extends WorkerFunction

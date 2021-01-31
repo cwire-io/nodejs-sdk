@@ -1,11 +1,11 @@
+import { DataModelQuery } from '../../types/DataModelQuery';
+
 import {
   WorkerFunction,
   IWorkerFunction,
   WorkerAPIFunctionValueParameter,
 } from '../WorkerFunction';
-import { DataModelQuery } from '../../types/DataModelQuery';
-
-const FIND_ONE_ENTITY_LOGGER_PREFIX = 'FIND_ONE_ENTITY_ACTION';
+import { FIND_ONE_ENTITY_LOGGER_PREFIX } from '../../constants/logger';
 
 export class FindOne
   extends WorkerFunction

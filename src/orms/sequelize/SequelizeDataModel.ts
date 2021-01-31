@@ -11,7 +11,11 @@ import {
   parseSequelizeDataTypeToCWireDataType,
   parseSequelizeIncludingParsing,
 } from './parser';
-import * as util from 'util';
+import {
+  DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX,
+  DATA_MODEL_ENTITY_DELETED_EVENT_LOGGER_PREFIX,
+  DATA_MODEL_ENTITY_UPDATED_EVENT_LOGGER_PREFIX,
+} from '../../constants/logger';
 
 export type SequelizeModel = any;
 export const SequelizeType = 'Sequelize';
@@ -45,6 +49,89 @@ export default class SequelizeDataModel<
         );
       }
     }
+
+    this.model.addHook('afterUpdate', async (entity: any) => {
+      try {
+        const changes: any = {};
+        for (const key of entity._changed.keys()) {
+          changes[key] = entity.get(key);
+        }
+
+        await CWire.getInstance()
+          .getAPI()
+          .getDataModelAPI()
+          .addEvent(
+            'UPDATED',
+            `${entity.get(this.getPrimaryKey())}`,
+            this,
+            changes,
+          );
+        CWire.getInstance()
+          .getLogger()
+          .system(
+            DATA_MODEL_ENTITY_UPDATED_EVENT_LOGGER_PREFIX,
+            `Log updating of ${this.getName()} entity ${entity.get(
+              this.getPrimaryKey(),
+            )}`,
+          );
+      } catch (error) {
+        CWire.getInstance()
+          .getLogger()
+          .error(
+            DATA_MODEL_ENTITY_UPDATED_EVENT_LOGGER_PREFIX,
+            `Error by logging ${error.toString()}`,
+          );
+      }
+    });
+    this.model.addHook('afterCreate', async (entity: any) => {
+      try {
+        await CWire.getInstance()
+          .getAPI()
+          .getDataModelAPI()
+          .addEvent(
+            'CREATED',
+            `${entity.get(this.getPrimaryKey())}`,
+            this,
+            entity,
+          );
+        CWire.getInstance()
+          .getLogger()
+          .system(
+            DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX,
+            `Log creating of ${this.getName()} entity ${entity.get(
+              this.getPrimaryKey(),
+            )}`,
+          );
+      } catch (error) {
+        CWire.getInstance()
+          .getLogger()
+          .error(
+            DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX,
+            `Error by logging ${error.toString()}`,
+          );
+      }
+    });
+    this.model.addHook('beforeDestroy', async (entity: any) => {
+      try {
+        await CWire.getInstance()
+          .getAPI()
+          .getDataModelAPI()
+          .addEvent('DELETED', `${entity.get(this.getPrimaryKey())}`, this, {});
+        CWire.getInstance()
+          .getLogger()
+          .system(
+            DATA_MODEL_ENTITY_DELETED_EVENT_LOGGER_PREFIX,
+            `Log deleting of ${entity.get(this.getPrimaryKey())}`,
+          );
+      } catch (error) {
+        CWire.getInstance()
+          .getLogger()
+          .error(
+            DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX,
+            `Error by logging ${error.toString()}`,
+          );
+      }
+    });
   }
 
   public getName(): string {

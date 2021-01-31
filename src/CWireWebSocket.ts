@@ -1,9 +1,11 @@
 import { CWire } from './CWire';
 import io, { Socket } from 'socket.io-client';
 
-const CONNECT_TO_CWIRE_LOGGER_PREFIX = 'CONNECT_TO_CWIRE';
-const CONNECTION_ERROR_LOGGER_PREFIX = 'CONNECTION_ERROR';
-const DISCONNECT_TO_CWIRE_LOGGER_PREFIX = 'DISCONNECT_TO_CWIRE';
+import {
+  CONNECT_TO_CWIRE_LOGGER_PREFIX,
+  CONNECTION_ERROR_LOGGER_PREFIX,
+  DISCONNECT_TO_CWIRE_LOGGER_PREFIX,
+} from './constants/logger';
 
 export class CWireWebSocket {
   private cwire: CWire;

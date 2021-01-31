@@ -1,3 +1,5 @@
+import { BULK_LOGGER_PREFIX } from '../../constants/logger';
+
 import { CWire } from '../../CWire';
 import { WorkerFunctions } from '../functions';
 import {
@@ -10,8 +12,6 @@ export type BulkNodeType = {
   fn: string;
   parameters: any[];
 };
-
-const BULK_LOGGER_PREFIX = 'BULK_ACTION';
 
 export class Bulk
   extends WorkerFunction

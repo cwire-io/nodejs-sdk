@@ -12,6 +12,8 @@ export declare class DataModelFieldNotFoundError extends Error {
 }
 export declare class DataModelActionNotFoundError extends Error {
 }
+export declare class CWireIsNotInitialised extends Error {
+}
 export declare class FeatureIsNotImplementedNowError extends Error {
 }
 export declare class WrongModelDetectedError extends Error {

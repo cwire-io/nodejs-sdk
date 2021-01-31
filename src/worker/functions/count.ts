@@ -1,11 +1,11 @@
+import { DataModelQuery } from '../../types/DataModelQuery';
+import { COUNT_ENTITY_LOGGER_PREFIX } from '../../constants/logger';
+
 import {
   WorkerFunction,
   IWorkerFunction,
   WorkerAPIFunctionValueParameter,
 } from '../WorkerFunction';
-import { DataModelQuery } from '../../types/DataModelQuery';
-
-const COUNT_ENTITY_LOGGER_PREFIX = 'COUNT_ENTITIES_ACTION';
 
 export class Count
   extends WorkerFunction

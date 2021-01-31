@@ -1,11 +1,11 @@
+import { DataModelQuery } from '../../types/DataModelQuery';
+import { UPDATE_ENTITIES_LOGGER_PREFIX } from '../../constants/logger';
+
 import {
   WorkerFunction,
   IWorkerFunction,
   WorkerAPIFunctionValueParameter,
 } from '../WorkerFunction';
-import { DataModelQuery } from '../../types/DataModelQuery';
-
-const UPDATE_ENTITIES_LOGGER_PREFIX = 'UPDATE_ENTITIES_ACTION';
 
 export class Update
   extends WorkerFunction

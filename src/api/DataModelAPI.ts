@@ -1,7 +1,16 @@
 import { DataModel } from '../DataModel';
 import { parseResponse } from '../helper/api';
 import { APIDataModel } from '../types/DataModel';
-import { API_LOGGER_PREFIX, BaseAPI } from './BaseAPI';
+
+import { BaseAPI } from './BaseAPI';
+import { API_LOGGER_PREFIX } from '../constants/logger';
+
+export type DATA_MODEL_ENTITY_EVENTS =
+  | 'CREATED'
+  | 'UPDATED'
+  | 'DELETED'
+  | 'DISPATCHED'
+  | string;
 
 export class DataModelAPI extends BaseAPI {
   async init() {
@@ -132,6 +141,23 @@ export class DataModelAPI extends BaseAPI {
 
   async getDataModelByName(name: string) {
     return parseResponse<APIDataModel>(await this.api.get(`/models/${name}`));
+  }
+
+  async addEvent(
+    event: DATA_MODEL_ENTITY_EVENTS,
+    entityId: string,
+    model: DataModel,
+    changes: any,
+    description: string = '',
+  ) {
+    return parseResponse(
+      await this.api.post(`/models/${model.getName()}/events`, {
+        event,
+        entityId,
+        changes: JSON.stringify(changes),
+        description: description || null,
+      }),
+    );
   }
 
   /*

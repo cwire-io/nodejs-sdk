@@ -1,38 +1,59 @@
-import { Model as MongooseModel, Document as MongooseDocument } from 'mongoose';
-
+import { CWire } from './CWire';
+import { DataModelField } from './DataModelField';
+import { DataModelAction } from './DataModelAction';
+import { DataModelQuery } from './types/DataModelQuery';
 import {
   DataModelFieldNotFoundError,
   DataModelActionNotFoundError,
   MissingRequiredPropertyError,
 } from './errors';
-import { DataModelORM } from './DataModelORM';
-import { DataModelField } from './DataModelField';
-import { DataModelAction } from './DataModelAction';
+import { APIDataModel } from './types/DataModel';
 
 export type SequelizeModelType = any;
 
 export type DataModelOptions = {};
 
-export class DataModel {
+export abstract class DataModel<Schema = any> {
   protected name: string;
-  protected orm: DataModelORM | null = null;
   // Typescript does not check that this variable is created by the init functions
   // @ts-ignore
   protected primaryKey: string;
   protected id: string | null = null;
   protected options: DataModelOptions;
+  protected references: {
+    [modelName: string]: { field: string; referenceField: string };
+  } = {};
   protected fields: { [key: string]: DataModelField } = {};
   protected actions: { [key: string]: DataModelAction } = {};
-  protected model:
-    | SequelizeModelType
-    | MongooseModel<MongooseDocument>
-    | null = null;
 
-  public static DATA_MODEL_TYPES = {
-    CUSTOM: 'Custom',
-    MONGOOSE: 'Mongoose',
-    SEQUELIZE: 'Sequelize',
-  };
+  public abstract async constructReferences(
+    cwire: CWire,
+    nativeModels: { [key: string]: DataModel },
+  ): Promise<any>;
+  public abstract getName(): string;
+  public abstract getType(): string;
+  public abstract async create(cwire: CWire, values: Schema): Promise<any>;
+  public abstract async count(
+    cwire: CWire,
+    query: DataModelQuery,
+  ): Promise<any>;
+  public abstract async remove(
+    cwire: CWire,
+    query: DataModelQuery,
+  ): Promise<any>;
+  public abstract async findOne(
+    cwire: CWire,
+    query: DataModelQuery,
+  ): Promise<any>;
+  public abstract async findAll(
+    cwire: CWire,
+    query: DataModelQuery,
+  ): Promise<any>;
+  public abstract async update(
+    cwire: CWire,
+    query: DataModelQuery,
+    changes: Schema,
+  ): Promise<any>;
 
   constructor(name: string, options: DataModelOptions) {
     if (!name) {
@@ -41,19 +62,6 @@ export class DataModel {
 
     this.name = name;
     this.options = options;
-  }
-
-  getORM(): DataModelORM {
-    if (!this.orm) {
-      // TODO: Implement custom error message
-      throw new Error();
-    }
-
-    return this.orm;
-  }
-
-  public getName(): string {
-    return this.name;
   }
 
   public getPrimaryKey(): string {
@@ -79,6 +87,28 @@ export class DataModel {
       fields: this.getFieldsList().map((field) => field.toJSON()),
       actions: this.getActionsList().map((action) => action.toJSON()),
     };
+  }
+
+  public getModelReferenceField(model: DataModel) {
+    for (const field of this.getFieldsList()) {
+      if (field.getReference()) {
+        if (field.getReference()?.model === model.getName()) {
+        }
+      }
+    }
+  }
+
+  public sync(model: APIDataModel) {
+    for (const reference of model.references) {
+      this.references[reference.model] = {
+        field: reference.field,
+        referenceField: reference.modelField,
+      };
+    }
+  }
+
+  public getReferences() {
+    return this.references;
   }
 
   public getActionsMap(): { [name: string]: DataModelAction } {

@@ -47,11 +47,11 @@ export declare class CWire {
     getWorkerFunctions(): WorkerFunctions;
     getAxios(): import("axios").AxiosInstance;
     getDataModelsMap(): {
-        [name: string]: DataModel;
+        [name: string]: DataModel<any>;
     };
-    getDataModelsList(): DataModel[];
+    getDataModelsList(): DataModel<any>[];
     isDataModelExists(name: string): boolean;
     getLogger(): Logger;
-    getDataModelByName(name: string): DataModel;
+    getDataModelByName(name: string): DataModel<any>;
 }
 export {};

@@ -10,10 +10,9 @@ export class Create
   extends WorkerFunction
   implements IWorkerFunction<[string, { [key: string]: any }]> {
   async controller(modelName: string, values: { [key: string]: any }) {
-    const dataModel = this.cwire.getDataModelByName(modelName);
-
     try {
-      const entity = await dataModel.getORM().create(values);
+      const dataModel = this.cwire.getDataModelByName(modelName);
+      const entity = await dataModel.create(this.cwire, values);
       this.cwire
         .getLogger()
         .system(

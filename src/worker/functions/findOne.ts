@@ -11,10 +11,9 @@ export class FindOne
   extends WorkerFunction
   implements IWorkerFunction<[string, DataModelQuery]> {
   async controller(modelName: string, query: DataModelQuery) {
-    const dataModel = this.cwire.getDataModelByName(modelName);
-
     try {
-      const entity = await dataModel.getORM().findOne(query);
+      const dataModel = this.cwire.getDataModelByName(modelName);
+      const entity = await dataModel.findOne(this.cwire, query);
       this.cwire
         .getLogger()
         .system(

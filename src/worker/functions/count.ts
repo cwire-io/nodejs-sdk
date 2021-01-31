@@ -11,15 +11,15 @@ export class Count
   extends WorkerFunction
   implements IWorkerFunction<[string, DataModelQuery]> {
   async controller(modelName: string, query: DataModelQuery) {
-    const dataModel = this.cwire.getDataModelByName(modelName);
     try {
+      const dataModel = this.cwire.getDataModelByName(modelName);
       this.cwire
         .getLogger()
         .system(
           COUNT_ENTITY_LOGGER_PREFIX,
           `Count all ${modelName} entities with ${JSON.stringify(query)}.`,
         );
-      return { success: true, data: await dataModel.getORM().count(query) };
+      return { success: true, data: await dataModel.count(this.cwire, query) };
     } catch (err) {
       this.cwire
         .getLogger()

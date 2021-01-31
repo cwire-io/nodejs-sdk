@@ -50,6 +50,17 @@ export class DataModelField {
     this.reference = reference;
   }
 
+  public getReference() {
+    if (!this.reference) {
+      return null;
+    }
+
+    return {
+      model: this.reference.model,
+      field: this.reference.field,
+    };
+  }
+
   public toJSON() {
     return {
       name: this.name,

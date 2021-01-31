@@ -56,10 +56,14 @@ const models = [new SequelizeDataModel(User), new SequelizeDataModel(Setting)];
   );
   await sequelize.sync();
 
-  await User.create({
+  const chris = await User.create({
     firstName: 'Chris',
     lastName: 'CWire',
     email: 'chris@example.com',
+  });
+  await Setting.create({
+    isAllowed: true,
+    fkUserId: chris.getDataValue('id'),
   });
   await User.create({
     firstName: 'Leon',

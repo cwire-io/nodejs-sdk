@@ -1,30 +1,39 @@
-import { Model as MongooseModel, Document as MongooseDocument } from 'mongoose';
-import { DataModelORM } from './DataModelORM';
+import { CWire } from './CWire';
 import { DataModelField } from './DataModelField';
 import { DataModelAction } from './DataModelAction';
+import { DataModelQuery } from './types/DataModelQuery';
+import { APIDataModel } from './types/DataModel';
 export declare type SequelizeModelType = any;
 export declare type DataModelOptions = {};
-export declare class DataModel {
+export declare abstract class DataModel<Schema = any> {
     protected name: string;
-    protected orm: DataModelORM | null;
     protected primaryKey: string;
     protected id: string | null;
     protected options: DataModelOptions;
+    protected references: {
+        [modelName: string]: {
+            field: string;
+            referenceField: string;
+        };
+    };
     protected fields: {
         [key: string]: DataModelField;
     };
     protected actions: {
         [key: string]: DataModelAction;
     };
-    protected model: SequelizeModelType | MongooseModel<MongooseDocument> | null;
-    static DATA_MODEL_TYPES: {
-        CUSTOM: string;
-        MONGOOSE: string;
-        SEQUELIZE: string;
-    };
+    abstract constructReferences(cwire: CWire, nativeModels: {
+        [key: string]: DataModel;
+    }): Promise<any>;
+    abstract getName(): string;
+    abstract getType(): string;
+    abstract create(cwire: CWire, values: Schema): Promise<any>;
+    abstract count(cwire: CWire, query: DataModelQuery): Promise<any>;
+    abstract remove(cwire: CWire, query: DataModelQuery): Promise<any>;
+    abstract findOne(cwire: CWire, query: DataModelQuery): Promise<any>;
+    abstract findAll(cwire: CWire, query: DataModelQuery): Promise<any>;
+    abstract update(cwire: CWire, query: DataModelQuery, changes: Schema): Promise<any>;
     constructor(name: string, options: DataModelOptions);
-    getORM(): DataModelORM;
-    getName(): string;
     getPrimaryKey(): string;
     getId(): string | null;
     setId(newId: string): void;
@@ -45,6 +54,14 @@ export declare class DataModel {
             name: string;
             type: import(".").DataModelActionType;
         }[];
+    };
+    getModelReferenceField(model: DataModel): void;
+    sync(model: APIDataModel): void;
+    getReferences(): {
+        [modelName: string]: {
+            field: string;
+            referenceField: string;
+        };
     };
     getActionsMap(): {
         [name: string]: DataModelAction;

@@ -1,4 +1,6 @@
 import { DataModel } from '../DataModel';
+import { parseResponse } from '../helper/api';
+import { APIDataModel } from '../types/DataModel';
 import { API_LOGGER_PREFIX, BaseAPI } from './BaseAPI';
 
 export class DataModelAPI extends BaseAPI {
@@ -69,7 +71,28 @@ export class DataModelAPI extends BaseAPI {
       );
     }
     try {
-      return await Promise.all(responses);
+      await Promise.all(responses);
+
+      this.cwire
+        .getLogger()
+        .system(API_LOGGER_PREFIX, `Start sync models with api.`);
+
+      // Clear array
+      responses.length = 0;
+
+      for (const model of models) {
+        responses.push(this.getDataModelByName(model.getName()));
+      }
+
+      const apiModels: APIDataModel[] = await Promise.all(responses);
+
+      for (const model of apiModels) {
+        this.cwire.getDataModelByName(model.name).sync(model);
+      }
+
+      this.cwire
+        .getLogger()
+        .system(API_LOGGER_PREFIX, `Successfully sync models with api.`);
     } catch (error) {
       if (error.response) {
         this.cwire
@@ -107,8 +130,8 @@ export class DataModelAPI extends BaseAPI {
     }
   }
 
-  async getAllDataModels() {
-    return this.api.get('/models');
+  async getDataModelByName(name: string) {
+    return parseResponse<APIDataModel>(await this.api.get(`/models/${name}`));
   }
 
   /*

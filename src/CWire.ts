@@ -135,12 +135,12 @@ export class CWire {
 
       // MAP lib models to cwire data models
       for (const model of this.getDataModelsList()) {
-        nativeModels[await model.getORM().getName()] = model;
+        nativeModels[model.getName()] = model;
       }
 
       // Map field references to models
       for (const model of this.getDataModelsList()) {
-        await model.getORM().constructReferences(this, nativeModels);
+        await model.constructReferences(this, nativeModels);
       }
     } catch (error) {
       this.getLogger().error(

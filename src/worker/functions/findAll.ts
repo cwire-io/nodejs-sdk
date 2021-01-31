@@ -11,10 +11,9 @@ export class FindAll
   extends WorkerFunction
   implements IWorkerFunction<[string, DataModelQuery], any[]> {
   async controller(modelName: string, query: DataModelQuery) {
-    const dataModel = this.cwire.getDataModelByName(modelName);
-
     try {
-      const entities = await dataModel.getORM().findAll(query);
+      const dataModel = this.cwire.getDataModelByName(modelName);
+      const entities = await dataModel.findAll(this.cwire, query);
       this.cwire
         .getLogger()
         .system(

@@ -11,10 +11,9 @@ export class Remove
   extends WorkerFunction
   implements IWorkerFunction<[string, DataModelQuery], any[]> {
   async controller(modelName: string, query: DataModelQuery) {
-    const dataModel = this.cwire.getDataModelByName(modelName);
-
     try {
-      const result = await dataModel.getORM().remove(query);
+      const dataModel = this.cwire.getDataModelByName(modelName);
+      const result = await dataModel.remove(this.cwire, query);
       this.cwire
         .getLogger()
         .system(

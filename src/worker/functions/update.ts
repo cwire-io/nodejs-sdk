@@ -13,7 +13,7 @@ export class Update
   async controller(modelName: string, query: DataModelQuery, values: any) {
     try {
       const dataModel = this.cwire.getDataModelByName(modelName);
-      const entities = await dataModel.getORM().update(query, values);
+      const entities = await dataModel.update(this.cwire, query, values);
       this.cwire
         .getLogger()
         .system(

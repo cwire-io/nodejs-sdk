@@ -8,6 +8,10 @@ export declare class DataModelField {
     getName(): string;
     getType(): string;
     setReference(reference: DataModelReferenceFieldType): void;
+    getReference(): {
+        model: string;
+        field: string;
+    } | null;
     toJSON(): {
         name: string;
         type: DataModelFieldType;

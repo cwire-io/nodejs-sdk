@@ -1,6 +1,9 @@
-import { DataModelField, DataModelFieldType } from '../..';
-import { DataModelQuery } from '../../types/DataModelQuery';
 import { DataTypes, DataType, Model, Op as Operators } from 'sequelize';
+
+import { DataModelQuery } from '../../types/DataModelQuery';
+import { CWire, DataModelField, DataModelFieldType } from '../..';
+
+import SequelizeDataModel from './SequelizeDataModel';
 
 function parseSequelizeDataTypeStringToCWireDataType(
   type: string,
@@ -21,10 +24,62 @@ function parseSequelizeDataTypeStringToCWireDataType(
   }
 }
 
+export function parseSequelizeIncludingParsing(
+  cwire: CWire,
+  baseModel: SequelizeDataModel,
+  query: DataModelQuery,
+  sequelizeQuery: any,
+) {
+  const parsedIncludes: {
+    [reference: string]: { model: SequelizeDataModel; key: string };
+  } = {};
+
+  for (const reference of query.include || []) {
+    if (baseModel.getReferences()[reference]) {
+      if (
+        cwire.getDataModelByName(reference) &&
+        cwire.getDataModelByName(reference).getType() === baseModel.getType()
+      ) {
+        // @ts-ignore
+        const referencingModel: SequelizeDataModel = cwire.getDataModelByName(
+          reference,
+        );
+
+        let association = null;
+        for (const modelAssociation of Object.values<any>(
+          baseModel.getModel().associations,
+        )) {
+          if (
+            modelAssociation.source.name === baseModel.getModel().model.name &&
+            modelAssociation.target.name === referencingModel.getModel().name
+          ) {
+            association = modelAssociation;
+            break;
+          }
+        }
+
+        if (association) {
+          parsedIncludes[reference] = {
+            key: association.as,
+            model: referencingModel,
+          };
+          sequelizeQuery.include.push({
+            as: association.as,
+            model: referencingModel.getModel(),
+          });
+        }
+      }
+    }
+  }
+
+  return { sequelizeQuery, parsedIncludes };
+}
+
 export function parseDataModelQueryToSequelizeQuery(
   query: any | DataModelQuery,
 ) {
   const sequelizeQuery: any = {};
+  sequelizeQuery.include = [];
 
   if (!query) {
     return sequelizeQuery;

@@ -63,3 +63,19 @@ export type DataModelFieldOptionsType =
   | DataModelFieldOptions$BooleanFieldType
   | DataModelFieldOptions$PasswordFieldType
   | DataModelFieldOptions$DescriptionFieldType;
+
+export type APIDataModelFieldReference = {
+  model: string;
+  field: string;
+};
+export type APIDataModelField = {
+  id: string;
+  name: string;
+  isUnique: boolean;
+  isPrimary: boolean;
+  type: DataModelFieldType;
+  isNullable: boolean;
+  isRequired: boolean;
+  reference: null | APIDataModelFieldReference;
+  defaultValue: null | string | number | boolean;
+};

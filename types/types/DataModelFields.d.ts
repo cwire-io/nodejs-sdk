@@ -42,3 +42,18 @@ export declare type DataModelFieldOptions$DescriptionFieldType = {
 } & BaseDataModelFieldOptions;
 export declare type DataModelFieldType = TextFieldType | EmailFieldType | NumberFieldType | CustomFieldType | BooleanFieldType | PasswordFieldType | DescriptionFieldType;
 export declare type DataModelFieldOptionsType = DataModelFieldOptions$TextFieldType | DataModelFieldOptions$EmailFieldType | DataModelFieldOptions$NumberFieldType | DataModelFieldOptions$CustomFieldType | DataModelFieldOptions$BooleanFieldType | DataModelFieldOptions$PasswordFieldType | DataModelFieldOptions$DescriptionFieldType;
+export declare type APIDataModelFieldReference = {
+    model: string;
+    field: string;
+};
+export declare type APIDataModelField = {
+    id: string;
+    name: string;
+    isUnique: boolean;
+    isPrimary: boolean;
+    type: DataModelFieldType;
+    isNullable: boolean;
+    isRequired: boolean;
+    reference: null | APIDataModelFieldReference;
+    defaultValue: null | string | number | boolean;
+};

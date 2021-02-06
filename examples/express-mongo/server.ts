@@ -1,5 +1,6 @@
 import express from 'express';
 import mongoose, { Schema } from 'mongoose';
+
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
 import { CWire, MongooseDataModel } from '../../';
@@ -9,17 +10,23 @@ const mongod = new MongoMemoryServer();
 
 (async () => {
   const uri = await mongod.getUri();
-  const User = mongoose.model(
-    'User',
-    new Schema({
-      email: String,
-      lastName: String,
-      firstName: {
-        type: String,
-        default: 'first',
-      },
-    }),
-  );
+
+  const UserSchema = new Schema({
+    email: String,
+    lastName: String,
+    firstName: {
+      type: String,
+      default: 'first',
+    },
+  });
+
+  // tslint:disable-next-line:only-arrow-functions
+  UserSchema.pre('updateOne', function (next) {
+    console.log('updateOne');
+    next();
+  });
+
+  const User = mongoose.model('User', UserSchema);
 
   const Settings = mongoose.model(
     'settings',
@@ -32,7 +39,7 @@ const mongod = new MongoMemoryServer();
 
   mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-  const models = [new MongooseDataModel(User), new MongooseDataModel(Settings)];
+  const models = [new MongooseDataModel(User)];
 
   /* CWire set references manually
   models[1].getFieldByName('userId').setReference({
@@ -43,13 +50,9 @@ const mongod = new MongoMemoryServer();
   });
    */
 
-  await CWire.init(
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MDEwNDdkYjA0NjE1OTFiNjMwYTQxYTciLCJpYXQiOjE2MTE5MzY4NDF9.Rq_AV8soMmDLU_7gge48cCeJ9ZH2wqJ-XzqCwhmLGWY',
-    {
-      models,
-      apiURL: 'http://localhost:5000',
-    },
-  );
+  await CWire.init('<YOUR_API_KEY>', {
+    models,
+  });
 
   await User.create({
     firstName: 'Chris',
@@ -66,6 +69,22 @@ const mongod = new MongoMemoryServer();
     lastName: 'CWire',
     email: 'moritz@example.com',
   });
+
+  /*
+  Testing for entity history logging
+  await User.updateMany(
+    { email: 'moritz@example.com' },
+    { $set: { firstName: 'Christoph' } },
+  );
+  await User.updateOne(
+    { email: 'leon@example.com' },
+    { $set: { firstName: 'Tittler' } },
+  );
+  await User.update(
+    { email: 'chris@example.com' },
+    { $set: { firstName: 'Tittler' } },
+  );
+   */
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));

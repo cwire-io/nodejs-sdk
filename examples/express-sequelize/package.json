@@ -9,8 +9,8 @@
   "scripts": {
     "build": "tsc",
     "start": "ts-node server.ts",
-		"inspect": "node --inspect -r ts-node/register server.ts",
-    "watch": "nodemon -e ts -w ../../ -x yarn start"
+    "watch": "nodemon -e ts -w ../../ -x yarn start",
+    "inspect": "node --inspect -r ts-node/register server.ts"
   },
   "dependencies": {
     "@cwire/nodejs-sdk": "../../",

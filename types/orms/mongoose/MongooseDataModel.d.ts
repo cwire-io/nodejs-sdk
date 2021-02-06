@@ -1,11 +1,12 @@
 import { Model as MongooseModel, Document as MongooseDocument } from 'mongoose';
 import { CWire } from '../../CWire';
-import { DataModel } from '../../DataModel';
 import { DataModelQuery } from '../../types/DataModelQuery';
+import { DataModel, DataModelOptions } from '../../DataModel';
 export declare const MongooseType = "Mongoose";
+export declare type MongooseDataModelOptions = Partial<{} & DataModelOptions>;
 export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
     protected model: MongooseModel<MongooseDocument>;
-    constructor(model: MongooseModel<MongooseDocument>);
+    constructor(model: MongooseModel<MongooseDocument>, options?: MongooseDataModelOptions);
     getName(): string;
     getType(): string;
     constructReferences(cwire: CWire, nativeModels: {

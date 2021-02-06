@@ -11,7 +11,19 @@ import { APIDataModel } from './types/DataModel';
 
 export type SequelizeModelType = any;
 
-export type DataModelOptions = {};
+export type DataModelOptions = Partial<{
+  isEditable: boolean;
+  isCreatable: boolean;
+  isDeletable: boolean;
+  useEntityHistory: boolean;
+}>;
+
+export const defaultOptions: DataModelOptions = {
+  isEditable: true,
+  isDeletable: true,
+  isCreatable: true,
+  useEntityHistory: true,
+};
 
 export abstract class DataModel<Schema = any> {
   protected name: string;
@@ -84,6 +96,9 @@ export abstract class DataModel<Schema = any> {
     return {
       id: this.getId(),
       name: this.getName(),
+      isEditable: this.getOptions().isEditable,
+      isCreatable: this.getOptions().isCreatable,
+      isDeletable: this.getOptions().isDeletable,
       fields: this.getFieldsList().map((field) => field.toJSON()),
       actions: this.getActionsList().map((action) => action.toJSON()),
     };

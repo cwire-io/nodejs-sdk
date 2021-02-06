@@ -4,7 +4,13 @@ import { DataModelAction } from './DataModelAction';
 import { DataModelQuery } from './types/DataModelQuery';
 import { APIDataModel } from './types/DataModel';
 export declare type SequelizeModelType = any;
-export declare type DataModelOptions = {};
+export declare type DataModelOptions = Partial<{
+    isEditable: boolean;
+    isCreatable: boolean;
+    isDeletable: boolean;
+    useEntityHistory: boolean;
+}>;
+export declare const defaultOptions: DataModelOptions;
 export declare abstract class DataModel<Schema = any> {
     protected name: string;
     protected primaryKey: string;
@@ -41,6 +47,9 @@ export declare abstract class DataModel<Schema = any> {
     toJSON(): {
         id: string | null;
         name: string;
+        isEditable: boolean | undefined;
+        isCreatable: boolean | undefined;
+        isDeletable: boolean | undefined;
         fields: {
             name: string;
             type: import(".").DataModelFieldType;

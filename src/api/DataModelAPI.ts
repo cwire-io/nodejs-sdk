@@ -18,7 +18,6 @@ export class DataModelAPI extends BaseAPI {
       this.cwire
         .getLogger()
         .system(API_LOGGER_PREFIX, 'Initialising worker data models.');
-      await this.clearAllDataModels();
       await this.syncModels(this.cwire.getDataModelsList());
       this.cwire
         .getLogger()
@@ -55,7 +54,7 @@ export class DataModelAPI extends BaseAPI {
                 worker: worker.name,
               })}`,
             );
-            const response = this.api.post('/models', {
+            const response = this.api.post('/models/', {
               ...model.toJSON(),
               worker: worker.name,
             });
@@ -115,30 +114,6 @@ export class DataModelAPI extends BaseAPI {
     }
   }
 
-  async clearAllDataModels() {
-    try {
-      this.cwire
-        .getLogger()
-        .system(API_LOGGER_PREFIX, `Start clean up worker data models`);
-      const response = this.api.post('/models/clear');
-      this.cwire
-        .getLogger()
-        .system(
-          API_LOGGER_PREFIX,
-          `Successfully clean up all worker data models.`,
-        );
-      return response;
-    } catch (error) {
-      this.cwire
-        .getLogger()
-        .error(
-          API_LOGGER_PREFIX,
-          `Failed to clean up worker data models with the error ${error.toString()}`,
-        );
-      return error;
-    }
-  }
-
   async getDataModelByName(name: string) {
     return parseResponse<APIDataModel>(await this.api.get(`/models/${name}`));
   }
@@ -147,15 +122,19 @@ export class DataModelAPI extends BaseAPI {
     event: DATA_MODEL_ENTITY_EVENTS,
     entityId: string,
     model: DataModel,
-    changes: any,
-    description: string = '',
+    {
+      description = '',
+      before = null,
+      after = null,
+    }: Partial<{ description: string; before: any; after: any }> = {},
   ) {
     return parseResponse(
       await this.api.post(`/models/${model.getName()}/events`, {
         event,
         entityId,
-        changes: JSON.stringify(changes),
         description: description || null,
+        after: after && JSON.stringify(after),
+        before: before && JSON.stringify(before),
       }),
     );
   }

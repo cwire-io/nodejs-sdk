@@ -1,11 +1,12 @@
 import { CWire } from '../../CWire';
-import { DataModel } from '../../DataModel';
 import { DataModelQuery } from '../../types/DataModelQuery';
+import { DataModel, DataModelOptions } from '../../DataModel';
 export declare type SequelizeModel = any;
 export declare const SequelizeType = "Sequelize";
+export declare type SequelizeDataModelOptions = Partial<{} & DataModelOptions>;
 export default class SequelizeDataModel<Schema = any> extends DataModel<Schema> {
     protected model: SequelizeModel;
-    constructor(model: SequelizeModel);
+    constructor(model: SequelizeModel, options?: SequelizeDataModelOptions);
     getName(): string;
     getType(): string;
     constructReferences(cwire: CWire, nativeModels: {

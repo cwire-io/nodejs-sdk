@@ -29,7 +29,7 @@ export class FindAll
         .getLogger()
         .error(
           FIND_ALL_ENTITY_LOGGER_PREFIX,
-          `Error on entity creation: ${err.toString()}`,
+          `Error find all: ${err.toString()}`,
         );
     }
 

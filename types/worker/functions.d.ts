@@ -1,5 +1,5 @@
-import { CWire } from "../CWire";
-import { IWorkerFunction } from "./WorkerFunction";
+import { CWire } from '../CWire';
+import { IWorkerFunction } from './WorkerFunction';
 export declare class WorkerFunctions {
     cwire: CWire;
     static instance: WorkerFunctions;

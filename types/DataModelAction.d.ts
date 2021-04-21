@@ -1,4 +1,4 @@
-import { DataModelActionOptionsType, DataModelActionType } from "./types/DataModelActions";
+import { DataModelActionOptionsType, DataModelActionType } from './types/DataModelActions';
 export declare class DataModelAction {
     private name;
     private type;

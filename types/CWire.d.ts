@@ -1,7 +1,7 @@
 import { CWireAPI } from './CWireAPI';
 import { DataModel } from './DataModel';
 import { AlertActionType, ButtonActionType, ToggleActionType } from './types/DataModelActions';
-import { BooleanFieldType, CustomFieldType, DescriptionFieldType, EmailFieldType, NumberFieldType, PasswordFieldType, TextFieldType } from './types/DataModelFields';
+import { TextFieldType, NumberFieldType, CustomFieldType, BooleanFieldType, DateFieldType, DateTimeFieldType, TimestampFieldType, EmailFieldType, PasswordFieldType, DescriptionFieldType } from './types/DataModelFields';
 import { APIWorkerInfoType } from './types/Worker';
 import Logger, { LogLevel } from './helper/logger';
 import { WorkerFunctions } from './worker/functions';
@@ -16,12 +16,15 @@ export declare class CWire {
     private static instance;
     static FIELD_TYPES: {
         TEXT: TextFieldType;
-        EMAIL: EmailFieldType;
         NUMBER: NumberFieldType;
         CUSTOM: CustomFieldType;
         BOOLEAN: BooleanFieldType;
+        EMAIL: EmailFieldType;
         PASSWORD: PasswordFieldType;
         DESCRIPTION: DescriptionFieldType;
+        DATE: DateFieldType;
+        DATETIME: DateTimeFieldType;
+        TIMESTAMP: TimestampFieldType;
     };
     static ACTIONS: {
         ALERT: AlertActionType;

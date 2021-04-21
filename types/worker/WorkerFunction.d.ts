@@ -1,6 +1,6 @@
-import { CWire } from "../CWire";
+import { CWire } from '../CWire';
 export declare type WorkerAPIFunctionValueParameter = {
-    type: "string" | "option" | "identifier" | "values" | "query";
+    type: 'string' | 'option' | 'identifier' | 'values' | 'query';
     options?: string[];
     name: string;
     default?: any;
@@ -8,7 +8,7 @@ export declare type WorkerAPIFunctionValueParameter = {
 };
 export declare type WorkerAPIFunctionParameterGroup = {
     name: string;
-    type: "group";
+    type: 'group';
     parameters: (WorkerAPIFunctionValueParameter | WorkerAPIFunctionParameterGroup | WorkerAPIFunctionParameterGroup[])[];
 };
 export declare type WorkerAPIFunctionParameter = WorkerAPIFunctionValueParameter | WorkerAPIFunctionParameterGroup;

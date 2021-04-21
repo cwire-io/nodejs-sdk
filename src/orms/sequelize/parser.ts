@@ -19,6 +19,10 @@ function parseSequelizeDataTypeStringToCWireDataType(
     case DataTypes.DOUBLE.key:
     case DataTypes.FLOAT.key:
       return 'number';
+    case DataTypes.DATEONLY.key:
+      return 'date';
+    case DataTypes.DATE.key:
+      return 'dateTime';
     default:
       return 'text';
   }

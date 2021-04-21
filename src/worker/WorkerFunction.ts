@@ -1,7 +1,7 @@
-import { CWire } from "../CWire";
+import { CWire } from '../CWire';
 
 export type WorkerAPIFunctionValueParameter = {
-  type: "string" | "option" | "identifier" | "values" | "query";
+  type: 'string' | 'option' | 'identifier' | 'values' | 'query';
   options?: string[];
   name: string;
   default?: any;
@@ -9,8 +9,12 @@ export type WorkerAPIFunctionValueParameter = {
 };
 export type WorkerAPIFunctionParameterGroup = {
   name: string;
-  type: "group";
-  parameters: (WorkerAPIFunctionValueParameter | WorkerAPIFunctionParameterGroup | WorkerAPIFunctionParameterGroup[])[];
+  type: 'group';
+  parameters: (
+    | WorkerAPIFunctionValueParameter
+    | WorkerAPIFunctionParameterGroup
+    | WorkerAPIFunctionParameterGroup[]
+  )[];
 };
 export type WorkerAPIFunctionParameter =
   | WorkerAPIFunctionValueParameter

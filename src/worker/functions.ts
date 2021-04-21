@@ -1,14 +1,14 @@
-import { CWire } from "../CWire";
-import { FindAll } from "./functions/findAll";
-import { IWorkerFunction } from "./WorkerFunction";
-import { FindOne } from "./functions/findOne";
-import { Create } from "./functions/create";
-import { Remove } from "./functions/remove";
-import { Update } from "./functions/update";
-import { Dispatch } from "./functions/dispatch";
-import { FindOrCreate } from "./functions/findOrCreate";
-import { Count } from "./functions/count";
-import { Bulk } from "./functions/bulk";
+import { CWire } from '../CWire';
+import { FindAll } from './functions/findAll';
+import { IWorkerFunction } from './WorkerFunction';
+import { FindOne } from './functions/findOne';
+import { Create } from './functions/create';
+import { Remove } from './functions/remove';
+import { Update } from './functions/update';
+import { Dispatch } from './functions/dispatch';
+import { FindOrCreate } from './functions/findOrCreate';
+import { Count } from './functions/count';
+import { Bulk } from './functions/bulk';
 
 export class WorkerFunctions {
   cwire: CWire;

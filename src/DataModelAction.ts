@@ -1,9 +1,9 @@
 import {
   DataModelActionOptionsType,
   DataModelActionType,
-} from "./types/DataModelActions";
-import { CWire } from "./CWire";
-import { WrongActionTypeError } from "./errors";
+} from './types/DataModelActions';
+import { CWire } from './CWire';
+import { WrongActionTypeError } from './errors';
 
 export class DataModelAction {
   private name: string;
@@ -34,7 +34,7 @@ export class DataModelAction {
   }
 
   public static isValidActionType(type: any): boolean {
-    if (typeof type !== "string") return false;
+    if (typeof type !== 'string') return false;
 
     // @ts-ignore
     return !!CWire.ACTIONS[type.toUpperCase()];

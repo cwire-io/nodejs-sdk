@@ -1,1 +1,1 @@
-{"version":3,"file":"WorkerFunction.js","sourceRoot":"","sources":["../../src/worker/WorkerFunction.ts"],"names":[],"mappings":";;;AAiBA,MAAsB,eAAe;CASpC;AATD,0CASC;AACD,MAAa,cAAc;IAGzB,YAAY,KAAY;QACtB,IAAI,CAAC,KAAK,GAAG,KAAK,CAAC;IACrB,CAAC;CACF;AAND,wCAMC"}
+{"version":3,"file":"WorkerFunction.js","sourceRoot":"","sources":["../../src/worker/WorkerFunction.ts"],"names":[],"mappings":";;;AAqBA,MAAsB,eAAe;CASpC;AATD,0CASC;AACD,MAAa,cAAc;IAGzB,YAAY,KAAY;QACtB,IAAI,CAAC,KAAK,GAAG,KAAK,CAAC;IACrB,CAAC;CACF;AAND,wCAMC"}

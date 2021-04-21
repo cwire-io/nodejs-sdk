@@ -9,13 +9,19 @@ import {
   ToggleActionType,
 } from './types/DataModelActions';
 import {
-  BooleanFieldType,
-  CustomFieldType,
-  DescriptionFieldType,
-  EmailFieldType,
-  NumberFieldType,
-  PasswordFieldType,
+  // Generic
   TextFieldType,
+  NumberFieldType,
+  CustomFieldType,
+  BooleanFieldType,
+  // Time
+  DateFieldType,
+  DateTimeFieldType,
+  TimestampFieldType,
+  // UI
+  EmailFieldType,
+  PasswordFieldType,
+  DescriptionFieldType,
 } from './types/DataModelFields';
 
 import { APIWorkerInfoType } from './types/Worker';
@@ -37,21 +43,37 @@ export class CWire {
   private logger: Logger;
   private static instance: CWire | null = null;
   public static FIELD_TYPES: {
+    // Generic
     TEXT: TextFieldType;
-    EMAIL: EmailFieldType;
     NUMBER: NumberFieldType;
     CUSTOM: CustomFieldType;
     BOOLEAN: BooleanFieldType;
+
+    // UI
+    EMAIL: EmailFieldType;
     PASSWORD: PasswordFieldType;
     DESCRIPTION: DescriptionFieldType;
+
+    // Date
+    DATE: DateFieldType;
+    DATETIME: DateTimeFieldType;
+    TIMESTAMP: TimestampFieldType;
   } = {
+    // Generic
     TEXT: 'text',
-    EMAIL: 'email',
     NUMBER: 'number',
     CUSTOM: 'custom',
     BOOLEAN: 'boolean',
+
+    // UI
+    EMAIL: 'email',
     PASSWORD: 'password',
     DESCRIPTION: 'description',
+
+    // TIME
+    DATE: 'date',
+    DATETIME: 'dateTime',
+    TIMESTAMP: 'timestamp',
   };
   public static ACTIONS: {
     ALERT: AlertActionType;

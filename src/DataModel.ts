@@ -105,12 +105,14 @@ export abstract class DataModel<Schema = any> {
   }
 
   public getModelReferenceField(model: DataModel) {
+    /*
     for (const field of this.getFieldsList()) {
       if (field.getReference()) {
         if (field.getReference()?.model === model.getName()) {
         }
       }
     }
+     */
   }
 
   public sync(model: APIDataModel) {

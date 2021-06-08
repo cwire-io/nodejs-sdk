@@ -7,6 +7,7 @@ export declare type SequelizeDataModelOptions = Partial<{} & DataModelOptions>;
 export default class SequelizeDataModel<Schema = any> extends DataModel<Schema> {
     protected model: SequelizeModel;
     constructor(model: SequelizeModel, options?: SequelizeDataModelOptions);
+    static parse(models: SequelizeModel[], options?: SequelizeDataModelOptions): SequelizeDataModel[];
     getName(): string;
     getType(): string;
     constructReferences(cwire: CWire, nativeModels: {

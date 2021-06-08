@@ -1,4 +1,5 @@
 import { CWire } from './CWire';
+import {REFERENCE_TYPES} from "./constants/references";
 import { WrongFieldReferenceError, WrongFieldTypeError } from './errors';
 import {
   DataModelFieldOptionsType,
@@ -24,6 +25,7 @@ export class DataModelField {
       DataModelField.isValidFieldReference(options.reference)
     ) {
       this.reference = {
+        type: options.reference.type,
         field: options.reference.field,
         model: options.reference.model,
       };
@@ -56,6 +58,7 @@ export class DataModelField {
     }
 
     return {
+      type: this.reference.type,
       model: this.reference.model,
       field: this.reference.field,
     };
@@ -67,6 +70,7 @@ export class DataModelField {
       type: this.type,
       reference: this.reference
         ? {
+            type: this.reference.type,
             model: this.reference.model,
             field: this.reference.field,
           }
@@ -82,13 +86,10 @@ export class DataModelField {
   public static isValidFieldReference(reference: any) {
     if (typeof reference !== 'object' || !reference) return false;
 
-    const { model, field } = reference;
+    const { type, model, field } = reference;
 
-    if (typeof model !== 'string' && typeof field !== 'string') {
-      return false;
-    }
-
-    return true;
+    // @ts-ignore
+    return typeof model === 'string' && typeof field === 'string' && REFERENCE_TYPES[type];
   }
 
   public static isValidFieldType(type: any): boolean {

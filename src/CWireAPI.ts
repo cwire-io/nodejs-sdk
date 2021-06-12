@@ -4,6 +4,15 @@ import { AxiosInstance } from 'axios';
 import { WorkerAPI } from './api/WorkerAPI';
 import { DataModelAPI } from './api/DataModelAPI';
 
+/**
+ * CWire API Class
+ *
+ * @property {AxiosInstance} api
+ * @property {CWire} cwire
+ * @property {WorkerAPI} workerAPI
+ * @property {DataModelAPI} dataModelAPI
+ *
+ */
 export class CWireAPI {
   private cwire: CWire;
   private readonly api: AxiosInstance;

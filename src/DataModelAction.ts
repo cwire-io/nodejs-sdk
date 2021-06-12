@@ -5,6 +5,10 @@ import {
 import { CWire } from './CWire';
 import { WrongActionTypeError } from './errors';
 
+/**
+ * @property {string} name
+ * @property {DataModelActionOptionsType} options
+ */
 export class DataModelAction {
   private name: string;
   private type: DataModelActionType;

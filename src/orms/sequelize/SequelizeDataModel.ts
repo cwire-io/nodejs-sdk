@@ -22,6 +22,11 @@ export const SequelizeType = 'Sequelize';
 
 export type SequelizeDataModelOptions = Partial<{} & DataModelOptions>;
 
+/**
+ * @memberOf DataModel
+ * @property {SequelizeModel} model
+ * @property {SequelizeDataModelOptions} options
+ */
 export default class SequelizeDataModel<
   Schema = any
 > extends DataModel<Schema> {

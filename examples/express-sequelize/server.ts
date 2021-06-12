@@ -47,7 +47,7 @@ User.hasOne(Setting, { foreignKey: 'fkUserId', as: 'Settings' });
 const models = [new SequelizeDataModel(User), new SequelizeDataModel(Setting)];
 
 (async () => {
-  await CWire.init('<YOUR_API_KEY>', {
+  await CWire.init('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI1ZmIyNzU1ZTQxM2MwYjYwY2Y1OGIxZjEiLCJpYXQiOjE2MDk1OTI3ODJ9.bf1MKiQ0lvcTy3PWUCNiNAU7YyXfSZe2j6sq4omDIEU', {
     models,
   });
   await sequelize.sync();

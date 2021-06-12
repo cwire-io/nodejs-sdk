@@ -13,6 +13,11 @@ export type BulkNodeType = {
   parameters: any[];
 };
 
+/**
+ * @memberOf WorkerFunction
+ * @property {cwire} CWire
+ * @property {WorkerFunctions} workerFunctions
+ */
 export class Bulk
   extends WorkerFunction
   implements IWorkerFunction<BulkNodeType[]> {

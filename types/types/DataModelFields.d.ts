@@ -1,6 +1,7 @@
 export declare type DataModelReferenceFieldType = {
     model: string;
     field: string;
+    type: 'one' | 'many';
 };
 export declare type BaseDataModelFieldOptions = {
     modelId?: string;

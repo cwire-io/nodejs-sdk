@@ -54,6 +54,7 @@ export declare abstract class DataModel<Schema = any> {
             name: string;
             type: import(".").DataModelFieldType;
             reference: {
+                type: "one" | "many";
                 model: string;
                 field: string;
             } | null;

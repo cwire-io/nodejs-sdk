@@ -56,41 +56,40 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
     }
 
     if (options.useEntityHistory) {
-      /*
+/*
+Issue for on update and delete query -> the execution functions are wrapped by a filtered hooks on create
+https://github.com/Automattic/mongoose/blob/1af55feb27705524bc20a66d6a0648d6ecd5f677/lib/helpers/query/applyQueryMiddleware.js
+https://github.com/vkarpov15/kareem/blob/master/index.js#L332
 
-  Issue for on update and delete query -> the execution functions are wrapped by a filtered hooks on create
-  https://github.com/Automattic/mongoose/blob/1af55feb27705524bc20a66d6a0648d6ecd5f677/lib/helpers/query/applyQueryMiddleware.js
-  https://github.com/vkarpov15/kareem/blob/master/index.js#L332
+// @ts-ignore
+console.dir(model.Query.base.update);
+// @ts-ignore
+console.dir(model.Query.base);
 
-  // @ts-ignore
-  console.dir(model.Query.base.update);
-  // @ts-ignore
-  console.dir(model.Query.base);
-
-  // @ts-ignore
-  // tslint:disable-next-line:only-arrow-functions
-  model.hooks.pre('update', function (next) {
-    next();
-    console.log('update');
-    // console.dir(this);
-  });
-  // @ts-ignore
-  // tslint:disable-next-line:only-arrow-functions
-  model.hooks.pre('updateOne', function (next) {
-    console.log('updateOne');
-    next();
-  });
-  // @ts-ignore
-  // tslint:disable-next-line:only-arrow-functions
-  model._middleware.pre('updateOne', function (next) {
-    console.log('updateOne');
-    next();
-  });
-  // tslint:disable-next-line:only-arrow-functions
-  model.schema.pre('updateOne', function (next) {
-    console.log('updateOne');
-    next();
-  });
+// @ts-ignore
+// tslint:disable-next-line:only-arrow-functions
+model.hooks.pre('update', function (next) {
+  next();
+  console.log('update');
+  // console.dir(this);
+});
+// @ts-ignore
+// tslint:disable-next-line:only-arrow-functions
+model.hooks.pre('updateOne', function (next) {
+  console.log('updateOne');
+  next();
+});
+// @ts-ignore
+// tslint:disable-next-line:only-arrow-functions
+model._middleware.pre('updateOne', function (next) {
+  console.log('updateOne');
+  next();
+});
+// tslint:disable-next-line:only-arrow-functions
+model.schema.pre('updateOne', function (next) {
+  console.log('updateOne');
+  next();
+});
 */
 
       const dataModel = this;
@@ -164,6 +163,7 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
         if (nativeModels[ref] && nativeModels[ref].getFieldByName('_id')) {
           this.getFieldByName(fieldName).setReference({
             field: '_id',
+            type: 'many',
             model: await nativeModels[ref].getName(),
           });
         }

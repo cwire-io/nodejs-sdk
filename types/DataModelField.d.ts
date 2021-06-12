@@ -9,6 +9,7 @@ export declare class DataModelField {
     getType(): string;
     setReference(reference: DataModelReferenceFieldType): void;
     getReference(): {
+        type: "one" | "many";
         model: string;
         field: string;
     } | null;
@@ -16,12 +17,13 @@ export declare class DataModelField {
         name: string;
         type: DataModelFieldType;
         reference: {
+            type: "one" | "many";
             model: string;
             field: string;
         } | null;
         isPrimary: boolean;
     };
     isPrimaryField(): boolean;
-    static isValidFieldReference(reference: any): boolean;
+    static isValidFieldReference(reference: any): any;
     static isValidFieldType(type: any): boolean;
 }

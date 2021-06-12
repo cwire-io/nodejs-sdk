@@ -1,10 +1,11 @@
+import faker from 'faker';
 import express from 'express';
-import { CWire, SequelizeDataModel } from '../../';
+import { CWire, DataModelAction, SequelizeDataModel } from '../../';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 const app = express();
 
-const sequelize = new Sequelize('sqlite::memory');
+const sequelize = new Sequelize('sqlite::memory', { logging: false });
 
 class User extends Model {}
 class Setting extends Model {}
@@ -44,33 +45,30 @@ Setting.init(
 Setting.belongsTo(User, { foreignKey: 'fkUserId', as: 'Users' });
 User.hasOne(Setting, { foreignKey: 'fkUserId', as: 'Settings' });
 
-const models = [new SequelizeDataModel(User), new SequelizeDataModel(Setting)];
+const models = SequelizeDataModel.parse([User, Setting], { isEditable: true });
 
+// PROD: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MDA5YWYyODBlMzhlYzBjMjcyYWZhNGIiLCJpYXQiOjE2MTg3ODQwNjZ9.f_LnPpPYtBssBTbcYuEhFFC046ch4UEr1hYQVuHFZgQ
+// LOCAL: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MDdjOWI2YWI1MzA0MDkwZWEwOWM0ZmIiLCJpYXQiOjE2MTkxMTkzNDZ9.SS_N28pjF1TAqkXFARBb3lOcS2TRYlHIi-Ir1bGV8XE
 (async () => {
-  await CWire.init('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI1ZmIyNzU1ZTQxM2MwYjYwY2Y1OGIxZjEiLCJpYXQiOjE2MDk1OTI3ODJ9.bf1MKiQ0lvcTy3PWUCNiNAU7YyXfSZe2j6sq4omDIEU', {
+  await CWire.init('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MDA5YWYyODBlMzhlYzBjMjcyYWZhNGIiLCJpYXQiOjE2MTg3ODQwNjZ9.f_LnPpPYtBssBTbcYuEhFFC046ch4UEr1hYQVuHFZgQ', {
     models,
+    // logger: "none",
+    // apiURL: 'http://localhost:5000',
   });
   await sequelize.sync();
+  const promises = [];
 
-  const chris = await User.create({
-    firstName: 'Chris',
-    lastName: 'CWire',
-    email: 'chris@example.com',
-  });
-  await Setting.create({
-    isAllowed: true,
-    fkUserId: chris.getDataValue('id'),
-  });
-  await User.create({
-    firstName: 'Leon',
-    lastName: 'CWire',
-    email: 'leon@example.com',
-  });
-  await User.create({
-    firstName: 'Moritz',
-    lastName: 'CWire',
-    email: 'moritz@example.com',
-  });
+  for (let index = 0; index < 5000; index++) {
+
+    promises.push(User.create({
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      email: faker.internet.email(),
+    }));
+  }
+
+  await Promise.all(promises);
+
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));

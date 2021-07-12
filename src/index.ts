@@ -1,17 +1,23 @@
 import { CWire } from './CWire';
 import { DataModel } from './DataModel';
 import { DataModelField } from './DataModelField';
-import { DataModelAction } from './DataModelAction';
+import {
+  DataModelAction,
+  ModelAction,
+  Action,
+  MultipleEntityAction,
+  SingleEntityAction,
+} from './DataModelAction';
+import { CWireFrontendClient, FrontendClient } from './CWireFrontendClient';
+
+
 import {
   DataModelFieldType,
   DataModelFieldOptionsType,
 } from './types/DataModelFields';
-import {
-  DataModelActionType,
-  DataModelActionOptionsType,
-} from './types/DataModelActions';
 
 export * from './orms';
+
 export {
   CWire,
   DataModel,
@@ -20,8 +26,12 @@ export {
   DataModelFieldType,
   DataModelFieldOptionsType,
   // Data Model Actions
+  Action,
+  FrontendClient,
+  CWireFrontendClient,
+  ModelAction,
   DataModelAction,
-  DataModelActionType,
-  DataModelActionOptionsType,
+  SingleEntityAction,
+  MultipleEntityAction,
 };
 export default CWire;

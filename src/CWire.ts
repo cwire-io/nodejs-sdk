@@ -4,11 +4,6 @@ import { CWireAPI } from './CWireAPI';
 import { DataModel } from './DataModel';
 
 import {
-  AlertActionType,
-  ButtonActionType,
-  ToggleActionType,
-} from './types/DataModelActions';
-import {
   // Generic
   TextFieldType,
   NumberFieldType,
@@ -74,15 +69,6 @@ export class CWire {
     DATE: 'date',
     DATETIME: 'dateTime',
     TIMESTAMP: 'timestamp',
-  };
-  public static ACTIONS: {
-    ALERT: AlertActionType;
-    TOGGLE: ToggleActionType;
-    BUTTON: ButtonActionType;
-  } = {
-    ALERT: 'alert',
-    TOGGLE: 'toggle',
-    BUTTON: 'button',
   };
 
   private api: CWireAPI;

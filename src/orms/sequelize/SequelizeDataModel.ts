@@ -145,8 +145,11 @@ export default class SequelizeDataModel<
     }
   }
 
-  public static parse(models: SequelizeModel[], options: SequelizeDataModelOptions = { ...defaultOptions }): SequelizeDataModel[] {
-    return models.map(model => new SequelizeDataModel(model, options));
+  public static parse(
+    models: SequelizeModel[],
+    options: SequelizeDataModelOptions = { ...defaultOptions },
+  ): SequelizeDataModel[] {
+    return models.map((model) => new SequelizeDataModel(model, options));
   }
 
   public getName(): string {
@@ -156,7 +159,6 @@ export default class SequelizeDataModel<
   public getType(): string {
     return SequelizeType;
   }
-
 
   public async constructReferences(
     cwire: CWire,
@@ -170,11 +172,21 @@ export default class SequelizeDataModel<
           const { model: modelName, key: field } = sequelizeField.references;
 
           let referenceType: 'one' | 'many' = 'many';
-          for (const association of Object.values(this.model.associations) as any[]) {
-            if ((association.target.name || '').toUpperCase() === modelName.toUpperCase()) {
-              for (const targetAssociation of Object.values(association.target.associations) as any[]) {
+          for (const association of Object.values(
+            this.model.associations,
+          ) as any[]) {
+            if (
+              (association.target.name || '').toUpperCase() ===
+              modelName.toUpperCase()
+            ) {
+              for (const targetAssociation of Object.values(
+                association.target.associations,
+              ) as any[]) {
                 if (targetAssociation.target === this.model) {
-                  if (targetAssociation.constructor.name.toUpperCase() === 'HASONE') {
+                  if (
+                    targetAssociation.constructor.name.toUpperCase() ===
+                    'HASONE'
+                  ) {
                     referenceType = 'one';
                   }
                   break;
@@ -183,7 +195,6 @@ export default class SequelizeDataModel<
               break;
             }
           }
-
 
           if (
             nativeModels[modelName] &&

@@ -62,7 +62,7 @@ export declare abstract class DataModel<Schema = any> {
         }[];
         actions: {
             name: string;
-            type: import(".").DataModelActionType;
+            type: import("./types/DataModelAction").DataModelActionType;
         }[];
     };
     getModelReferenceField(model: DataModel): void;

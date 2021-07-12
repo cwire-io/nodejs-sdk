@@ -52,7 +52,7 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
     }
 
     if (options.useEntityHistory) {
-/*
+      /*
 Issue for on update and delete query -> the execution functions are wrapped by a filtered hooks on create
 https://github.com/Automattic/mongoose/blob/1af55feb27705524bc20a66d6a0648d6ecd5f677/lib/helpers/query/applyQueryMiddleware.js
 https://github.com/vkarpov15/kareem/blob/master/index.js#L332

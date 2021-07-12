@@ -1,5 +1,5 @@
 import { CWire } from './CWire';
-import {REFERENCE_TYPES} from "./constants/references";
+import { REFERENCE_TYPES } from './constants/references';
 import { WrongFieldReferenceError, WrongFieldTypeError } from './errors';
 import {
   DataModelFieldOptionsType,
@@ -89,7 +89,12 @@ export class DataModelField {
     const { type, model, field } = reference;
 
     // @ts-ignore
-    return typeof model === 'string' && typeof field === 'string' && REFERENCE_TYPES[type];
+    return (
+      typeof model === 'string' &&
+      typeof field === 'string' &&
+      // @ts-ignore
+      REFERENCE_TYPES[type]
+    );
   }
 
   public static isValidFieldType(type: any): boolean {

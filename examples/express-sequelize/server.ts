@@ -1,7 +1,7 @@
 import faker from 'faker';
 import express from 'express';
-import { CWire, DataModelAction, SequelizeDataModel } from '../../';
 import { DataTypes, Model, Sequelize } from 'sequelize';
+import {CWire, Action, SequelizeDataModel, FrontendClient} from '../../';
 
 const app = express();
 
@@ -47,13 +47,19 @@ User.hasOne(Setting, { foreignKey: 'fkUserId', as: 'Settings' });
 
 const models = SequelizeDataModel.parse([User, Setting], { isEditable: true });
 
-// PROD: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MDA5YWYyODBlMzhlYzBjMjcyYWZhNGIiLCJpYXQiOjE2MTg3ODQwNjZ9.f_LnPpPYtBssBTbcYuEhFFC046ch4UEr1hYQVuHFZgQ
+models[0].addAction(new Action('Login', async (entityId, options) => {
+  const { clientId } = options;
+  await FrontendClient.openLink(clientId, 'https://google.com');
+}));
+
+
+// PROD: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MGQzNjI1MmE0ZmIzMTE4ODBlNTI5NjIiLCJpYXQiOjE2MjQ0NjYwMDJ9.jyrrcZXOLjk0zPba15U58_IhWWbPSM7q_bnV1Ia9J34
 // LOCAL: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MDdjOWI2YWI1MzA0MDkwZWEwOWM0ZmIiLCJpYXQiOjE2MTkxMTkzNDZ9.SS_N28pjF1TAqkXFARBb3lOcS2TRYlHIi-Ir1bGV8XE
 (async () => {
-  await CWire.init('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MDA5YWYyODBlMzhlYzBjMjcyYWZhNGIiLCJpYXQiOjE2MTg3ODQwNjZ9.f_LnPpPYtBssBTbcYuEhFFC046ch4UEr1hYQVuHFZgQ', {
+  await CWire.init('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MDdjOWI2YWI1MzA0MDkwZWEwOWM0ZmIiLCJpYXQiOjE2MjYxMjQ4OTV9.TR3rf1EqVlXfSnCO8zEnYdIh_JuyPbVJyzImvbbEt-U', {
     models,
     // logger: "none",
-    // apiURL: 'http://localhost:5000',
+    apiURL: 'http://localhost:5000',
   });
   await sequelize.sync();
   const promises = [];

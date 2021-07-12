@@ -27,6 +27,12 @@ import { CWireWebSocket } from './CWireWebSocket';
 import { CONSTRUCT_REFERENCES_LOGGER_PREFIX } from './constants/logger';
 import { CWireIsNotInitialised, DataModelNotFoundError } from './errors';
 
+/**
+ * @property {string} route
+ * @property {string} apiURL
+ * @property {LogLevel} logger
+ * @property {DataModel} models
+ */
 interface CWireOptions {
   route?: string;
   apiURL?: string;
@@ -34,6 +40,11 @@ interface CWireOptions {
   models?: DataModel[];
 }
 
+/**
+ * Main class for cwire SDK
+ * @property {string} apiKey
+ * @property {CWireOptions} options
+ */
 export class CWire {
   private logger: Logger;
   private static instance: CWire | null = null;

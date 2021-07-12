@@ -25,6 +25,10 @@ export const defaultOptions: DataModelOptions = {
   useEntityHistory: true,
 };
 
+/**
+ * @property {string} name
+ * @property {DataModelOptions} options
+ */
 export abstract class DataModel<Schema = any> {
   protected name: string;
   // Typescript does not check that this variable is created by the init functions

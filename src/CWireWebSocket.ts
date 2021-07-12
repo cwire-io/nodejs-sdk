@@ -7,6 +7,12 @@ import {
   DISCONNECT_TO_CWIRE_LOGGER_PREFIX,
 } from './constants/logger';
 
+/**
+ * Websocket connection
+ *
+ * @property {cwire} CWire
+ * @property {Socket} socket
+ */
 export class CWireWebSocket {
   private cwire: CWire;
   private socket: typeof Socket | undefined;

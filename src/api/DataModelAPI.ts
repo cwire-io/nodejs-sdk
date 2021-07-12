@@ -12,6 +12,10 @@ export type DATA_MODEL_ENTITY_EVENTS =
   | 'DISPATCHED'
   | string;
 
+/**
+ * @memberOf BaseAPI
+ *
+ */
 export class DataModelAPI extends BaseAPI {
   async init() {
     try {

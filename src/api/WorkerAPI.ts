@@ -5,6 +5,9 @@ import { API_LOGGER_PREFIX } from '../constants/logger';
 
 import { BaseAPI } from './BaseAPI';
 
+/**
+ * @memberOf BaseAPI
+ */
 export class WorkerAPI extends BaseAPI {
   async init() {
     try {

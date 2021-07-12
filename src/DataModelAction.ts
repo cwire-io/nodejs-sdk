@@ -8,6 +8,10 @@ import {
 } from './types/DataModelAction';
 import { MissingRequiredPropertyError } from './errors';
 
+/**
+ * @property {string} name
+ * @property {DataModelActionOptionsType} options
+ */
 export class DataModelAction {
   // @ts-ignore
   private name: string;

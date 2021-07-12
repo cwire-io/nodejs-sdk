@@ -1,6 +1,10 @@
 import { CWire } from '../CWire';
 import { AxiosInstance, AxiosResponse } from 'axios';
 
+/**
+ * @property {cwire} CWire
+ * @property {AxiosInstance} api
+ */
 export class BaseAPI {
   cwire: CWire;
   api: AxiosInstance;

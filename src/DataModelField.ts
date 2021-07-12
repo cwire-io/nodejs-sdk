@@ -7,6 +7,10 @@ import {
   DataModelReferenceFieldType,
 } from './types/DataModelFields';
 
+/**
+ * @property {string} name
+ * @property {DataModelFieldOptionsType} options
+ */
 export class DataModelField {
   private readonly name: string;
   private readonly isPrimary: boolean;

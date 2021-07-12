@@ -21,6 +21,10 @@ export const MongooseType = 'Mongoose';
 
 export type MongooseDataModelOptions = Partial<{} & DataModelOptions>;
 
+/**
+ * @property {MongooseModel} model
+ * @property {MongooseDataModelOptions} options
+ */
 export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
   protected model: MongooseModel<MongooseDocument>;
 

@@ -3,6 +3,9 @@ export type LogType = 'info' | 'system' | 'warning' | 'error';
 
 export const CONSTRUCT_REFERENCES_LOGGER_PREFIX = 'CONSTRUCT_REFERENCES';
 
+/**
+ * @property {LogLevel} logLevel
+ */
 export default class Logger {
   logLevel: LogLevel;
 

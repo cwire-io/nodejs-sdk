@@ -7,14 +7,19 @@ import {
 export class Dispatch
   extends WorkerFunction
   implements IWorkerFunction<[string, string, string, string[]], any[]> {
-  async controller(clientId: string, modelName: string, action: string, entityIds: string[]) {
+  async controller(
+    clientId: string,
+    modelName: string,
+    action: string,
+    entityIds: string[],
+  ) {
     const model = this.cwire.getDataModelByName(modelName);
 
     if (!model) {
       return { success: false };
     }
 
-    const modelAction = model.getActionByName(action)
+    const modelAction = model.getActionByName(action);
     if (!modelAction) {
       return { success: false };
     }
@@ -22,19 +27,19 @@ export class Dispatch
     const options = { clientId };
 
     switch (modelAction.getType()) {
-      case "none": {
+      case 'none': {
         // @ts-ignore
-        await modelAction.callHandler(options)
+        await modelAction.callHandler(options);
         break;
       }
       case 'one': {
         // @ts-ignore
-        await modelAction.callHandler(entityIds[0], options)
+        await modelAction.callHandler(entityIds[0], options);
         break;
       }
-      case "multiple": {
+      case 'multiple': {
         // @ts-ignore
-        await modelAction.callHandler(entityIds, options)
+        await modelAction.callHandler(entityIds, options);
         break;
       }
       default: {
@@ -66,7 +71,12 @@ export class Dispatch
         type: 'option',
         name: 'action',
         isRequired: true,
-        options: this.cwire.getDataModelsList().map((model) => model.getActionsList().map(action => action.getName())).reduce((current, actions) => [...current, ...actions], []),
+        options: this.cwire
+          .getDataModelsList()
+          .map((model) =>
+            model.getActionsList().map((action) => action.getName()),
+          )
+          .reduce((current, actions) => [...current, ...actions], []),
       },
       {
         name: 'entityIds',

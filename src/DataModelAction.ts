@@ -4,7 +4,8 @@ import {
   EntityActionOptions,
   EntityActionFunction,
   EntityActionFunction$One,
-  EntityActionFunction$None, EntityActionFunction$Multiple,
+  EntityActionFunction$None,
+  EntityActionFunction$Multiple,
 } from './types/DataModelAction';
 import { MissingRequiredPropertyError } from './errors';
 
@@ -29,9 +30,21 @@ export class DataModelAction {
   };
 
   constructor(name: string, handler: EntityActionFunction$One);
-  constructor(name: string, options: { type: 'one' } & EntityActionOptions , handler: EntityActionFunction$One);
-  constructor(name: string, options: { type: 'none' } & EntityActionOptions , handler: EntityActionFunction$None);
-  constructor(name: string, options: { type: 'multiple' } & EntityActionOptions, handler: EntityActionFunction$Multiple);
+  constructor(
+    name: string,
+    options: { type: 'one' } & EntityActionOptions,
+    handler: EntityActionFunction$One,
+  );
+  constructor(
+    name: string,
+    options: { type: 'none' } & EntityActionOptions,
+    handler: EntityActionFunction$None,
+  );
+  constructor(
+    name: string,
+    options: { type: 'multiple' } & EntityActionOptions,
+    handler: EntityActionFunction$Multiple,
+  );
 
   constructor(...params: ActionConstructors) {
     const name = params[0];

@@ -10,7 +10,6 @@ import {
 } from './DataModelAction';
 import { CWireFrontendClient, FrontendClient } from './CWireFrontendClient';
 
-
 import {
   DataModelFieldType,
   DataModelFieldOptionsType,

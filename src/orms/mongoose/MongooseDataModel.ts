@@ -1,18 +1,18 @@
 import { Model as MongooseModel, Document as MongooseDocument } from 'mongoose';
 
 import { CWire } from '../../CWire';
-import { DataModelField } from '../../DataModelField';
-import { MissingRequiredPropertyError } from '../../errors';
-import { DataModelQuery } from '../../types/DataModelQuery';
-import { CONSTRUCT_REFERENCES_LOGGER_PREFIX } from '../../helper/logger';
-import { DataModel, DataModelOptions, defaultOptions } from '../../DataModel';
-
-import { buildMongooseEntitiesResponse } from './response';
-import { parseDataModelQueryToMongooseQuery } from './query';
 import {
   DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX,
   DATA_MODEL_ENTITY_UPDATED_EVENT_LOGGER_PREFIX,
 } from '../../constants/logger';
+import { DataModelQuery } from '../../types/DataModelQuery';
+import { MissingRequiredPropertyError } from '../../errors';
+import { CONSTRUCT_REFERENCES_LOGGER_PREFIX } from '../../helper/logger';
+import { DataModel, DataModelOptions, defaultOptions } from '../../DataModel';
+
+import { parseSchema } from './parser';
+import { buildMongooseEntitiesResponse } from './response';
+import { parseDataModelQueryToMongooseQuery } from './query';
 
 export const MongooseType = 'Mongoose';
 
@@ -41,24 +41,11 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
     this.model = model;
     this.primaryKey = '_id';
 
-    /*
-    for (const fieldName of Object.keys(this.model.schema.paths)) {
-      const field = this.model.schema.paths[fieldName];
-      const dataType = parseMongooseSchemaToCWireDataType(field);
-
-      if (dataType === 'SingleSchema') {
-        parseMongooseNestedSchemaToCWireDataType
-      }
-
-      if (dataType !== null) {
-        this.fields[fieldName] = new DataModelField(fieldName, {
-          // @ts-ignore
-          type: dataType,
-          isPrimary: fieldName === '_id',
-        });
-      }
+    const fields = parseSchema(this.model.schema);
+    for (const field of fields) {
+      this.fields[field.getName()] = field;
     }
-     */
+
     if (options.useEntityHistory) {
       const dataModel = this;
       // @ts-ignore

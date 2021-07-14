@@ -41,13 +41,15 @@ const mongod = new MongoMemoryServer();
 
   const models = [new MongooseDataModel(User)];
 
-  /* CWire set references manually
-  models[1].getFieldByName('userId').setReference({
-    // CWire model name
-    model: 'users',
-    // CWire model field name
-    field: '_id',
-  });
+  /***
+   *
+   * CWire set references manually
+   * models[1].getFieldByName('userId').setReference({
+   *  // CWire model name
+   *  model: 'users',
+   *  // CWire model field name
+   *  field: '_id',
+   * });
    */
 
   await CWire.init('<YOUR_API_KEY>', {
@@ -69,22 +71,6 @@ const mongod = new MongoMemoryServer();
     lastName: 'CWire',
     email: 'moritz@example.com',
   });
-
-  /*
-  Testing for entity history logging
-  await User.updateMany(
-    { email: 'moritz@example.com' },
-    { $set: { firstName: 'Christoph' } },
-  );
-  await User.updateOne(
-    { email: 'leon@example.com' },
-    { $set: { firstName: 'Tittler' } },
-  );
-  await User.update(
-    { email: 'chris@example.com' },
-    { $set: { firstName: 'Tittler' } },
-  );
-   */
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));

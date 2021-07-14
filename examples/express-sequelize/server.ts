@@ -11,7 +11,6 @@ class User extends Model {}
 class Setting extends Model {}
 User.init(
   {
-    // Model attributes are defined here
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -47,19 +46,15 @@ User.hasOne(Setting, { foreignKey: 'fkUserId', as: 'Settings' });
 
 const models = SequelizeDataModel.parse([User, Setting], { isEditable: true });
 
-models[0].addAction(new Action('Login', async (entityId, options) => {
+models[0].addAction(new Action('Open Google', async (entityId, options) => {
   const { clientId } = options;
   await FrontendClient.openLink(clientId, 'https://google.com');
 }));
 
 
-// PROD: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MGQzNjI1MmE0ZmIzMTE4ODBlNTI5NjIiLCJpYXQiOjE2MjQ0NjYwMDJ9.jyrrcZXOLjk0zPba15U58_IhWWbPSM7q_bnV1Ia9J34
-// LOCAL: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MDdjOWI2YWI1MzA0MDkwZWEwOWM0ZmIiLCJpYXQiOjE2MTkxMTkzNDZ9.SS_N28pjF1TAqkXFARBb3lOcS2TRYlHIi-Ir1bGV8XE
 (async () => {
-  await CWire.init('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MDdjOWI2YWI1MzA0MDkwZWEwOWM0ZmIiLCJpYXQiOjE2MjYxMjQ4OTV9.TR3rf1EqVlXfSnCO8zEnYdIh_JuyPbVJyzImvbbEt-U', {
+  await CWire.init('<API_KEY>', {
     models,
-    // logger: "none",
-    apiURL: 'http://localhost:5000',
   });
   await sequelize.sync();
   const promises = [];

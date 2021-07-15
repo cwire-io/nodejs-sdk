@@ -114,7 +114,7 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
     for (const fieldName of Object.keys(this.model.schema.paths)) {
       try {
         // @ts-ignore
-        const ref = mongooseModel.schema.paths[fieldName].options.ref;
+        const ref = this.model.schema.paths[fieldName].options.ref;
         if (nativeModels[ref] && nativeModels[ref].getFieldByName('_id')) {
           this.getFieldByName(fieldName).setReference({
             field: '_id',

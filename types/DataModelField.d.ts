@@ -1,12 +1,14 @@
 import { DataModelFieldOptionsType, DataModelFieldType, DataModelReferenceFieldType } from './types/DataModelFields';
 export declare class DataModelField {
     private readonly name;
+    private type;
     private readonly isPrimary;
-    private readonly type;
+    private displayName;
     private reference;
     constructor(name: string, options: DataModelFieldOptionsType);
     getName(): string;
-    getType(): string;
+    getType(): DataModelFieldType;
+    setDisplayName(displayName: string): void;
     setReference(reference: DataModelReferenceFieldType): void;
     getReference(): {
         type: "one" | "many";
@@ -14,6 +16,7 @@ export declare class DataModelField {
         field: string;
     } | null;
     toJSON(): {
+        displayName?: string;
         name: string;
         type: DataModelFieldType;
         reference: {

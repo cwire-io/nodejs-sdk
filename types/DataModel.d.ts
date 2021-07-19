@@ -51,6 +51,7 @@ export declare abstract class DataModel<Schema = any> {
         isCreatable: boolean | undefined;
         isDeletable: boolean | undefined;
         fields: {
+            displayName?: string;
             name: string;
             type: import(".").DataModelFieldType;
             reference: {

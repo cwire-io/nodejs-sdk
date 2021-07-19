@@ -4,6 +4,7 @@ const GENERIC_MONGOOSE_FIELD_MAP: { [key: string]: DataModelFieldType } = {
   ObjectId: 'text',
   SchemaString: 'text',
   SchemaNumber: 'number',
+  SchemaDate: 'timestamp',
   SchemaBoolean: 'boolean',
 };
 

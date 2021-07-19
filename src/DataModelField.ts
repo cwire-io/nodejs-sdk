@@ -13,8 +13,9 @@ import {
  */
 export class DataModelField {
   private readonly name: string;
+  private type: DataModelFieldType;
   private readonly isPrimary: boolean;
-  private readonly type: DataModelFieldType;
+  private displayName: string | null = null;
   private reference: DataModelReferenceFieldType | null = null;
 
   constructor(name: string, options: DataModelFieldOptionsType) {
@@ -44,8 +45,12 @@ export class DataModelField {
     return this.name;
   }
 
-  public getType(): string {
+  public getType(): DataModelFieldType {
     return this.type;
+  }
+
+  public setDisplayName(displayName: string): void {
+    this.displayName = displayName;
   }
 
   public setReference(reference: DataModelReferenceFieldType) {
@@ -80,6 +85,9 @@ export class DataModelField {
           }
         : null,
       isPrimary: this.isPrimary,
+      ...(typeof this.displayName === 'string'
+        ? { displayName: this.displayName }
+        : {}),
     };
   }
 

@@ -16,6 +16,7 @@ function parseSequelizeDataTypeStringToCWireDataType(
     case DataTypes.BOOLEAN.key:
       return 'boolean';
     case DataTypes.INTEGER.key:
+    case DataTypes.NUMBER.key:
     case DataTypes.DOUBLE.key:
     case DataTypes.FLOAT.key:
       return 'number';

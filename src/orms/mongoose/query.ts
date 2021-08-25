@@ -23,27 +23,27 @@ export function parseDataModelQueryToMongooseQuery(query: DataModelQuery) {
         // String
         if (whereQuery.$like && typeof whereQuery.$like === 'string') {
           mongooseQuery[key] = {
-            $regex: new RegExp(whereQuery.$like.replace('%', '.*')),
+            $regex: new RegExp(whereQuery.$like.replace(/%/g, '.*'), 'gmi'),
           };
         }
         // String
         if (whereQuery.$notLike && typeof whereQuery.$notLike === 'string') {
           mongooseQuery[key] = {
-            $not: new RegExp(whereQuery.$notLike.replace('%', '.*')),
+            $not: new RegExp(whereQuery.$notLike.replace(/%/g, '.*')),
           };
         }
 
         // String
         if (whereQuery.$regex && typeof whereQuery.$regex === 'string') {
           mongooseQuery[key] = {
-            $regex: new RegExp(whereQuery.$regex.replace('%', '.*')),
+            $regex: new RegExp(whereQuery.$regex),
           };
         }
 
         // String
         if (whereQuery.$notRegex && typeof whereQuery.$notRegex === 'string') {
           mongooseQuery[key] = {
-            $not: new RegExp(whereQuery.$notRegex.replace('%', '.*')),
+            $not: new RegExp(whereQuery.$notRegex),
           };
         }
 
@@ -62,7 +62,7 @@ export function parseDataModelQueryToMongooseQuery(query: DataModelQuery) {
           (typeof whereQuery.$equal === 'string' ||
             typeof whereQuery.$equal === 'number')
         ) {
-          mongooseQuery[key].$eq = whereQuery.$equal;
+          mongooseQuery[key] = whereQuery.$equal;
         }
 
         // (String | Number)[]

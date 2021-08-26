@@ -12,6 +12,7 @@ export function parseDataModelQueryToMongooseQuery(query: DataModelQuery) {
     for (const key of Object.keys(query.where)) {
       if (
         typeof query.where[key] === 'number' ||
+        typeof query.where[key] === 'boolean' ||
         typeof query.where[key] === 'string'
       ) {
         mongooseQuery[key] = query.where[key];

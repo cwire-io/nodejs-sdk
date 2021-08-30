@@ -10,9 +10,9 @@ import { MissingRequiredPropertyError } from '../../errors';
 import { CONSTRUCT_REFERENCES_LOGGER_PREFIX } from '../../helper/logger';
 import { DataModel, DataModelOptions, defaultOptions } from '../../DataModel';
 
-import { parseSchema } from './parser';
-import { buildMongooseEntitiesResponse } from './response';
-import { parseDataModelQueryToMongooseQuery } from './query';
+import { parseSchema } from './field';
+import { buildMongooseEntitiesResponse } from './entity';
+import { parseWhereQuery } from './query';
 
 export const MongooseType = 'Mongoose';
 
@@ -142,18 +142,16 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
     if (query && query.group) {
       return this.model
         .aggregate()
-        .match(parseDataModelQueryToMongooseQuery(query))
+        .match(parseWhereQuery(query?.where))
         .group(query.group)
         .exec();
     }
 
-    return this.model.count(parseDataModelQueryToMongooseQuery(query || {}));
+    return this.model.count(parseWhereQuery(query?.where || {}));
   }
 
   async findAll(cwire: CWire, query: DataModelQuery): Promise<any> {
-    let mongooseQuery = this.model.find(
-      parseDataModelQueryToMongooseQuery(query),
-    );
+    let mongooseQuery = this.model.find(parseWhereQuery(query?.where));
 
     if (query.limit && typeof query.limit === 'number') {
       mongooseQuery = mongooseQuery.limit(query.limit);
@@ -168,9 +166,7 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
   }
 
   async findOne(cwire: CWire, query: DataModelQuery): Promise<any> {
-    let mongooseQuery = this.model.findOne(
-      parseDataModelQueryToMongooseQuery(query),
-    );
+    let mongooseQuery = this.model.findOne(parseWhereQuery(query?.where));
 
     if (query.limit && typeof query.limit === 'number') {
       mongooseQuery = mongooseQuery.limit(query.limit);
@@ -185,7 +181,7 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
   }
 
   async remove(cwire: CWire, query: DataModelQuery): Promise<any> {
-    return this.model.remove(parseDataModelQueryToMongooseQuery(query)).exec();
+    return this.model.remove(parseWhereQuery(query?.where)).exec();
   }
 
   async update(
@@ -194,7 +190,7 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
     changes: any,
   ): Promise<any> {
     const entity = await this.model
-      .update(parseDataModelQueryToMongooseQuery(query), changes)
+      .update(parseWhereQuery(query?.where), changes)
       .exec();
     return buildMongooseEntitiesResponse(this.getFieldsList(), [entity]);
   }

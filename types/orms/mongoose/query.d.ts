@@ -1,2 +1,2 @@
-import { DataModelQuery } from '../../types/DataModelQuery';
-export declare function parseDataModelQueryToMongooseQuery(query: DataModelQuery): any;
+import { DataModelQuery$Where } from '../../types/DataModelQuery';
+export declare function parseWhereQuery(query?: DataModelQuery$Where): any;

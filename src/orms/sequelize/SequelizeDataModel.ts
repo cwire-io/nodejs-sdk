@@ -5,12 +5,9 @@ import { DataModelFieldOptionsType } from '../../types/DataModelFields';
 import { CONSTRUCT_REFERENCES_LOGGER_PREFIX } from '../../helper/logger';
 import { DataModel, DataModelOptions, defaultOptions } from '../../DataModel';
 
-import {
-  buildEntitiesResponse,
-  parseDataModelQueryToSequelizeQuery,
-  parseSequelizeDataTypeToCWireDataType,
-  parseSequelizeIncludingParsing,
-} from './parser';
+import { buildEntitiesResponse } from './entity';
+import { parseQueryToSequelize } from './query';
+import { parseSequelizeDataTypes } from './field';
 import {
   DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX,
   DATA_MODEL_ENTITY_DELETED_EVENT_LOGGER_PREFIX,
@@ -50,7 +47,7 @@ export default class SequelizeDataModel<
         // @ts-ignore
         const fieldOptions: DataModelFieldOptionsType = {
           isPrimary: sequelizeField.primaryKey,
-          type: parseSequelizeDataTypeToCWireDataType(sequelizeField.type),
+          type: parseSequelizeDataTypes(sequelizeField.type),
         };
 
         this.fields[sequelizeField.field] = new DataModelField(
@@ -226,9 +223,7 @@ export default class SequelizeDataModel<
   }
 
   public async count(cwire: CWire, query: DataModelQuery): Promise<any> {
-    const numberOfEntities = this.model.count(
-      parseDataModelQueryToSequelizeQuery(query),
-    );
+    const numberOfEntities = this.model.count(parseQueryToSequelize(query));
     return numberOfEntities || 0;
   }
 
@@ -238,9 +233,7 @@ export default class SequelizeDataModel<
   }
 
   public async findAll(cwire: CWire, query: DataModelQuery): Promise<any> {
-    const entities = await this.model.findAll(
-      parseDataModelQueryToSequelizeQuery(query),
-    );
+    const entities = await this.model.findAll(parseQueryToSequelize(query));
     return buildEntitiesResponse(this.getFieldsList(), entities);
   }
 
@@ -249,59 +242,7 @@ export default class SequelizeDataModel<
   }
 
   public async findOne(cwire: CWire, query: DataModelQuery): Promise<any> {
-    const parsedQuery = parseDataModelQueryToSequelizeQuery(query);
-    const { sequelizeQuery, parsedIncludes } = parseSequelizeIncludingParsing(
-      cwire,
-      this,
-      query,
-      parsedQuery,
-    );
-
-    // TODO Implement cloud including
-    /*
-    if (query.include) {
-      for (const reference of query.include) {
-        if (this.getReferences()[reference]) {
-          if (
-            cwire.getDataModelByName(reference) &&
-            cwire.getDataModelByName(reference).getType() === this.getType()
-          ) {
-            // @ts-ignore
-            const referencingModel: SequelizeDataModel = cwire.getDataModelByName(
-              reference,
-            );
-            if (!parsedQuery.include) {
-              parsedQuery.include = [];
-            }
-
-            let association = null;
-            for (const modelAssociation of Object.values<any>(
-              this.model.associations,
-            )) {
-              if (
-                modelAssociation.source.name === this.model.name &&
-                modelAssociation.target.name === referencingModel.model.name
-              ) {
-                association = modelAssociation;
-                break;
-              }
-            }
-
-            if (association) {
-              sequelizeIncludes.push({
-                key: association.as,
-                model: referencingModel,
-              });
-              parsedQuery.include.push({
-                as: association.as,
-                model: referencingModel.model,
-              });
-            }
-          }
-        }
-      }
-    }
-    */
+    const parsedQuery = parseQueryToSequelize(query);
     const entity = await this.model.findOne(parsedQuery);
 
     if (!entity) {
@@ -312,7 +253,7 @@ export default class SequelizeDataModel<
   }
 
   public async remove(cwire: CWire, query: DataModelQuery): Promise<any> {
-    return this.model.destroy(parseDataModelQueryToSequelizeQuery(query));
+    return this.model.destroy(parseQueryToSequelize(query));
   }
 
   public async update(
@@ -320,9 +261,7 @@ export default class SequelizeDataModel<
     query: DataModelQuery,
     changes: any,
   ): Promise<any> {
-    const entity = await this.model.findOne(
-      parseDataModelQueryToSequelizeQuery(query),
-    );
+    const entity = await this.model.findOne(parseQueryToSequelize(query));
 
     if (!entity) {
       return null;

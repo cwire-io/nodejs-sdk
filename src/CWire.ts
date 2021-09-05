@@ -17,6 +17,7 @@ import {
   EmailFieldType,
   PasswordFieldType,
   DescriptionFieldType,
+  MongoDBObjectIdFieldType,
 } from './types/DataModelFields';
 
 import { APIWorkerInfoType } from './types/Worker';
@@ -55,6 +56,9 @@ export class CWire {
     CUSTOM: CustomFieldType;
     BOOLEAN: BooleanFieldType;
 
+    // MongoDB
+    OBJECTID: MongoDBObjectIdFieldType;
+
     // UI
     EMAIL: EmailFieldType;
     PASSWORD: PasswordFieldType;
@@ -70,6 +74,9 @@ export class CWire {
     NUMBER: 'number',
     CUSTOM: 'custom',
     BOOLEAN: 'boolean',
+
+    // MONGODB
+    OBJECTID: 'objectId',
 
     // UI
     EMAIL: 'email',

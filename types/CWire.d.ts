@@ -1,6 +1,6 @@
 import { CWireAPI } from './CWireAPI';
 import { DataModel } from './DataModel';
-import { TextFieldType, NumberFieldType, CustomFieldType, BooleanFieldType, DateFieldType, DateTimeFieldType, TimestampFieldType, EmailFieldType, PasswordFieldType, DescriptionFieldType } from './types/DataModelFields';
+import { TextFieldType, NumberFieldType, CustomFieldType, BooleanFieldType, DateFieldType, DateTimeFieldType, TimestampFieldType, EmailFieldType, PasswordFieldType, DescriptionFieldType, MongoDBObjectIdFieldType } from './types/DataModelFields';
 import { APIWorkerInfoType } from './types/Worker';
 import Logger, { LogLevel } from './helper/logger';
 import { WorkerFunctions } from './worker/functions';
@@ -18,6 +18,7 @@ export declare class CWire {
         NUMBER: NumberFieldType;
         CUSTOM: CustomFieldType;
         BOOLEAN: BooleanFieldType;
+        OBJECTID: MongoDBObjectIdFieldType;
         EMAIL: EmailFieldType;
         PASSWORD: PasswordFieldType;
         DESCRIPTION: DescriptionFieldType;

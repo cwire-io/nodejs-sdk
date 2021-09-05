@@ -1,7 +1,7 @@
 import { DataModelField, DataModelFieldType } from '../..';
 
 const GENERIC_MONGOOSE_FIELD_MAP: { [key: string]: DataModelFieldType } = {
-  ObjectId: 'text',
+  ObjectId: 'objectId',
   SchemaString: 'text',
   SchemaNumber: 'number',
   SchemaDate: 'timestamp',

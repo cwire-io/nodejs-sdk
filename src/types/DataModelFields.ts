@@ -46,6 +46,15 @@ export type GenericDataModelFieldOptionsTypes =
   | DataModelFieldOptions$BooleanFieldType
   | DataModelFieldOptions$CustomFieldType;
 
+// MONGODB
+export type MongoDBObjectIdFieldType = 'objectId';
+export type DataModelFieldOptions$MongoDBObjectIdFieldType = {
+  type: MongoDBObjectIdFieldType;
+} & BaseDataModelFieldOptions;
+
+export type MongoDBDataModelFieldTypes = MongoDBObjectIdFieldType;
+export type MongoDBDataModelFieldOptionsTypes = DataModelFieldOptions$MongoDBObjectIdFieldType;
+
 // UI
 export type EmailFieldType = 'email';
 export type DataModelFieldOptions$EmailFieldType = {
@@ -99,11 +108,13 @@ export type DateDataModelFieldOptionsTypes =
 export type DataModelFieldType =
   | GenericDataModelFieldTypes
   | UIDataModelFieldTypes
-  | TimeDataModelFieldTypes;
+  | TimeDataModelFieldTypes
+  | MongoDBDataModelFieldTypes;
 export type DataModelFieldOptionsType =
   | UIDataModelFieldOptionsTypes
   | DateDataModelFieldOptionsTypes
-  | GenericDataModelFieldOptionsTypes;
+  | GenericDataModelFieldOptionsTypes
+  | MongoDBDataModelFieldOptionsTypes;
 
 export type APIDataModelFieldReference = {
   model: string;

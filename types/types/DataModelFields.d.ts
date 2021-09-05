@@ -31,6 +31,12 @@ export declare type DataModelFieldOptions$CustomFieldType = {
 } & BaseDataModelFieldOptions;
 export declare type GenericDataModelFieldTypes = TextFieldType | NumberFieldType | CustomFieldType | BooleanFieldType;
 export declare type GenericDataModelFieldOptionsTypes = DataModelFieldOptions$TextFieldType | DataModelFieldOptions$NumberFieldType | DataModelFieldOptions$BooleanFieldType | DataModelFieldOptions$CustomFieldType;
+export declare type MongoDBObjectIdFieldType = 'objectId';
+export declare type DataModelFieldOptions$MongoDBObjectIdFieldType = {
+    type: MongoDBObjectIdFieldType;
+} & BaseDataModelFieldOptions;
+export declare type MongoDBDataModelFieldTypes = MongoDBObjectIdFieldType;
+export declare type MongoDBDataModelFieldOptionsTypes = DataModelFieldOptions$MongoDBObjectIdFieldType;
 export declare type EmailFieldType = 'email';
 export declare type DataModelFieldOptions$EmailFieldType = {
     type: EmailFieldType;
@@ -59,8 +65,8 @@ export declare type DataModelFieldOptions$TimestampFieldType = {
 } & BaseDataModelFieldOptions;
 export declare type TimeDataModelFieldTypes = DateFieldType | DateTimeFieldType | TimestampFieldType;
 export declare type DateDataModelFieldOptionsTypes = DataModelFieldOptions$DateFieldType | DataModelFieldOptions$DateTimeFieldType | DataModelFieldOptions$TimestampFieldType;
-export declare type DataModelFieldType = GenericDataModelFieldTypes | UIDataModelFieldTypes | TimeDataModelFieldTypes;
-export declare type DataModelFieldOptionsType = UIDataModelFieldOptionsTypes | DateDataModelFieldOptionsTypes | GenericDataModelFieldOptionsTypes;
+export declare type DataModelFieldType = GenericDataModelFieldTypes | UIDataModelFieldTypes | TimeDataModelFieldTypes | MongoDBDataModelFieldTypes;
+export declare type DataModelFieldOptionsType = UIDataModelFieldOptionsTypes | DateDataModelFieldOptionsTypes | GenericDataModelFieldOptionsTypes | MongoDBDataModelFieldOptionsTypes;
 export declare type APIDataModelFieldReference = {
     model: string;
     field: string;

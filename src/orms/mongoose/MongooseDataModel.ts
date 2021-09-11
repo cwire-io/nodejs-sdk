@@ -142,16 +142,16 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
     if (query && query.group) {
       return this.model
         .aggregate()
-        .match(parseWhereQuery(query?.where))
+        .match(parseWhereQuery(this, query?.where))
         .group(query.group)
         .exec();
     }
 
-    return this.model.count(parseWhereQuery(query?.where || {}));
+    return this.model.count(parseWhereQuery(this, query?.where || {}));
   }
 
   async findAll(cwire: CWire, query: DataModelQuery): Promise<any> {
-    let mongooseQuery = this.model.find(parseWhereQuery(query?.where));
+    let mongooseQuery = this.model.find(parseWhereQuery(this, query?.where));
 
     if (query.limit && typeof query.limit === 'number') {
       mongooseQuery = mongooseQuery.limit(query.limit);
@@ -166,7 +166,7 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
   }
 
   async findOne(cwire: CWire, query: DataModelQuery): Promise<any> {
-    let mongooseQuery = this.model.findOne(parseWhereQuery(query?.where));
+    let mongooseQuery = this.model.findOne(parseWhereQuery(this, query?.where));
 
     if (query.limit && typeof query.limit === 'number') {
       mongooseQuery = mongooseQuery.limit(query.limit);
@@ -181,7 +181,7 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
   }
 
   async remove(cwire: CWire, query: DataModelQuery): Promise<any> {
-    return this.model.remove(parseWhereQuery(query?.where)).exec();
+    return this.model.remove(parseWhereQuery(this, query?.where)).exec();
   }
 
   async update(
@@ -190,7 +190,7 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
     changes: any,
   ): Promise<any> {
     const entity = await this.model
-      .update(parseWhereQuery(query?.where), changes)
+      .update(parseWhereQuery(this, query?.where), changes)
       .exec();
     return buildMongooseEntitiesResponse(this.getFieldsList(), [entity]);
   }

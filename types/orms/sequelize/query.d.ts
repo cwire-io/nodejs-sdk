@@ -1,2 +1,3 @@
 import { DataModelQuery } from '../../types/DataModelQuery';
-export declare function parseQueryToSequelize(query: any | DataModelQuery): any;
+import { DataModel } from '../../DataModel';
+export declare function parseQueryToSequelize(model: DataModel, query: any | DataModelQuery): any;

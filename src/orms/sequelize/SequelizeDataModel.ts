@@ -223,7 +223,9 @@ export default class SequelizeDataModel<
   }
 
   public async count(cwire: CWire, query: DataModelQuery): Promise<any> {
-    const numberOfEntities = this.model.count(parseQueryToSequelize(query));
+    const numberOfEntities = this.model.count(
+      parseQueryToSequelize(this, query),
+    );
     return numberOfEntities || 0;
   }
 
@@ -233,7 +235,9 @@ export default class SequelizeDataModel<
   }
 
   public async findAll(cwire: CWire, query: DataModelQuery): Promise<any> {
-    const entities = await this.model.findAll(parseQueryToSequelize(query));
+    const entities = await this.model.findAll(
+      parseQueryToSequelize(this, query),
+    );
     return buildEntitiesResponse(this.getFieldsList(), entities);
   }
 
@@ -242,7 +246,7 @@ export default class SequelizeDataModel<
   }
 
   public async findOne(cwire: CWire, query: DataModelQuery): Promise<any> {
-    const parsedQuery = parseQueryToSequelize(query);
+    const parsedQuery = parseQueryToSequelize(this, query);
     const entity = await this.model.findOne(parsedQuery);
 
     if (!entity) {
@@ -253,7 +257,7 @@ export default class SequelizeDataModel<
   }
 
   public async remove(cwire: CWire, query: DataModelQuery): Promise<any> {
-    return this.model.destroy(parseQueryToSequelize(query));
+    return this.model.destroy(parseQueryToSequelize(this, query));
   }
 
   public async update(
@@ -261,7 +265,7 @@ export default class SequelizeDataModel<
     query: DataModelQuery,
     changes: any,
   ): Promise<any> {
-    const entity = await this.model.findOne(parseQueryToSequelize(query));
+    const entity = await this.model.findOne(parseQueryToSequelize(this, query));
 
     if (!entity) {
       return null;

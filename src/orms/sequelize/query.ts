@@ -4,8 +4,10 @@ import {
   DataModelQuery$Where,
   DataModelQuery$WhereOperators,
 } from '../../types/DataModelQuery';
+import { DataModel } from '../../DataModel';
+import { parseFieldValue } from '../../helper/query';
 
-function parseWhereQuery(query?: DataModelQuery$Where): any {
+function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
   if (!query || typeof query !== 'object') {
     return null;
   }
@@ -15,7 +17,7 @@ function parseWhereQuery(query?: DataModelQuery$Where): any {
     if (key === '$and' && Array.isArray(query[key])) {
       sequelizeWhereQuery[Operators.and] = [];
       for (const subQuery of query[key] || []) {
-        const parsedQuery = parseWhereQuery(subQuery);
+        const parsedQuery = parseWhereQuery(model, subQuery);
         if (parsedQuery) {
           sequelizeWhereQuery[Operators.and].push(parsedQuery);
         }
@@ -27,7 +29,7 @@ function parseWhereQuery(query?: DataModelQuery$Where): any {
     if (key === '$or' && Array.isArray(query[key])) {
       sequelizeWhereQuery[Operators.or] = [];
       for (const subQuery of query[key] || []) {
-        const parsedQuery = parseWhereQuery(subQuery);
+        const parsedQuery = parseWhereQuery(model, subQuery);
         if (parsedQuery) {
           sequelizeWhereQuery[Operators.or].push(parsedQuery);
         }
@@ -36,12 +38,18 @@ function parseWhereQuery(query?: DataModelQuery$Where): any {
       continue;
     }
 
+    const field = model.getFieldByName(key);
+
+    if (!field) {
+      continue;
+    }
+
     if (
       typeof query[key] === 'number' ||
       typeof query[key] === 'boolean' ||
       typeof query[key] === 'string'
     ) {
-      sequelizeWhereQuery[key] = query[key];
+      sequelizeWhereQuery[key] = parseFieldValue(field, query[key]);
       continue;
     }
 
@@ -137,40 +145,34 @@ function parseWhereQuery(query?: DataModelQuery$Where): any {
       }
 
       // Number
-      if (operations.$lower && typeof operations.$lower === 'number') {
+      if (operations.$lower) {
         whereQuery = {
           ...whereQuery,
-          [Operators.lt]: operations.$lower,
+          [Operators.lt]: parseFieldValue(field, operations.$lower),
         };
       }
 
       // Number
-      if (
-        operations.$lowerOrEqual &&
-        typeof operations.$lowerOrEqual === 'number'
-      ) {
+      if (operations.$lowerOrEqual) {
         whereQuery = {
           ...whereQuery,
-          [Operators.lte]: operations.$lowerOrEqual,
+          [Operators.lte]: parseFieldValue(field, operations.$lowerOrEqual),
         };
       }
 
       // Number
-      if (operations.$higher && typeof operations.$higher === 'number') {
+      if (operations.$higher) {
         whereQuery = {
           ...whereQuery,
-          [Operators.gt]: operations.$higher,
+          [Operators.gt]: parseFieldValue(field, operations.$higher),
         };
       }
 
       // Number
-      if (
-        operations.$higherOrEqual &&
-        typeof operations.$higherOrEqual === 'number'
-      ) {
+      if (operations.$higherOrEqual) {
         whereQuery = {
           ...whereQuery,
-          [Operators.gte]: operations.$higherOrEqual,
+          [Operators.gte]: parseFieldValue(field, operations.$higherOrEqual),
         };
       }
 
@@ -208,7 +210,10 @@ function parseWhereQuery(query?: DataModelQuery$Where): any {
   return sequelizeWhereQuery;
 }
 
-export function parseQueryToSequelize(query: any | DataModelQuery) {
+export function parseQueryToSequelize(
+  model: DataModel,
+  query: any | DataModelQuery,
+) {
   const sequelizeQuery: any = {};
   sequelizeQuery.include = [];
 
@@ -249,7 +254,7 @@ export function parseQueryToSequelize(query: any | DataModelQuery) {
   }
 
   if (query.where && typeof query.where === 'object') {
-    sequelizeQuery.where = parseWhereQuery(query.where);
+    sequelizeQuery.where = parseWhereQuery(model, query.where);
   }
 
   return sequelizeQuery;

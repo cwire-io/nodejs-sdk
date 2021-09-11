@@ -16,19 +16,13 @@ export class FindOne
       const entity = await dataModel.findOne(this.cwire, query);
       this.cwire
         .getLogger()
-        .system(
-          FIND_ONE_ENTITY_LOGGER_PREFIX,
-          `Find one ${modelName} entity: ${JSON.stringify(entity)}`,
-        );
+        .system(FIND_ONE_ENTITY_LOGGER_PREFIX, `Find one ${modelName} entity`);
 
       return { success: true, data: entity };
     } catch (error) {
       this.cwire
         .getLogger()
-        .error(
-          FIND_ONE_ENTITY_LOGGER_PREFIX,
-          `Error on entity creation: ${error.toString()}`,
-        );
+        .error(FIND_ONE_ENTITY_LOGGER_PREFIX, error.toString());
     }
 
     return { success: true, data: null };

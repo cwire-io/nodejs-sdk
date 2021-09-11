@@ -18,19 +18,16 @@ export class FindAll
         .getLogger()
         .system(
           FIND_ALL_ENTITY_LOGGER_PREFIX,
-          `Find all ${dataModel} entities: ${entities}`,
+          `Send ${entities.length} ${dataModel} entities:`,
         );
       return {
         success: true,
         data: entities,
       };
-    } catch (err) {
+    } catch (error) {
       this.cwire
         .getLogger()
-        .error(
-          FIND_ALL_ENTITY_LOGGER_PREFIX,
-          `Error find all: ${err.toString()}`,
-        );
+        .error(FIND_ALL_ENTITY_LOGGER_PREFIX, error.toString());
     }
 
     return { success: true, data: [] };

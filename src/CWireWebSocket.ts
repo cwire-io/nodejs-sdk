@@ -1,10 +1,13 @@
-import { CWire } from './CWire';
+import { performance } from 'perf_hooks';
 import io, { Socket } from 'socket.io-client';
+
+import { CWire } from './CWire';
 
 import {
   CONNECT_TO_CWIRE_LOGGER_PREFIX,
   CONNECTION_ERROR_LOGGER_PREFIX,
   DISCONNECT_TO_CWIRE_LOGGER_PREFIX,
+  FUNCTION_CALL_PERFORMANCE_LOGGER_PREFIX,
 } from './constants/logger';
 
 /**
@@ -43,6 +46,8 @@ export class CWireWebSocket {
     params: [],
     resolve: (result: { error?: Error; data?: any; success: boolean }) => void,
   ) => {
+    const t0 = performance.now();
+
     try {
       const fn = this.cwire.getWorkerFunctions().getFunction(functionName);
       if (fn) {
@@ -51,6 +56,13 @@ export class CWireWebSocket {
     } catch (err) {
       resolve({ error: err.stack, success: false });
     }
+
+    this.cwire
+      .getLogger()
+      .system(
+        FUNCTION_CALL_PERFORMANCE_LOGGER_PREFIX,
+        `${functionName}: ${performance.now() - t0}ms`,
+      );
   };
 
   getWorkerFunctions = (resolve: (result: any) => void) => {

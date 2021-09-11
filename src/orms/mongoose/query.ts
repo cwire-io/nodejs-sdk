@@ -2,8 +2,13 @@ import {
   DataModelQuery$Where,
   DataModelQuery$WhereOperators,
 } from '../../types/DataModelQuery';
+import { DataModel } from '../../DataModel';
+import { parseFieldValue } from '../../helper/query';
 
-export function parseWhereQuery(query?: DataModelQuery$Where): any {
+export function parseWhereQuery(
+  model: DataModel,
+  query?: DataModelQuery$Where,
+): any {
   if (!query || typeof query !== 'object') {
     return null;
   }
@@ -13,7 +18,7 @@ export function parseWhereQuery(query?: DataModelQuery$Where): any {
     if (key === '$and' && Array.isArray(query[key])) {
       mongooseWhereQuery.$and = [];
       for (const subQuery of query[key] || []) {
-        const parsedQuery = parseWhereQuery(subQuery);
+        const parsedQuery = parseWhereQuery(model, subQuery);
         if (parsedQuery) {
           mongooseWhereQuery.$and.push(parsedQuery);
         }
@@ -25,7 +30,7 @@ export function parseWhereQuery(query?: DataModelQuery$Where): any {
     if (key === '$or' && Array.isArray(query[key])) {
       mongooseWhereQuery.$or = [];
       for (const subQuery of query[key] || []) {
-        const parsedQuery = parseWhereQuery(subQuery);
+        const parsedQuery = parseWhereQuery(model, subQuery);
         if (parsedQuery) {
           mongooseWhereQuery.$or.push(parsedQuery);
         }
@@ -34,12 +39,18 @@ export function parseWhereQuery(query?: DataModelQuery$Where): any {
       continue;
     }
 
+    const field = model.getFieldByName(key);
+
+    if (!field) {
+      continue;
+    }
+
     if (
       typeof query[key] === 'number' ||
       typeof query[key] === 'boolean' ||
       typeof query[key] === 'string'
     ) {
-      mongooseWhereQuery[key] = query[key];
+      mongooseWhereQuery[key] = parseFieldValue(field, query[key]);
       continue;
     }
 
@@ -79,26 +90,18 @@ export function parseWhereQuery(query?: DataModelQuery$Where): any {
       }
 
       // String | Number
-      if (
-        operations.$notEqual &&
-        (typeof operations.$notEqual === 'string' ||
-          typeof operations.$notEqual === 'number')
-      ) {
+      if (operations.$notEqual) {
         whereQuery = {
           ...whereQuery,
-          $ne: operations.$notEqual,
+          $ne: parseFieldValue(field, operations.$notEqual),
         };
       }
 
       // String | Number
-      if (
-        operations.$equal &&
-        (typeof operations.$equal === 'string' ||
-          typeof operations.$equal === 'number')
-      ) {
+      if (operations.$equal) {
         whereQuery = {
           ...whereQuery,
-          $eq: operations.$equal,
+          $eq: parseFieldValue(field, operations.$equal),
         };
       }
 
@@ -111,38 +114,32 @@ export function parseWhereQuery(query?: DataModelQuery$Where): any {
       }
 
       // Number
-      if (operations.$lower && typeof operations.$lower === 'number') {
+      if (operations.$lower) {
         whereQuery = {
           ...whereQuery,
-          $lt: operations.$lower,
+          $lt: parseFieldValue(field, operations.$lower),
         };
       }
 
       // Number
-      if (
-        operations.$lowerOrEqual &&
-        typeof operations.$lowerOrEqual === 'number'
-      ) {
+      if (operations.$lowerOrEqual) {
         whereQuery = {
           ...whereQuery,
-          $lte: operations.$lowerOrEqual,
+          $lte: parseFieldValue(field, operations.$lowerOrEqual),
         };
       }
       // Number
-      if (operations.$higher && typeof operations.$higher === 'number') {
+      if (operations.$higher) {
         whereQuery = {
           ...whereQuery,
-          $gt: operations.$higher,
+          $gt: parseFieldValue(field, operations.$higher),
         };
       }
       // Number
-      if (
-        operations.$higherOrEqual &&
-        typeof operations.$higherOrEqual === 'number'
-      ) {
+      if (operations.$higherOrEqual) {
         whereQuery = {
           ...whereQuery,
-          $gte: operations.$higherOrEqual,
+          $gte: parseFieldValue(field, operations.$higherOrEqual),
         };
       }
 

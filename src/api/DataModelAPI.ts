@@ -55,12 +55,12 @@ export class DataModelAPI extends BaseAPI {
               API_LOGGER_PREFIX,
               `Start syncing ${model.getName()} model: ${JSON.stringify({
                 ...model.toJSON(),
-                worker: worker.name,
+                worker: worker.id,
               })}`,
             );
             const response = this.api.post('/models/', {
               ...model.toJSON(),
-              worker: worker.name,
+              worker: worker.id,
             });
 
             this.cwire

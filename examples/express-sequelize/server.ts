@@ -73,6 +73,6 @@ models[0].addAction(new Action('Open Google', async (entityId, options) => {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  const port = process.env.PORT || 5050;
+  const port = process.env.PORT || 5555;
   app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 })();

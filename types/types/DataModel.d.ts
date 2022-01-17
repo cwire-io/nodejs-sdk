@@ -15,3 +15,20 @@ export declare type APIDataModel = {
     fields: APIDataModelField[];
     references: DataModelReference[];
 };
+export declare type APIEntityEvent = {
+    icon: string;
+    type: string;
+    color: string;
+    entityId: string;
+    modelName: string;
+    description: string;
+    after: Record<any, any> | null;
+    before: Record<any, any> | null;
+};
+export declare type EntityEventOptions = {
+    icon: string;
+    color: string;
+    description: string;
+    after: Record<any, any> | null;
+    before: Record<any, any> | null;
+};

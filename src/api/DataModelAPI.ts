@@ -1,6 +1,6 @@
 import { DataModel } from '../DataModel';
 import { parseResponse } from '../helper/api';
-import { APIDataModel } from '../types/DataModel';
+import {APIDataModel, EntityEventOptions} from '../types/DataModel';
 
 import { BaseAPI } from './BaseAPI';
 import { API_LOGGER_PREFIX } from '../constants/logger';
@@ -132,13 +132,7 @@ export class DataModelAPI extends BaseAPI {
       after = null,
       before = null,
       description = '',
-    }: Partial<{
-      after: any;
-      before: any;
-      icon: string;
-      color: string;
-      description: string;
-    }> = {},
+    }: Partial<EntityEventOptions> = {},
   ) {
     return parseResponse(
       await this.api.post(

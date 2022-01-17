@@ -8,6 +8,7 @@ import {
   MissingRequiredPropertyError,
 } from './errors';
 import { APIDataModel } from './types/DataModel';
+import { DATA_MODEL_ENTITY_EVENT_LOGGER_PREFIX } from './constants/logger';
 
 export type SequelizeModelType = any;
 
@@ -48,6 +49,7 @@ export abstract class DataModel<Schema = any> {
   ): Promise<any>;
   public abstract getName(): string;
   public abstract getType(): string;
+
   public abstract async create(cwire: CWire, values: Schema): Promise<any>;
   public abstract async count(
     cwire: CWire,
@@ -178,5 +180,37 @@ export abstract class DataModel<Schema = any> {
 
   public addField(field: DataModelField) {
     this.fields[field.getName()] = field;
+  }
+
+  public async addEntityEvent(
+    entity: any,
+    type: string,
+    options: Partial<{
+      after: any;
+      before: any;
+      icon: string;
+      color: string;
+      description: string;
+    }> = {},
+  ) {
+    try {
+      await CWire.getInstance()
+        .getAPI()
+        .getDataModelAPI()
+        .addEvent(type, `${entity.get(this.getPrimaryKey())}`, this, options);
+      CWire.getInstance()
+        .getLogger()
+        .system(
+          DATA_MODEL_ENTITY_EVENT_LOGGER_PREFIX,
+          `Log ${type} of ${entity.get(this.getPrimaryKey())}`,
+        );
+    } catch (error) {
+      CWire.getInstance()
+        .getLogger()
+        .error(
+          DATA_MODEL_ENTITY_EVENT_LOGGER_PREFIX,
+          `Error by logging ${error.toString()}`,
+        );
+    }
   }
 }

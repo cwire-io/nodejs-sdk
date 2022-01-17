@@ -19,8 +19,8 @@ import {
   DescriptionFieldType,
   MongoDBObjectIdFieldType,
 } from './types/DataModelFields';
-
 import { APIWorkerInfoType } from './types/Worker';
+
 import Logger, { LogLevel } from './helper/logger';
 import { WorkerFunctions } from './worker/functions';
 

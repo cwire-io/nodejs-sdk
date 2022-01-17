@@ -88,4 +88,11 @@ export declare abstract class DataModel<Schema = any> {
     isFieldExist(name: string): boolean;
     getFieldByName(name: string): DataModelField;
     addField(field: DataModelField): void;
+    addEntityEvent(entity: any, type: string, options?: Partial<{
+        after: any;
+        before: any;
+        icon: string;
+        color: string;
+        description: string;
+    }>): Promise<void>;
 }

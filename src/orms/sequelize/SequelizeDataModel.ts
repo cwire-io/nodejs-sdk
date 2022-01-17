@@ -57,6 +57,23 @@ export default class SequelizeDataModel<
       }
     }
 
+    if (!model.prototype.dispatch) {
+      const context = this;
+      // tslint:disable-next-line:only-arrow-functions
+      model.prototype.dispatch = function (
+        type: string,
+        eventOptions: Partial<{
+          after: any;
+          before: any;
+          icon: string;
+          color: string;
+          description: string;
+        }> = {},
+      ) {
+        return context.addEntityEvent(this, type, eventOptions);
+      };
+    }
+
     if (options.useEntityHistory) {
       // tslint:disable-next-line:no-shadowed-variable
       this.model.addHook('beforeBulkDestroy', (options: any) => {

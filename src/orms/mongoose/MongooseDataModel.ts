@@ -46,6 +46,23 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
       this.fields[field.getName()] = field;
     }
 
+    if (!model.prototype.dispatch) {
+      const context = this;
+      // tslint:disable-next-line:only-arrow-functions
+      model.prototype.dispatch = function (
+        type: string,
+        eventOptions: Partial<{
+          after: any;
+          before: any;
+          icon: string;
+          color: string;
+          description: string;
+        }> = {},
+      ) {
+        return context.addEntityEvent(this, type, eventOptions);
+      };
+    }
+
     if (options.useEntityHistory) {
       const dataModel = this;
       // @ts-ignore

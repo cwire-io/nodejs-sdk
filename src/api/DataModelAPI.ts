@@ -123,42 +123,35 @@ export class DataModelAPI extends BaseAPI {
   }
 
   async addEvent(
-    event: DATA_MODEL_ENTITY_EVENTS,
+    type: DATA_MODEL_ENTITY_EVENTS,
     entityId: string,
     model: DataModel,
     {
-      description = '',
-      before = null,
+      icon,
+      color,
       after = null,
-    }: Partial<{ description: string; before: any; after: any }> = {},
+      before = null,
+      description = '',
+    }: Partial<{
+      after: any;
+      before: any;
+      icon: string;
+      color: string;
+      description: string;
+    }> = {},
   ) {
     return parseResponse(
-      await this.api.post(`/models/${model.getName()}/events`, {
-        event,
-        entityId,
-        description: description || null,
-        after: after && JSON.stringify(after),
-        before: before && JSON.stringify(before),
-      }),
+      await this.api.post(
+        `/models/${model.getName()}/entities/${entityId}/events`,
+        {
+          type,
+          icon: icon || null,
+          color: color || null,
+          description: description || null,
+          after: after && JSON.stringify(after),
+          before: before && JSON.stringify(before),
+        },
+      ),
     );
   }
-
-  /*
-  public static parse(data: any | any[]): DataModel | DataModel[] {
-    if (Array.isArray(data)) {
-      const models: DataModel[] = [];
-      for (const model of data) {
-        const dataModel = new DataModel(model.name);
-        dataModel.changeByObject(data);
-        models.push(dataModel);
-      }
-
-      return models;
-    }
-
-    const model = new DataModel(data.name);
-    model.changeByObject(data);
-    return model;
-  }
-  */
 }

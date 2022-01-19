@@ -14,7 +14,7 @@ import {
   DataModelFieldType,
   DataModelFieldOptionsType,
 } from './types/DataModelFields';
-import { EntityEventOptions } from './types/DataModel'
+import { EntityEventOptions } from './types/DataModel';
 
 export * from './orms';
 

@@ -1,6 +1,6 @@
 import { APIDataModelField } from './DataModelFields';
-import {DataModel} from "../DataModel";
-import {DATA_MODEL_ENTITY_EVENTS} from "../api/DataModelAPI";
+import { DataModel } from '../DataModel';
+import { DATA_MODEL_ENTITY_EVENTS } from '../api/DataModelAPI';
 
 export type DataModelReference = {
   field: string;
@@ -29,7 +29,7 @@ export type APIEntityEvent = {
   description: string;
   after: Record<any, any> | null;
   before: Record<any, any> | null;
-}
+};
 
 export type EntityEventOptions = {
   icon: string;
@@ -37,4 +37,4 @@ export type EntityEventOptions = {
   description: string;
   after: Record<any, any> | null;
   before: Record<any, any> | null;
-}
+};

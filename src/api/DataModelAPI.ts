@@ -1,6 +1,6 @@
 import { DataModel } from '../DataModel';
 import { parseResponse } from '../helper/api';
-import {APIDataModel, EntityEventOptions} from '../types/DataModel';
+import { APIDataModel, EntityEventOptions } from '../types/DataModel';
 
 import { BaseAPI } from './BaseAPI';
 import { API_LOGGER_PREFIX } from '../constants/logger';

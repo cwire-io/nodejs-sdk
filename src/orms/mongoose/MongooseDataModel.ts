@@ -157,11 +157,21 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
 
   async count(cwire: CWire, query: DataModelQuery): Promise<any> {
     if (query && query.group) {
-      return this.model
+      const aggregation = this.model
         .aggregate()
-        .match(parseWhereQuery(this, query?.where))
-        .group(query.group)
-        .exec();
+        .match(parseWhereQuery(this, query?.where));
+
+      // TODO: Support multiple groups for aggregation
+      const [field] = query.group;
+      aggregation.group({ _id: `${field}`, total: { $sum: 1 } });
+      const results = await aggregation.exec();
+
+      const response = [];
+      for (const result of results) {
+        response.push({ [field]: result._id, count: result.total });
+      }
+
+      return response;
     }
 
     return this.model.count(parseWhereQuery(this, query?.where || {}));

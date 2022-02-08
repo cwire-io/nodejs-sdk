@@ -23,7 +23,7 @@ export const defaultOptions: DataModelOptions = {
   isEditable: true,
   isDeletable: true,
   isCreatable: true,
-  useEntityHistory: true,
+  useEntityHistory: false,
 };
 
 /**

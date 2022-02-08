@@ -8,7 +8,9 @@ const app = express();
 const sequelize = new Sequelize('sqlite::memory', { logging: false });
 
 class User extends Model {}
-class Setting extends Model {}
+class Project extends Model {}
+class Document extends Model {}
+
 User.init(
   {
     firstName: {
@@ -25,47 +27,86 @@ User.init(
   },
   {
     sequelize,
-    modelName: 'T_USERS',
+    modelName: 'Users',
   },
 );
-Setting.init(
+Project.init(
   {
-    isAllowed: {
-      type: DataTypes.BOOLEAN,
+    name: {
       allowNull: false,
-    },
+      type: DataTypes.STRING,
+    }
   },
   {
     sequelize,
-    modelName: 'T_SETTINGS',
+    modelName: 'Projects',
   },
 );
 
-Setting.belongsTo(User, { foreignKey: 'fkUserId', as: 'Users' });
-User.hasOne(Setting, { foreignKey: 'fkUserId', as: 'Settings' });
+Document.init(
+  {
+    name: {
+      allowNull: false,
+      type: DataTypes.STRING,
+    },
+    content: {
+      allowNull: false,
+      type: DataTypes.STRING,
+    }
+  },
+  {
+    sequelize,
+    modelName: 'Document',
+  },
+);
 
-const models = SequelizeDataModel.parse([User, Setting], { isEditable: true });
+Project.belongsTo(User, { foreignKey: 'fkUserId', as: 'User' });
+User.hasMany(Project, { foreignKey: 'fkUserId', as: 'Settings' });
 
-models[0].addAction(new Action('Open Google', async (entityId, options) => {
+Document.belongsTo(User, { foreignKey: 'fkUserId', as: 'User' });
+User.hasMany(Document, { foreignKey: 'fkUserId', as: 'Documents' });
+
+
+const models = SequelizeDataModel.parse([User, Project, Document], { isEditable: true });
+
+models[0].addAction(new Action('Open user blog', async (entityId, options) => {
   const { clientId } = options;
-  await FrontendClient.openLink(clientId, 'https://google.com');
+  await FrontendClient.openLink(clientId, 'https://dev.to');
 }));
 
 
 (async () => {
-  await CWire.init('<API_KEY>', {
+  await CWire.init('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoidjEiLCJ0eXBlIjoiYXBpLWNsaWVudCIsInBheWxvYWQiOiI2MWY4Njc5ZmZkNGIwNTY2NmIxMzU1MzYiLCJpYXQiOjE2NDM2Njk0MDd9.5egtPbQ73T_Nw_ByC-RH7ZVuGMwc52EBvmDM_hGSv6M', {
     models,
   });
   await sequelize.sync();
   const promises = [];
 
-  for (let index = 0; index < 5000; index++) {
-
-    promises.push(User.create({
+  for (let index = 0; index < 100; index++) {
+    const user = await User.create({
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
       email: faker.internet.email(),
-    }));
+    });
+    await Project.create({
+      name: faker.company.companyName(),
+      fkUserId: user.getDataValue('id')
+    });
+    await Document.create({
+      name: faker.commerce.productName(),
+      content: faker.commerce.productDescription(),
+      fkUserId: user.getDataValue('id')
+    });
+    await Document.create({
+      name: faker.commerce.productName(),
+      content: faker.commerce.productDescription(),
+      fkUserId: user.getDataValue('id')
+    });
+    await Document.create({
+      name: faker.commerce.productName(),
+      content: faker.commerce.productDescription(),
+      fkUserId: user.getDataValue('id')
+    });
   }
 
   await Promise.all(promises);

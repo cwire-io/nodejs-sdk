@@ -105,6 +105,15 @@ export function parseWhereQuery(
         };
       }
 
+      // Number[] Sequelize only
+      if (operations.$between && Array.isArray(operations.$between)) {
+        whereQuery = {
+          ...whereQuery,
+          $gte: parseFieldValue(field, operations.$between[0]),
+          $lte: parseFieldValue(field, operations.$between[1])
+        };
+      }
+
       // (String | Number)[]
       if (operations.$or && Array.isArray(operations.$or)) {
         whereQuery = {

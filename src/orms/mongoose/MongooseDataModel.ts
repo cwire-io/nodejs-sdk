@@ -163,7 +163,7 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
 
       // TODO: Support multiple groups for aggregation
       const [field] = query.group;
-      aggregation.group({ _id: `${field}`, total: { $sum: 1 } });
+      aggregation.group({ _id: `$${field}`, total: { $sum: 1 } });
       const results = await aggregation.exec();
 
       const response = [];

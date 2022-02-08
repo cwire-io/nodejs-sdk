@@ -110,7 +110,7 @@ export function parseWhereQuery(
         whereQuery = {
           ...whereQuery,
           $gte: parseFieldValue(field, operations.$between[0]),
-          $lte: parseFieldValue(field, operations.$between[1])
+          $lte: parseFieldValue(field, operations.$between[1]),
         };
       }
 

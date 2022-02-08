@@ -10,7 +10,7 @@ export function parseWhereQuery(
   query?: DataModelQuery$Where,
 ): any {
   if (!query || typeof query !== 'object') {
-    return null;
+    return {};
   }
 
   const mongooseWhereQuery: any = {};

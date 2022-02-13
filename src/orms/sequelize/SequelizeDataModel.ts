@@ -2,7 +2,9 @@ import { CWire } from '../../CWire';
 import { DataModelField } from '../../DataModelField';
 import { DataModelQuery } from '../../types/DataModelQuery';
 import { DataModelFieldOptionsType } from '../../types/DataModelFields';
-import { CONSTRUCT_REFERENCES_LOGGER_PREFIX } from '../../helper/logger';
+import Logger, {
+  CONSTRUCT_REFERENCES_LOGGER_PREFIX,
+} from '../../helper/logger';
 import { DataModel, DataModelOptions, defaultOptions } from '../../DataModel';
 
 import { buildEntitiesResponse } from './entity';
@@ -70,7 +72,11 @@ export default class SequelizeDataModel<
           description: string;
         }> = {},
       ) {
-        return context.addEntityEvent(this, type, eventOptions);
+        return context.addEntityEvent(
+          this.get(context.getPrimaryKey()),
+          type,
+          eventOptions,
+        );
       };
     }
 
@@ -91,25 +97,26 @@ export default class SequelizeDataModel<
           await CWire.getInstance()
             .getAPI()
             .getDataModelAPI()
-            .addEvent('UPDATED', `${entity.get(this.getPrimaryKey())}`, this, {
-              after: entity.dataValues,
-              before: entity._previousDataValues,
-            });
-          CWire.getInstance()
-            .getLogger()
-            .system(
-              DATA_MODEL_ENTITY_UPDATED_EVENT_LOGGER_PREFIX,
-              `Log updating of ${this.getName()} entity ${entity.get(
-                this.getPrimaryKey(),
-              )}`,
+            .addEvent(
+              'UPDATED',
+              `${entity.get(this.getPrimaryKey())}`,
+              this.getName(),
+              {
+                after: entity.dataValues,
+                before: entity._previousDataValues,
+              },
             );
+          Logger.system(
+            DATA_MODEL_ENTITY_UPDATED_EVENT_LOGGER_PREFIX,
+            `Log updating of ${this.getName()} entity ${entity.get(
+              this.getPrimaryKey(),
+            )}`,
+          );
         } catch (error) {
-          CWire.getInstance()
-            .getLogger()
-            .error(
-              DATA_MODEL_ENTITY_UPDATED_EVENT_LOGGER_PREFIX,
-              `Error by logging ${error.toString()}`,
-            );
+          Logger.error(
+            DATA_MODEL_ENTITY_UPDATED_EVENT_LOGGER_PREFIX,
+            `Error by logging ${error.toString()}`,
+          );
         }
       });
       this.model.addHook('afterCreate', async (entity: any) => {
@@ -117,24 +124,25 @@ export default class SequelizeDataModel<
           await CWire.getInstance()
             .getAPI()
             .getDataModelAPI()
-            .addEvent('CREATED', `${entity.get(this.getPrimaryKey())}`, this, {
-              after: entity,
-            });
-          CWire.getInstance()
-            .getLogger()
-            .system(
-              DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX,
-              `Log creating of ${this.getName()} entity ${entity.get(
-                this.getPrimaryKey(),
-              )}`,
+            .addEvent(
+              'CREATED',
+              `${entity.get(this.getPrimaryKey())}`,
+              this.getName(),
+              {
+                after: entity,
+              },
             );
+          Logger.system(
+            DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX,
+            `Log creating of ${this.getName()} entity ${entity.get(
+              this.getPrimaryKey(),
+            )}`,
+          );
         } catch (error) {
-          CWire.getInstance()
-            .getLogger()
-            .error(
-              DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX,
-              `Error by logging ${error.toString()}`,
-            );
+          Logger.error(
+            DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX,
+            `Error by logging ${error.toString()}`,
+          );
         }
       });
 
@@ -143,22 +151,23 @@ export default class SequelizeDataModel<
           await CWire.getInstance()
             .getAPI()
             .getDataModelAPI()
-            .addEvent('DELETED', `${entity.get(this.getPrimaryKey())}`, this, {
-              before: entity.dataValues,
-            });
-          CWire.getInstance()
-            .getLogger()
-            .system(
-              DATA_MODEL_ENTITY_DELETED_EVENT_LOGGER_PREFIX,
-              `Log deleting of ${entity.get(this.getPrimaryKey())}`,
+            .addEvent(
+              'DELETED',
+              `${entity.get(this.getPrimaryKey())}`,
+              this.getName(),
+              {
+                before: entity.dataValues,
+              },
             );
+          Logger.system(
+            DATA_MODEL_ENTITY_DELETED_EVENT_LOGGER_PREFIX,
+            `Log deleting of ${entity.get(this.getPrimaryKey())}`,
+          );
         } catch (error) {
-          CWire.getInstance()
-            .getLogger()
-            .error(
-              DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX,
-              `Error by logging ${error.toString()}`,
-            );
+          Logger.error(
+            DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX,
+            `Error by logging ${error.toString()}`,
+          );
         }
       });
     }
@@ -227,14 +236,12 @@ export default class SequelizeDataModel<
           }
         }
       } catch (error) {
-        cwire
-          .getLogger()
-          .error(
-            CONSTRUCT_REFERENCES_LOGGER_PREFIX,
-            `Failed to construct reference for ${
-              sequelizeField.field
-            } in ${this.getName()} with error ${error.toString()}`,
-          );
+        Logger.error(
+          CONSTRUCT_REFERENCES_LOGGER_PREFIX,
+          `Failed to construct reference for ${
+            sequelizeField.field
+          } in ${this.getName()} with error ${error.toString()}`,
+        );
       }
     }
   }

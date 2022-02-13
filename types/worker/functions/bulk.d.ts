@@ -1,6 +1,6 @@
 import { CWire } from '../../CWire';
-import { WorkerFunctions } from '../functions';
 import { WorkerFunction, IWorkerFunction, WorkerAPIFunctionParameter } from '../WorkerFunction';
+import { WorkerFunctions } from '../functions';
 export declare type BulkNodeType = {
     fn: string;
     parameters: any[];

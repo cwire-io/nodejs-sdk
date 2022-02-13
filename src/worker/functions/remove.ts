@@ -1,3 +1,4 @@
+import Logger from '../../helper/logger';
 import {
   WorkerFunction,
   IWorkerFunction,
@@ -13,20 +14,16 @@ export class Remove
     try {
       const dataModel = this.cwire.getDataModelByName(modelName);
       const result = await dataModel.remove(this.cwire, query);
-      this.cwire
-        .getLogger()
-        .system(
-          REMOVE_ENTITIES_LOGGER_PREFIX,
-          `Remove ${dataModel} entities ${JSON.stringify(result)}`,
-        );
+      Logger.system(
+        REMOVE_ENTITIES_LOGGER_PREFIX,
+        `Remove ${dataModel} entities ${JSON.stringify(result)}`,
+      );
       return { success: true, data: result };
     } catch (error) {
-      this.cwire
-        .getLogger()
-        .error(
-          REMOVE_ENTITIES_LOGGER_PREFIX,
-          `Error on entity creation: ${error.toString()}`,
-        );
+      Logger.error(
+        REMOVE_ENTITIES_LOGGER_PREFIX,
+        `Error on entity creation: ${error.toString()}`,
+      );
     }
 
     return { success: true, data: [] };

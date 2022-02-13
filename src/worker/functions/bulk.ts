@@ -1,12 +1,14 @@
 import { BULK_LOGGER_PREFIX } from '../../constants/logger';
 
 import { CWire } from '../../CWire';
-import { WorkerFunctions } from '../functions';
+import Logger from '../../helper/logger';
+
 import {
   WorkerFunction,
   IWorkerFunction,
   WorkerAPIFunctionParameter,
 } from '../WorkerFunction';
+import { WorkerFunctions } from '../functions';
 
 export type BulkNodeType = {
   fn: string;
@@ -44,17 +46,16 @@ export class Bulk
         }
       }
 
-      this.cwire
-        .getLogger()
-        .system(BULK_LOGGER_PREFIX, `Run bulk actions ${JSON.stringify(bulk)}`);
+      Logger.system(
+        BULK_LOGGER_PREFIX,
+        `Run bulk actions ${JSON.stringify(bulk)}`,
+      );
       return { success: true, data: await Promise.all(promises) };
     } catch (error) {
-      this.cwire
-        .getLogger()
-        .error(
-          BULK_LOGGER_PREFIX,
-          `Error on entity creation: ${error.toString()}`,
-        );
+      Logger.error(
+        BULK_LOGGER_PREFIX,
+        `Error on entity creation: ${error.toString()}`,
+      );
 
       return { success: false, data: null };
     }

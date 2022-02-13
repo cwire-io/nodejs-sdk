@@ -1,3 +1,4 @@
+import Logger from '../../helper/logger';
 import { CREATE_ENTITY_LOGGER_PREFIX } from '../../constants/logger';
 
 import {
@@ -13,23 +14,19 @@ export class Create
     try {
       const dataModel = this.cwire.getDataModelByName(modelName);
       const entity = await dataModel.create(this.cwire, values);
-      this.cwire
-        .getLogger()
-        .system(
-          CREATE_ENTITY_LOGGER_PREFIX,
-          `Created new ${modelName} entity: ${JSON.stringify(entity)}`,
-        );
+      Logger.system(
+        CREATE_ENTITY_LOGGER_PREFIX,
+        `Created new ${modelName} entity: ${JSON.stringify(entity)}`,
+      );
       return {
         success: true,
         data: entity,
       };
     } catch (err) {
-      this.cwire
-        .getLogger()
-        .error(
-          CREATE_ENTITY_LOGGER_PREFIX,
-          `Error on entity creation: ${err.toString()}`,
-        );
+      Logger.error(
+        CREATE_ENTITY_LOGGER_PREFIX,
+        `Error on entity creation: ${err.toString()}`,
+      );
       return { success: false, error: err };
     }
 

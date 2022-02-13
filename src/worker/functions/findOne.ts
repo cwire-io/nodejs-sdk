@@ -1,3 +1,4 @@
+import Logger from '../../helper/logger';
 import { DataModelQuery } from '../../types/DataModelQuery';
 
 import {
@@ -14,15 +15,14 @@ export class FindOne
     try {
       const dataModel = this.cwire.getDataModelByName(modelName);
       const entity = await dataModel.findOne(this.cwire, query);
-      this.cwire
-        .getLogger()
-        .system(FIND_ONE_ENTITY_LOGGER_PREFIX, `Find one ${modelName} entity`);
+      Logger.system(
+        FIND_ONE_ENTITY_LOGGER_PREFIX,
+        `Find one ${modelName} entity`,
+      );
 
       return { success: true, data: entity };
     } catch (error) {
-      this.cwire
-        .getLogger()
-        .error(FIND_ONE_ENTITY_LOGGER_PREFIX, error.toString());
+      Logger.error(FIND_ONE_ENTITY_LOGGER_PREFIX, error.toString());
     }
 
     return { success: true, data: null };

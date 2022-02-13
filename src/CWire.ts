@@ -47,7 +47,6 @@ interface CWireOptions {
  * @property {CWireOptions} options
  */
 export class CWire {
-  private logger: Logger;
   private static instance: CWire | null = null;
   public static FIELD_TYPES: {
     // Generic
@@ -102,9 +101,7 @@ export class CWire {
     this.apiKey = apiKey;
 
     if (options.logger) {
-      this.logger = new Logger(options.logger);
-    } else {
-      this.logger = new Logger('debug');
+      Logger.setLogLevel(options.logger);
     }
 
     if (options.apiURL) {
@@ -168,7 +165,7 @@ export class CWire {
         await model.constructReferences(this, nativeModels);
       }
     } catch (error) {
-      this.getLogger().error(
+      Logger.error(
         CONSTRUCT_REFERENCES_LOGGER_PREFIX,
         `Failed to construct field references ${error.toString()}`,
       );
@@ -213,10 +210,6 @@ export class CWire {
 
   public isDataModelExists(name: string): boolean {
     return !!this.models[name];
-  }
-
-  public getLogger(): Logger {
-    return this.logger;
   }
 
   public static getInstance(): CWire {

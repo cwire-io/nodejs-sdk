@@ -1,3 +1,4 @@
+import Logger from '../../helper/logger';
 import { DataModelQuery } from '../../types/DataModelQuery';
 import { UPDATE_ENTITIES_LOGGER_PREFIX } from '../../constants/logger';
 
@@ -14,20 +15,16 @@ export class Update
     try {
       const dataModel = this.cwire.getDataModelByName(modelName);
       const entities = await dataModel.update(this.cwire, query, values);
-      this.cwire
-        .getLogger()
-        .system(
-          UPDATE_ENTITIES_LOGGER_PREFIX,
-          `Update ${dataModel} entities ${JSON.stringify(entities)}`,
-        );
+      Logger.system(
+        UPDATE_ENTITIES_LOGGER_PREFIX,
+        `Update ${dataModel} entities ${JSON.stringify(entities)}`,
+      );
       return { success: true, data: entities };
     } catch (error) {
-      this.cwire
-        .getLogger()
-        .error(
-          UPDATE_ENTITIES_LOGGER_PREFIX,
-          `Error on entity creation: ${error.toString()}`,
-        );
+      Logger.error(
+        UPDATE_ENTITIES_LOGGER_PREFIX,
+        `Error on entity creation: ${error.toString()}`,
+      );
     }
 
     return { success: true, data: [] };

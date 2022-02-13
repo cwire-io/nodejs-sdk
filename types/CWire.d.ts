@@ -2,7 +2,7 @@ import { CWireAPI } from './CWireAPI';
 import { DataModel } from './DataModel';
 import { TextFieldType, NumberFieldType, CustomFieldType, BooleanFieldType, DateFieldType, DateTimeFieldType, TimestampFieldType, EmailFieldType, PasswordFieldType, DescriptionFieldType, MongoDBObjectIdFieldType } from './types/DataModelFields';
 import { APIWorkerInfoType } from './types/Worker';
-import Logger, { LogLevel } from './helper/logger';
+import { LogLevel } from './helper/logger';
 import { WorkerFunctions } from './worker/functions';
 interface CWireOptions {
     route?: string;
@@ -11,7 +11,6 @@ interface CWireOptions {
     models?: DataModel[];
 }
 export declare class CWire {
-    private logger;
     private static instance;
     static FIELD_TYPES: {
         TEXT: TextFieldType;
@@ -49,7 +48,6 @@ export declare class CWire {
     };
     getDataModelsList(): DataModel<any>[];
     isDataModelExists(name: string): boolean;
-    getLogger(): Logger;
     static getInstance(): CWire;
     getDataModelByName(name: string): DataModel<any>;
 }

@@ -1,3 +1,4 @@
+import Logger from '../../helper/logger';
 import { DataModelQuery } from '../../types/DataModelQuery';
 import { FIND_ALL_ENTITY_LOGGER_PREFIX } from '../../constants/logger';
 
@@ -14,20 +15,16 @@ export class FindAll
     try {
       const dataModel = this.cwire.getDataModelByName(modelName);
       const entities = await dataModel.findAll(this.cwire, query);
-      this.cwire
-        .getLogger()
-        .system(
-          FIND_ALL_ENTITY_LOGGER_PREFIX,
-          `Send ${entities.length} ${dataModel} entities:`,
-        );
+      Logger.system(
+        FIND_ALL_ENTITY_LOGGER_PREFIX,
+        `Send ${entities.length} ${dataModel} entities:`,
+      );
       return {
         success: true,
         data: entities,
       };
     } catch (error) {
-      this.cwire
-        .getLogger()
-        .error(FIND_ALL_ENTITY_LOGGER_PREFIX, error.toString());
+      Logger.error(FIND_ALL_ENTITY_LOGGER_PREFIX, error.toString());
     }
 
     return { success: true, data: [] };

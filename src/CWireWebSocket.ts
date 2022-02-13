@@ -9,6 +9,7 @@ import {
   DISCONNECT_TO_CWIRE_LOGGER_PREFIX,
   FUNCTION_CALL_PERFORMANCE_LOGGER_PREFIX,
 } from './constants/logger';
+import Logger from './helper/logger';
 
 /**
  * Websocket connection
@@ -57,12 +58,10 @@ export class CWireWebSocket {
       resolve({ error: err.stack, success: false });
     }
 
-    this.cwire
-      .getLogger()
-      .system(
-        FUNCTION_CALL_PERFORMANCE_LOGGER_PREFIX,
-        `${functionName}: ${performance.now() - t0}ms`,
-      );
+    Logger.system(
+      FUNCTION_CALL_PERFORMANCE_LOGGER_PREFIX,
+      `${functionName}: ${performance.now() - t0}ms`,
+    );
   };
 
   getWorkerFunctions = (resolve: (result: any) => void) => {
@@ -82,31 +81,25 @@ export class CWireWebSocket {
     if (!this.socket) return;
 
     this.socket.on('connect', () => {
-      this.cwire
-        .getLogger()
-        .info(
-          CONNECT_TO_CWIRE_LOGGER_PREFIX,
-          `Connected to cwire api as ${
-            this.cwire.getWorker()?.name || 'unknown'
-          } successfully`,
-        );
+      Logger.info(
+        CONNECT_TO_CWIRE_LOGGER_PREFIX,
+        `Connected to cwire api as ${
+          this.cwire.getWorker()?.name || 'unknown'
+        } successfully`,
+      );
     });
     // @ts-ignore
     this.socket.on('disconnect', (error) => {
-      this.cwire
-        .getLogger()
-        .error(
-          DISCONNECT_TO_CWIRE_LOGGER_PREFIX,
-          `Disconnected to cwire api with the error ${error}`,
-        );
+      Logger.error(
+        DISCONNECT_TO_CWIRE_LOGGER_PREFIX,
+        `Disconnected to cwire api with the error ${error}`,
+      );
     });
     this.socket.on('error', (error: Error) => {
-      this.cwire
-        .getLogger()
-        .error(
-          CONNECTION_ERROR_LOGGER_PREFIX,
-          `Connection error ${error.toString()}`,
-        );
+      Logger.error(
+        CONNECTION_ERROR_LOGGER_PREFIX,
+        `Connection error ${error.toString()}`,
+      );
     });
 
     this.socket.on('CALL_WORKER_FUNCTION_ACTION', this.onWorkerFunctionCalled);

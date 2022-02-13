@@ -7,6 +7,7 @@ import {
   DataModelActionNotFoundError,
   MissingRequiredPropertyError,
 } from './errors';
+import Logger from './helper/logger';
 import { APIDataModel } from './types/DataModel';
 import { DATA_MODEL_ENTITY_EVENT_LOGGER_PREFIX } from './constants/logger';
 
@@ -183,7 +184,7 @@ export abstract class DataModel<Schema = any> {
   }
 
   public async addEntityEvent(
-    entity: any,
+    entityId: string,
     type: string,
     options: Partial<{
       after: any;
@@ -197,20 +198,16 @@ export abstract class DataModel<Schema = any> {
       await CWire.getInstance()
         .getAPI()
         .getDataModelAPI()
-        .addEvent(type, `${entity.get(this.getPrimaryKey())}`, this, options);
-      CWire.getInstance()
-        .getLogger()
-        .system(
-          DATA_MODEL_ENTITY_EVENT_LOGGER_PREFIX,
-          `Log ${type} of ${entity.get(this.getPrimaryKey())}`,
-        );
+        .addEvent(type, entityId, this.getName(), options);
+      Logger.system(
+        DATA_MODEL_ENTITY_EVENT_LOGGER_PREFIX,
+        `Log ${type} of ${entityId}`,
+      );
     } catch (error) {
-      CWire.getInstance()
-        .getLogger()
-        .error(
-          DATA_MODEL_ENTITY_EVENT_LOGGER_PREFIX,
-          `Error by logging ${error.toString()}`,
-        );
+      Logger.error(
+        DATA_MODEL_ENTITY_EVENT_LOGGER_PREFIX,
+        `Error by logging ${error.toString()}`,
+      );
     }
   }
 }

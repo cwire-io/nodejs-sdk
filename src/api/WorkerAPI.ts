@@ -1,3 +1,4 @@
+import Logger from '../helper/logger';
 import { WorkerNotFound } from '../errors';
 import { parseResponse } from '../helper/api';
 import { APIWorkerInfoType } from '../types/Worker';
@@ -12,16 +13,15 @@ export class WorkerAPI extends BaseAPI {
   async init() {
     try {
       this.cwire.setWorker(await this.getWorkerInfo());
-      this.cwire
-        .getLogger()
-        .system(API_LOGGER_PREFIX, 'Fetched worker information successfully.');
+      Logger.system(
+        API_LOGGER_PREFIX,
+        'Fetched worker information successfully.',
+      );
     } catch (error) {
-      this.cwire
-        .getLogger()
-        .error(
-          API_LOGGER_PREFIX,
-          `Worker api init failed with ${error.toString()}`,
-        );
+      Logger.error(
+        API_LOGGER_PREFIX,
+        `Worker api init failed with ${error.toString()}`,
+      );
     }
   }
 

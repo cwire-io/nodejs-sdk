@@ -6,5 +6,5 @@ export declare class DataModelAPI extends BaseAPI {
     init(): Promise<any>;
     syncModels(models: DataModel[]): Promise<any>;
     getDataModelByName(name: string): Promise<APIDataModel>;
-    addEvent(type: DATA_MODEL_ENTITY_EVENTS, entityId: string, model: DataModel, { icon, color, after, before, description, }?: Partial<EntityEventOptions>): Promise<any>;
+    addEvent(type: DATA_MODEL_ENTITY_EVENTS, entityId: string, modelName: string, { icon, color, after, before, description, }?: Partial<EntityEventOptions>): Promise<any>;
 }

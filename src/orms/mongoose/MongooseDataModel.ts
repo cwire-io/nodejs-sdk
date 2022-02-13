@@ -7,8 +7,10 @@ import {
 } from '../../constants/logger';
 import { DataModelQuery } from '../../types/DataModelQuery';
 import { MissingRequiredPropertyError } from '../../errors';
-import { CONSTRUCT_REFERENCES_LOGGER_PREFIX } from '../../helper/logger';
 import { DataModel, DataModelOptions, defaultOptions } from '../../DataModel';
+import Logger, {
+  CONSTRUCT_REFERENCES_LOGGER_PREFIX,
+} from '../../helper/logger';
 
 import { parseSchema } from './field';
 import { buildMongooseEntitiesResponse } from './entity';
@@ -59,7 +61,11 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
           description: string;
         }> = {},
       ) {
-        return context.addEntityEvent(this, type, eventOptions);
+        return context.addEntityEvent(
+          this[context.getPrimaryKey()],
+          type,
+          eventOptions,
+        );
       };
     }
 
@@ -78,7 +84,7 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
                 // @ts-ignore
                 after: this,
               });
-            CWire.getInstance().getLogger().system(
+            Logger.system(
               DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX,
               // @ts-ignore
               `Log creating of ${dataModel.getName()} entity ${this._id}`,
@@ -96,21 +102,19 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
               // @ts-ignore
               before: this.original,
             });
-          CWire.getInstance().getLogger().system(
+          Logger.system(
             DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX,
             // @ts-ignore
             `Log creating of ${dataModel.getName()} entity ${this._id}`,
           );
         } catch (error) {
-          CWire.getInstance()
-            .getLogger()
-            .error(
-              // @ts-ignore
-              this.isNew
-                ? DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX
-                : DATA_MODEL_ENTITY_UPDATED_EVENT_LOGGER_PREFIX,
-              `Error by logging ${error.toString()}`,
-            );
+          Logger.error(
+            // @ts-ignore
+            this.isNew
+              ? DATA_MODEL_ENTITY_CREATED_EVENT_LOGGER_PREFIX
+              : DATA_MODEL_ENTITY_UPDATED_EVENT_LOGGER_PREFIX,
+            `Error by logging ${error.toString()}`,
+          );
         }
       });
     }
@@ -140,12 +144,10 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
           });
         }
       } catch (error) {
-        cwire
-          .getLogger()
-          .error(
-            CONSTRUCT_REFERENCES_LOGGER_PREFIX,
-            `Failed to construct reference for ${fieldName} in ${this.getName()} with error ${error.toString()}`,
-          );
+        Logger.error(
+          CONSTRUCT_REFERENCES_LOGGER_PREFIX,
+          `Failed to construct reference for ${fieldName} in ${this.getName()} with error ${error.toString()}`,
+        );
       }
     }
   }

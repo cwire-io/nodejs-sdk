@@ -4,6 +4,7 @@ import { TextFieldType, NumberFieldType, CustomFieldType, BooleanFieldType, Date
 import { APIWorkerInfoType } from './types/Worker';
 import { LogLevel } from './helper/logger';
 import { WorkerFunctions } from './worker/functions';
+import { CWireIsNotInitialised } from './errors';
 interface CWireOptions {
     route?: string;
     apiURL?: string;
@@ -50,5 +51,12 @@ export declare class CWire {
     isDataModelExists(name: string): boolean;
     static getInstance(): CWire;
     getDataModelByName(name: string): DataModel<any>;
+    static dispatch(modelName: string, entityId: string, type: string, options?: Partial<{
+        after: any;
+        before: any;
+        icon: string;
+        color: string;
+        description: string;
+    }>): Promise<void> | CWireIsNotInitialised;
 }
 export {};

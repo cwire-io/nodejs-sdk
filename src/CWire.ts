@@ -227,4 +227,25 @@ export class CWire {
 
     return this.models[name];
   }
+
+  public static dispatch(
+    modelName: string,
+    entityId: string,
+    type: string,
+    options: Partial<{
+      after: any;
+      before: any;
+      icon: string;
+      color: string;
+      description: string;
+    }> = {},
+  ) {
+    if (!this.getInstance()) {
+      return new CWireIsNotInitialised();
+    }
+
+    return this.getInstance()
+      .getDataModelByName(modelName)
+      .addEntityEvent(entityId, type, options);
+  }
 }

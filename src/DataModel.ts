@@ -183,6 +183,20 @@ export abstract class DataModel<Schema = any> {
     this.fields[field.getName()] = field;
   }
 
+  public async dispatch(
+    entityId: string,
+    type: string,
+    options: Partial<{
+      after: any;
+      before: any;
+      icon: string;
+      color: string;
+      description: string;
+    }> = {},
+  ) {
+    return this.addEntityEvent(entityId, type, options);
+  }
+
   public async addEntityEvent(
     entityId: string,
     type: string,

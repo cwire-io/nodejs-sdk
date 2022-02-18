@@ -6,7 +6,12 @@ import {
   DATA_MODEL_ENTITY_UPDATED_EVENT_LOGGER_PREFIX,
 } from '../../constants/logger';
 import { DataModelQuery } from '../../types/DataModelQuery';
-import { MissingRequiredPropertyError } from '../../errors';
+import {
+  DataModelFieldNotFoundError,
+  MissingRequiredPropertyError,
+  WrongFieldTypeError,
+} from '../../errors';
+import { DataModelCalculationFunctions } from '../../types/DataModel';
 import { DataModel, DataModelOptions, defaultOptions } from '../../DataModel';
 import Logger, {
   CONSTRUCT_REFERENCES_LOGGER_PREFIX,
@@ -222,5 +227,66 @@ export default class MongooseDataModel<Schema = any> extends DataModel<Schema> {
       .update(parseWhereQuery(this, query?.where), changes)
       .exec();
     return buildMongooseEntitiesResponse(this.getFieldsList(), [entity]);
+  }
+
+  async calculate(
+    cwire: CWire,
+    calcFn: DataModelCalculationFunctions,
+    fieldName: string,
+    query: DataModelQuery,
+  ): Promise<any> {
+    const field = this.getFieldsMap()[fieldName];
+
+    if (!field) {
+      throw new DataModelFieldNotFoundError();
+    }
+
+    if (
+      field.getType() !== 'number' &&
+      field.getType() !== 'date' &&
+      field.getType() !== 'dateTime' &&
+      field.getType() !== 'timestamp'
+    ) {
+      throw new WrongFieldTypeError();
+    }
+
+    const id = query.group ? `$${query.group[0]}` : null;
+    const aggregatedField = `$${fieldName}`;
+    const aggregation = this.model
+      .aggregate()
+      .match(parseWhereQuery(this, query?.where));
+
+    switch (calcFn) {
+      case DataModelCalculationFunctions.AVG: {
+        aggregation.group({ _id: id, value: { $avg: aggregatedField } });
+        break;
+      }
+      case DataModelCalculationFunctions.SUM: {
+        aggregation.group({ _id: id, value: { $sum: aggregatedField } });
+        break;
+      }
+      case DataModelCalculationFunctions.MAX: {
+        aggregation.group({ _id: id, value: { $max: aggregatedField } });
+        break;
+      }
+      case DataModelCalculationFunctions.MIN: {
+        aggregation.group({ _id: id, value: { $min: aggregatedField } });
+        break;
+      }
+    }
+
+    const results = await aggregation.exec();
+
+    if (query.group) {
+      const response = [];
+      for (const result of results) {
+        // @ts-ignore
+        response.push({ [query.group[0]]: result._id, value: result.value });
+      }
+
+      return response;
+    }
+
+    return results[0].value;
   }
 }

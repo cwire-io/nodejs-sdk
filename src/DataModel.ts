@@ -8,8 +8,8 @@ import {
   MissingRequiredPropertyError,
 } from './errors';
 import Logger from './helper/logger';
-import { APIDataModel } from './types/DataModel';
 import { DATA_MODEL_ENTITY_EVENT_LOGGER_PREFIX } from './constants/logger';
+import { APIDataModel, DataModelCalculationFunctions } from './types/DataModel';
 
 export type SequelizeModelType = any;
 
@@ -72,6 +72,12 @@ export abstract class DataModel<Schema = any> {
     cwire: CWire,
     query: DataModelQuery,
     changes: Schema,
+  ): Promise<any>;
+  public abstract async calculate(
+    cwire: CWire,
+    calcFn: DataModelCalculationFunctions,
+    fieldName: string,
+    query: DataModelQuery,
   ): Promise<any>;
 
   constructor(name: string, options: DataModelOptions) {

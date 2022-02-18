@@ -1,4 +1,10 @@
 import { APIDataModelField } from './DataModelFields';
+export declare enum DataModelCalculationFunctions {
+    MAX = "max",
+    MIN = "min",
+    AVG = "avg",
+    SUM = "sum"
+}
 export declare type DataModelReference = {
     field: string;
     model: string;

@@ -2,7 +2,7 @@ import { CWire } from './CWire';
 import { DataModelField } from './DataModelField';
 import { DataModelAction } from './DataModelAction';
 import { DataModelQuery } from './types/DataModelQuery';
-import { APIDataModel } from './types/DataModel';
+import { APIDataModel, DataModelCalculationFunctions } from './types/DataModel';
 export declare type SequelizeModelType = any;
 export declare type DataModelOptions = Partial<{
     isEditable: boolean;
@@ -39,6 +39,7 @@ export declare abstract class DataModel<Schema = any> {
     abstract findOne(cwire: CWire, query: DataModelQuery): Promise<any>;
     abstract findAll(cwire: CWire, query: DataModelQuery): Promise<any>;
     abstract update(cwire: CWire, query: DataModelQuery, changes: Schema): Promise<any>;
+    abstract calculate(cwire: CWire, calcFn: DataModelCalculationFunctions, fieldName: string, query: DataModelQuery): Promise<any>;
     constructor(name: string, options: DataModelOptions);
     getPrimaryKey(): string;
     getId(): string | null;

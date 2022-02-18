@@ -1,6 +1,11 @@
 import { APIDataModelField } from './DataModelFields';
-import { DataModel } from '../DataModel';
-import { DATA_MODEL_ENTITY_EVENTS } from '../api/DataModelAPI';
+
+export enum DataModelCalculationFunctions {
+  MAX = 'max',
+  MIN = 'min',
+  AVG = 'avg',
+  SUM = 'sum',
+}
 
 export type DataModelReference = {
   field: string;

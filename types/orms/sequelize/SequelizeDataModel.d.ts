@@ -1,6 +1,7 @@
 import { CWire } from '../../CWire';
 import { DataModelQuery } from '../../types/DataModelQuery';
 import { DataModel, DataModelOptions } from '../../DataModel';
+import { DataModelCalculationFunctions } from '../../types/DataModel';
 export declare type SequelizeModel = any;
 export declare const SequelizeType = "Sequelize";
 export declare type SequelizeDataModelOptions = Partial<{} & DataModelOptions>;
@@ -20,4 +21,5 @@ export default class SequelizeDataModel<Schema = any> extends DataModel<Schema> 
     findOne(cwire: CWire, query: DataModelQuery): Promise<any>;
     remove(cwire: CWire, query: DataModelQuery): Promise<any>;
     update(cwire: CWire, query: DataModelQuery, changes: any): Promise<any>;
+    calculate(cwire: CWire, calcFn: DataModelCalculationFunctions, fieldName: string, query: DataModelQuery): Promise<any>;
 }

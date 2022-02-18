@@ -53,7 +53,10 @@ export class CWireWebSocket {
       const fn = this.cwire.getWorkerFunctions().getFunction(functionName);
       if (fn) {
         resolve(await fn.controller(...params));
+        return;
       }
+
+      resolve({ error: new Error('Function not found'), success: false });
     } catch (err) {
       resolve({ error: err.stack, success: false });
     }

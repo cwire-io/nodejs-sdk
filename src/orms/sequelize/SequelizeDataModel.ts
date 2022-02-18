@@ -15,6 +15,8 @@ import {
   DATA_MODEL_ENTITY_DELETED_EVENT_LOGGER_PREFIX,
   DATA_MODEL_ENTITY_UPDATED_EVENT_LOGGER_PREFIX,
 } from '../../constants/logger';
+import { DataModelCalculationFunctions } from '../../types/DataModel';
+import { DataModelFieldNotFoundError, WrongFieldTypeError } from '../../errors';
 
 export type SequelizeModel = any;
 export const SequelizeType = 'Sequelize';
@@ -301,4 +303,55 @@ export default class SequelizeDataModel<
       data: buildEntitiesResponse(this.getFieldsList(), [entity]),
     };
   }
+
+  public async calculate(
+    cwire: CWire,
+    calcFn: DataModelCalculationFunctions,
+    fieldName: string,
+    query: DataModelQuery,
+  ) {
+    const field = this.getFieldsMap()[fieldName];
+
+    if (!field) {
+      throw new DataModelFieldNotFoundError();
+    }
+
+    if (
+      field.getType() !== 'number' &&
+      field.getType() !== 'date' &&
+      field.getType() !== 'dateTime' &&
+      field.getType() !== 'timestamp'
+    ) {
+      throw new WrongFieldTypeError();
+    }
+
+    const sequelizeQuery = parseQueryToSequelize(this, query);
+    const results = await this.model.findAll({
+      ...sequelizeQuery,
+      raw: true,
+      attributes: [
+        ...(sequelizeQuery.group || []),
+        [
+          this.model.sequelize.fn(
+            calcFn,
+            this.model.sequelize.col(field.getName()),
+          ),
+          'value',
+        ],
+      ],
+    });
+
+    if (sequelizeQuery.group) {
+      return results;
+    }
+
+    return results[0].value;
+  }
 }
+/*
+
+      attributes: [
+        [sequelize.fn(calcFn, sequelize.col(field.getName())), 'value'],
+      ],
+
+ */

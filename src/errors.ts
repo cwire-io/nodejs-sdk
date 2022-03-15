@@ -1,6 +1,7 @@
 export class WorkerNotFound extends Error {}
 export class MissingRequiredPropertyError extends Error {}
 export class WrongFieldTypeError extends Error {}
+export class DuplicatedOptionsParsedError extends Error {}
 export class WrongActionTypeError extends Error {}
 export class DataModelNotFoundError extends Error {}
 export class DataModelFieldNotFoundError extends Error {}

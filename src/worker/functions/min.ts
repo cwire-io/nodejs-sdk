@@ -28,7 +28,6 @@ export class Min
   ): Promise<{ data?: any; error?: Error; success: boolean }> {
     try {
       const dataModel = this.cwire.getDataModelByName(modelName);
-
       const data = await dataModel.calculate(
         this.cwire,
         DataModelCalculationFunctions.MIN,

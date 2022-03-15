@@ -348,10 +348,3 @@ export default class SequelizeDataModel<
     return results[0].value;
   }
 }
-/*
-
-      attributes: [
-        [sequelize.fn(calcFn, sequelize.col(field.getName())), 'value'],
-      ],
-
- */

@@ -75,7 +75,6 @@ export class DataModelAPI extends BaseAPI {
     }
     try {
       await Promise.all(responses);
-
       Logger.system(API_LOGGER_PREFIX, `Start sync models with api.`);
 
       // Clear array

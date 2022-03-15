@@ -10,6 +10,7 @@ export declare type BaseDataModelFieldOptions = {
     isPrimary?: boolean;
     isRequired?: boolean;
     isNullable?: boolean;
+    isReadonly?: boolean;
     type: DataModelFieldType;
     reference?: DataModelReferenceFieldType;
 };

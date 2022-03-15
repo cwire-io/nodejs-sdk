@@ -23,7 +23,7 @@ For more please checkout our docs or [code examples](https://github.com/cwire-io
 ```js
 import express from 'express';
 import { DataTypes, Model, Sequelize } from 'sequelize';
-import { CWire, SequelizeDataModel } from '@cwire/nodejs-sdk';
+import { CWire, PrismaDataModel } from '@cwire/nodejs-sdk';
 
 const sequelize = new Sequelize('sqlite::memory');
 class User extends Model {}
@@ -38,6 +38,6 @@ User.init({
 });
 
 await CWire.init("<YOUR_API_KEY>", {
-  models: [new SequelizeDataModel(User)],
+  models: [new PrismaDataModel(User)],
 });
 ```

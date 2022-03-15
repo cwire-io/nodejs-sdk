@@ -1,8 +1,8 @@
 import { DataModelFieldOptionsType, DataModelFieldType, DataModelReferenceFieldType } from './types/DataModelFields';
 export declare class DataModelField {
+    private isPrimary;
     private readonly name;
     private type;
-    private readonly isPrimary;
     private displayName;
     private reference;
     constructor(name: string, options: DataModelFieldOptionsType);
@@ -26,6 +26,7 @@ export declare class DataModelField {
         } | null;
         isPrimary: boolean;
     };
+    setPrimaryField(isPrimary: boolean): void;
     isPrimaryField(): boolean;
     static isValidFieldReference(reference: any): any;
     static isValidFieldType(type: any): boolean;

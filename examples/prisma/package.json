@@ -1,0 +1,24 @@
+{
+  "name": "script",
+  "license": "MIT",
+  "scripts": {
+    "generate": "prisma generate",
+    "start": "ts-node server.ts",
+    "watch": "nodemon -e ts -w ../../ -x yarn start",
+    "inspect": "node --inspect -r ts-node/register server.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "3.10.0"
+  },
+  "devDependencies": {
+    "@cwire/nodejs-sdk": "../../",
+    "@types/node": "16.11.26",
+    "prisma": "3.10.0",
+    "ts-node": "10.6.0",
+    "typescript": "4.6.2",
+    "nodemon": "^2.0.4"
+  },
+  "engines": {
+    "node": ">=12.2.0"
+  }
+}

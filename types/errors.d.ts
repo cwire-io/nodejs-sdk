@@ -4,6 +4,8 @@ export declare class MissingRequiredPropertyError extends Error {
 }
 export declare class WrongFieldTypeError extends Error {
 }
+export declare class DuplicatedOptionsParsedError extends Error {
+}
 export declare class WrongActionTypeError extends Error {
 }
 export declare class DataModelNotFoundError extends Error {

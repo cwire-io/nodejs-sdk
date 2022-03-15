@@ -12,9 +12,9 @@ import {
  * @property {DataModelFieldOptionsType} options
  */
 export class DataModelField {
+  private isPrimary: boolean;
   private readonly name: string;
   private type: DataModelFieldType;
-  private readonly isPrimary: boolean;
   private displayName: string | null = null;
   private reference: DataModelReferenceFieldType | null = null;
 
@@ -89,6 +89,10 @@ export class DataModelField {
         ? { displayName: this.displayName }
         : {}),
     };
+  }
+
+  public setPrimaryField(isPrimary: boolean) {
+    this.isPrimary = isPrimary;
   }
 
   public isPrimaryField() {

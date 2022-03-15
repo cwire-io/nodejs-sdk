@@ -1,25 +1,27 @@
-import { Op as Operators } from 'sequelize';
+import { DataModel } from '../../DataModel';
 import {
   DataModelQuery,
   DataModelQuery$Where,
   DataModelQuery$WhereOperators,
 } from '../../types/DataModelQuery';
-import { DataModel } from '../../DataModel';
 import { parseFieldValue } from '../../helper/query';
 
-function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
+function parseWhereQueryToPrisma(
+  model: DataModel,
+  query?: DataModelQuery$Where,
+): any {
   if (!query || typeof query !== 'object') {
     return null;
   }
 
-  const sequelizeWhereQuery: any = {};
+  const prismaWhereQuery: any = {};
   for (const key of Object.keys(query)) {
     if (key === '$and' && Array.isArray(query[key])) {
-      sequelizeWhereQuery[Operators.and] = [];
+      prismaWhereQuery.AND = [];
       for (const subQuery of query[key] || []) {
-        const parsedQuery = parseWhereQuery(model, subQuery);
+        const parsedQuery = parseWhereQueryToPrisma(model, subQuery);
         if (parsedQuery) {
-          sequelizeWhereQuery[Operators.and].push(parsedQuery);
+          prismaWhereQuery.AND.push(parsedQuery);
         }
       }
 
@@ -27,11 +29,11 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
     }
 
     if (key === '$or' && Array.isArray(query[key])) {
-      sequelizeWhereQuery[Operators.or] = [];
+      prismaWhereQuery.OR = [];
       for (const subQuery of query[key] || []) {
-        const parsedQuery = parseWhereQuery(model, subQuery);
+        const parsedQuery = parseWhereQueryToPrisma(model, subQuery);
         if (parsedQuery) {
-          sequelizeWhereQuery[Operators.or].push(parsedQuery);
+          prismaWhereQuery.OR.push(parsedQuery);
         }
       }
 
@@ -49,7 +51,7 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       typeof query[key] === 'boolean' ||
       typeof query[key] === 'string'
     ) {
-      sequelizeWhereQuery[key] = parseFieldValue(field, query[key]);
+      prismaWhereQuery[key] = parseFieldValue(field, query[key]);
       continue;
     }
 
@@ -61,7 +63,7 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       if (operations.$like && typeof operations.$like === 'string') {
         whereQuery = {
           ...whereQuery,
-          [Operators.like]: operations.$like,
+          search: operations.$like,
         };
       }
 
@@ -69,7 +71,7 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       if (operations.$notLike && typeof operations.$notLike === 'string') {
         whereQuery = {
           ...whereQuery,
-          [Operators.notLike]: operations.$notLike,
+          search: `!${operations.$notLike}`,
         };
       }
 
@@ -77,7 +79,8 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       if (operations.$iLike && typeof operations.$iLike === 'string') {
         whereQuery = {
           ...whereQuery,
-          [Operators.iLike]: operations.$iLike,
+          search: operations.$iLike,
+          mode: 'insensitive',
         };
       }
 
@@ -85,7 +88,7 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       if (operations.$regex && typeof operations.$regex === 'string') {
         whereQuery = {
           ...whereQuery,
-          [Operators.regexp]: operations.$regex,
+          contains: operations.$regex,
         };
       }
 
@@ -93,7 +96,7 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       if (operations.$notRegex && typeof operations.$notRegex === 'string') {
         whereQuery = {
           ...whereQuery,
-          [Operators.notRegexp]: operations.$notRegex,
+          contains: operations.$notRegex,
         };
       }
 
@@ -104,7 +107,7 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       ) {
         whereQuery = {
           ...whereQuery,
-          [Operators.ne]: operations.$notEqual,
+          not: operations.$notEqual,
         };
       }
 
@@ -116,7 +119,7 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       ) {
         whereQuery = {
           ...whereQuery,
-          [Operators.eq]: operations.$equal,
+          equals: operations.$equal,
         };
       }
 
@@ -124,7 +127,7 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       if (operations.$or && Array.isArray(operations.$or)) {
         whereQuery = {
           ...whereQuery,
-          [Operators.or]: operations.$or,
+          OR: operations.$or,
         };
       }
 
@@ -132,23 +135,29 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       if (operations.$between && Array.isArray(operations.$between)) {
         whereQuery = {
           ...whereQuery,
-          [Operators.between]: operations.$between,
+          lte: operations.$between[0],
+          gte: operations.$between[1],
         };
       }
 
       // Number[] Sequelize only
       if (operations.$notBetween && Array.isArray(operations.$notBetween)) {
-        whereQuery = {
-          ...whereQuery,
-          [Operators.notBetween]: operations.$notBetween,
-        };
+        if (!prismaWhereQuery[key].NOT) {
+          prismaWhereQuery.NOT = [];
+        }
+        prismaWhereQuery.NOT.push({
+          [key]: {
+            lte: operations.$between[0],
+            gte: operations.$between[1],
+          },
+        });
       }
 
       // Number
       if (operations.$lower) {
         whereQuery = {
           ...whereQuery,
-          [Operators.lt]: parseFieldValue(field, operations.$lower),
+          lt: parseFieldValue(field, operations.$lower),
         };
       }
 
@@ -156,7 +165,7 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       if (operations.$lowerOrEqual) {
         whereQuery = {
           ...whereQuery,
-          [Operators.lte]: parseFieldValue(field, operations.$lowerOrEqual),
+          lte: parseFieldValue(field, operations.$lowerOrEqual),
         };
       }
 
@@ -164,7 +173,7 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       if (operations.$higher) {
         whereQuery = {
           ...whereQuery,
-          [Operators.gt]: parseFieldValue(field, operations.$higher),
+          gt: parseFieldValue(field, operations.$higher),
         };
       }
 
@@ -172,7 +181,7 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       if (operations.$higherOrEqual) {
         whereQuery = {
           ...whereQuery,
-          [Operators.gte]: parseFieldValue(field, operations.$higherOrEqual),
+          gte: parseFieldValue(field, operations.$higherOrEqual),
         };
       }
 
@@ -180,7 +189,7 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       if (operations.$in && Array.isArray(operations.$in)) {
         whereQuery = {
           ...whereQuery,
-          [Operators.in]: operations.$in,
+          in: operations.$in,
         };
       }
 
@@ -188,7 +197,7 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       if (operations.$notIn && Array.isArray(operations.$notIn)) {
         whereQuery = {
           ...whereQuery,
-          [Operators.notIn]: operations.$notIn,
+          notIn: operations.$notIn,
         };
       }
       // Number | String | Null
@@ -199,33 +208,31 @@ function parseWhereQuery(model: DataModel, query?: DataModelQuery$Where): any {
       ) {
         whereQuery = {
           ...whereQuery,
-          [Operators.is]: operations.$is,
+          is: operations.$is,
         };
       }
 
-      sequelizeWhereQuery[key] = whereQuery;
+      prismaWhereQuery[key] = whereQuery;
     }
   }
-
-  return sequelizeWhereQuery;
+  return prismaWhereQuery;
 }
 
-export function parseQueryToSequelize(
+export function parseQueryToPrisma(
   model: DataModel,
   query: any | DataModelQuery,
 ) {
-  const sequelizeQuery: any = {};
-  sequelizeQuery.include = [];
+  const prismaQuery: any = {};
 
   if (!query) {
-    return sequelizeQuery;
+    return prismaQuery;
   }
 
   if (query.limit && typeof query.limit === 'number') {
-    sequelizeQuery.limit = query.limit;
+    prismaQuery.take = query.limit;
   }
   if (query.offset && typeof query.offset === 'number') {
-    sequelizeQuery.offset = query.offset;
+    prismaQuery.skip = query.offset;
   }
 
   if (query.order && Array.isArray(query.order)) {
@@ -241,21 +248,20 @@ export function parseQueryToSequelize(
     }
 
     if (isValid) {
-      sequelizeQuery.order = query.order;
+      prismaQuery.orderBy = query.order;
     }
   }
 
   if (query.attributes && Array.isArray(query.attributes)) {
-    sequelizeQuery.attributes = query.attributes;
-  }
-
-  if (query.group && Array.isArray(query.group)) {
-    sequelizeQuery.group = query.group;
+    prismaQuery.select = {};
+    for (const field of query.attributes) {
+      prismaQuery.select[field] = true;
+    }
   }
 
   if (query.where && typeof query.where === 'object') {
-    sequelizeQuery.where = parseWhereQuery(model, query.where);
+    prismaQuery.where = parseWhereQueryToPrisma(model, query.where);
   }
 
-  return sequelizeQuery;
+  return prismaQuery;
 }
